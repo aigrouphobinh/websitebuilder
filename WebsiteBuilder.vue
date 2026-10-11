@@ -5920,6 +5920,7 @@
 <script setup lang="ts">
 import HelpDialog from "./dialogs/HelpDialog.vue";
 import { normalizeElementSearch } from "./utils/element-search";
+import { getIncomingHtmlAction } from "./utils/model-html-sync";
 import PageSeoDialog from "./dialogs/PageSeoDialog.vue";
 import { useEventPlaceholders } from "./composables/useEventPlaceholders";
 const { buildEventPlaceholderReplacements, replaceEventPlaceholders, replaceEventIdPlaceholder } = useEventPlaceholders();
@@ -19414,20 +19415,19 @@ watch(
     if (!editor || typeof val !== "string") return;
 
     const currentHtml = editor.getHtml() || "";
+    const action = getIncomingHtmlAction(
+      val,
+      currentHtml,
+      lastEmittedHtml.value,
+    );
 
-    // An empty v-model value is an explicit request to clear the canvas.
-    // Handle it before the echo guard: the editor may contain a starter
-    // template even when the last value emitted to the parent was empty.
-    if (val === "") {
-      if (currentHtml !== "") {
-        editor.setComponents("");
-      }
+    if (action === "empty") {
+      if (currentHtml !== "") editor.setComponents("");
       lastEmittedHtml.value = "";
       return;
     }
 
-    // Ignore unchanged values, including the parent's echo of our own update.
-    if (val === currentHtml || val === lastEmittedHtml.value) return;
+    if (action === "ignore") return;
 
     editor.setComponents(val);
     lastEmittedHtml.value = val;
