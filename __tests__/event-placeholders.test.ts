@@ -34,6 +34,15 @@ describe("useEventPlaceholders", () => {
     );
   });
 
+  it("does not recursively replace tokens inside replacement values", () => {
+    const result = replaceEventPlaceholders(
+      "[ev_name] | [ev_location]",
+      { id: "evt-chain", name: "Tên chứa [ev_location]", location: "Hà Nội" },
+    );
+
+    expect(result).toBe("Tên chứa [ev_location] | Hà Nội");
+  });
+
   it("safely replaces tokens in nested objects when values contain JSON characters", () => {
     const result = replaceEventPlaceholders(
       {
