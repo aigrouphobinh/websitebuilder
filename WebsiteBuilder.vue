@@ -21739,6 +21739,20 @@ function enableResizable(model: ResizableComponent | null) {
   min-width: 0;
 }
 
+.website-builder .sb-search-feedback {
+  margin: -2px 10px 8px;
+  padding: 7px 9px;
+  border-radius: 7px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.website-builder .sb-search-feedback[role="status"] {
+  overflow-wrap: anywhere;
+}
+
 .website-builder .canvas,
 .website-builder .canvas-shell,
 .website-builder .canvas-frame {
