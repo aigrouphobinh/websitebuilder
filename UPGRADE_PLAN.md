@@ -48,7 +48,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Chạy test hiện có cho đăng ký 31 block và test tìm kiếm mới.
 - [x] Thêm unit tests cho quyết định `v-model`: HTML rỗng, HTML trùng canvas, echo từ parent và HTML mới từ parent.
 - [ ] Kiểm thử tích hợp luồng save/reload thực tế trong môi trường Vue + GrapesJS.
-- [x] Bổ sung `__tests__/event-placeholders.test.ts` cho thay token, giữ placeholder chưa biết, dữ liệu lồng nhau và chuỗi có ký tự JSON đặc biệt.
+- [x] Bổ sung `__tests__/event-placeholders.test.ts` cho thay token, giữ placeholder chưa biết, dữ liệu lồng nhau, chuỗi có ký tự JSON đặc biệt và ngăn thay thế dây chuyền.
 - [x] Bổ sung `__tests__/html-with-css.test.ts` để kiểm tra khâu ghép CSS, giữ `class`, `id`, `data-*` và placeholder động.
 - [ ] Xác minh nội dung HTML/CSS được giữ nguyên qua save/reload thực tế trong Vue + GrapesJS; test helper chưa thay thế kiểm thử tích hợp.
 - [ ] Chạy TypeScript/build nếu repository có scripts và môi trường phụ thuộc tương ứng.
@@ -56,7 +56,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 ### P2 — Kiểm tra tương thích key và event context
 - [ ] Xác định nguồn types/config thực tế đang được sử dụng trước khi tạo alias mới.
 - [ ] Đối chiếu key `event:*` với ID `landing-event-*` ở nơi tiêu thụ config; chỉ thêm alias nếu có caller thực sự yêu cầu.
-- [x] Bổ sung test cho placeholder event: token đã biết được thay thế, token chưa biết được giữ nguyên.
+- [x] Bổ sung test cho placeholder event: token đã biết được thay thế, token chưa biết được giữ nguyên và giá trị được thay vào không bị quét lần thứ hai.
 - [ ] Xác minh end-to-end placeholder như `[ev_name]`, `[ev_location]`, `[ev_description]`, `[ev_order_url]`, `[company_name]` được giữ nguyên khi lưu và được thay thế đúng ở bước render phù hợp.
 
 ### P3 — Kiểm thử trải nghiệm builder
