@@ -69,6 +69,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Kiểm tra preview và export HTML/CSS trong trình duyệt; các test helper hiện chưa được chạy. Cần xác nhận thứ tự thực thi script thực tế trên trình duyệt sau khi giữ nguyên `async`/`defer`. `includeRuntime` vẫn là tùy chọn độc lập với `includeScripts`.
 - [ ] Kiểm tra desktop/tablet/mobile và các block có form/accordion/carousel.
 - [ ] Kiểm tra console, thao tác bàn phím và trạng thái chưa lưu.
+- [x] Khi nhận template mới từ cửa sổ cha, dọn tài nguyên template trước đó, đồng bộ danh sách script đã lưu và áp dụng CSS rỗng để tránh giữ style/script cũ.
+- [ ] Kiểm tra tích hợp việc chuyển liên tiếp giữa template có/không có `headCss`, `headLinks`, runtime và scripts; xác nhận preview không còn tài nguyên bị sót.
 
 ## 4. Quy tắc an toàn khi sửa
 - Không xóa thư mục/file chỉ dựa trên nhận định “dead code” trong kế hoạch cũ; xác minh import/reference trước.
