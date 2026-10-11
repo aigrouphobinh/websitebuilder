@@ -9,6 +9,8 @@
         <button
           class="tb-link mobile-only"
           type="button"
+          :aria-label="sidebarOpen ? 'Đóng thanh thành phần' : 'Mở thanh thành phần'"
+          :aria-expanded="sidebarOpen"
           @click="sidebarOpen = !sidebarOpen"
         >
           <IconMenu2 size="20" />
@@ -19,6 +21,8 @@
             class="tb-link"
             type="button"
             title="Trình đơn"
+            aria-haspopup="true"
+            :aria-expanded="showMenu"
             @click="showMenu = !showMenu"
           >
             <IconMenu2 size="18" />
@@ -239,6 +243,8 @@
             class="device-btn"
             :class="{ active: currentDevice === 'desktop' }"
             title="Máy tính bàn"
+            aria-label="Xem ở kích thước máy tính"
+            :aria-pressed="currentDevice === 'desktop'"
             @click="setDevice('desktop')"
           >
             <IconDeviceDesktop size="18" />
@@ -248,6 +254,8 @@
             class="device-btn"
             :class="{ active: currentDevice === 'tablet' }"
             title="Máy tính bảng"
+            aria-label="Xem ở kích thước máy tính bảng"
+            :aria-pressed="currentDevice === 'tablet'"
             @click="setDevice('tablet')"
           >
             <IconDeviceTablet size="18" />
@@ -257,6 +265,8 @@
             class="device-btn"
             :class="{ active: currentDevice === 'mobile' }"
             title="Điện thoại"
+            aria-label="Xem ở kích thước điện thoại"
+            :aria-pressed="currentDevice === 'mobile'"
             @click="setDevice('mobile')"
           >
             <IconDeviceMobile size="18" />
@@ -270,6 +280,8 @@
           class="tb-link"
           type="button"
           :class="{ active: showProperties }"
+          :aria-label="showProperties ? 'Ẩn bảng thuộc tính' : 'Hiện bảng thuộc tính'"
+          :aria-expanded="showProperties"
           @click="showProperties = !showProperties"
         >
           <IconSettings size="20" />
@@ -400,6 +412,19 @@
             @click="elementQuery = ''"
           >×</button>
           <IconSearch v-else size="16" class="sb-search-icon" />
+        </div>
+        <div
+          v-if="elementQuery.trim()"
+          class="sb-search-feedback"
+          role="status"
+          aria-live="polite"
+        >
+          <template v-if="matchingElementCount">
+            Có {{ matchingElementCount }} thành phần phù hợp
+          </template>
+          <template v-else>
+            Không tìm thấy thành phần. Thử từ khóa khác hoặc xóa tìm kiếm.
+          </template>
         </div>
 
         <div v-show="sbActiveTab === 'elements'">
@@ -7915,12 +7940,37 @@ const selectedComponent = ref<Component | null>(null);
 const showTemplateList = ref(false);
 const templateQuery = ref("");
 const elementQuery = ref("");
+const searchableElementNames = [
+  "Tiêu đề",
+  "Đoạn văn",
+  "Văn bản phong phú",
+  "Danh sách",
+  "Liên kết",
+  "Nút bấm",
+  "Nút Mua Vé",
+  "Hình ảnh",
+  "Ảnh nền",
+  "Thư viện ảnh",
+  "Video",
+  "Mã HTML",
+  "Khối chứa Container",
+  "Lưới 2 cột Grid",
+  "Lưới 3 cột Grid",
+  "Phần đầu trang Hero",
+  "Bảng Table",
+  "Phần Section",
+  "Accordion",
+  "Khoảng đệm Spacer",
+] as const;
 function matchElement(name: string | null | undefined) {
   const query = normalizeElementSearch(elementQuery.value);
   if (!query) return true;
   if (!name) return false;
   return normalizeElementSearch(String(name)).includes(query);
 }
+const matchingElementCount = computed(() =>
+  searchableElementNames.filter((name) => matchElement(name)).length,
+);
 
 const showGlobalStyle = ref(false);
 const showResponsive = ref(false);
