@@ -5924,6 +5924,7 @@ import { getIncomingHtmlAction } from "./utils/model-html-sync";
 import { composeHtmlWithCss } from "./utils/html-with-css";
 import { escapeHtmlAttribute } from "./utils/escape-html-attribute";
 import { composeExportBodyScripts } from "./utils/export-body-scripts";
+import { composeExportScriptTag } from "./utils/export-script-tag";
 import PageSeoDialog from "./dialogs/PageSeoDialog.vue";
 import { useEventPlaceholders } from "./composables/useEventPlaceholders";
 const { buildEventPlaceholderReplacements, replaceEventPlaceholders, replaceEventIdPlaceholder } = useEventPlaceholders();
@@ -15672,22 +15673,7 @@ function getHtmlWithCss() {
       .map((l) => `<link rel="stylesheet" href="${escapeHtmlAttribute(l.href)}">`)
       .join("\n");
 
-    const scOpen = "<scr" + "ipt";
-    const scClose = "</scr" + "ipt>";
-
-    const genScript = (s: {
-      src?: string;
-      type?: string;
-      code?: string;
-      async?: boolean;
-      defer?: boolean;
-    }) => {
-      const t = s.type ? ` type="${escapeHtmlAttribute(s.type)}"` : "";
-      const a = s.async ? " async" : "";
-      const d = s.defer ? " defer" : "";
-      if (s.src) return `${scOpen} src="${escapeHtmlAttribute(s.src)}"${t}${a}${d}>${scClose}`;
-      return `${scOpen}${t}>${s.code || ""}${scClose}`;
-    };
+    const genScript = composeExportScriptTag;
 
     const headScripts = installedHeadScripts.value.map(genScript).join("\n");
     const bodyScripts = installedBodyScripts.value.map(genScript).join("\n");
@@ -15763,11 +15749,7 @@ async function getExportHtml(
     const scOpen = "<scr" + "ipt";
     const scClose = "</scr" + "ipt>";
 
-    const genScript = (s: { src?: string; type?: string; code?: string }) => {
-      const t = s.type ? ` type="${escapeHtmlAttribute(s.type)}"` : "";
-      if (s.src) return `${scOpen} src="${escapeHtmlAttribute(s.src)}"${t}>${scClose}`;
-      return `${scOpen}${t}>${s.code || ""}${scClose}`;
-    };
+    const genScript = composeExportScriptTag;
 
     const headScripts =
       opts?.includeScripts === false
