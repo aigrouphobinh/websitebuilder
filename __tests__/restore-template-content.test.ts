@@ -43,6 +43,22 @@ describe("restoreTemplateContent", () => {
     expect(setCss).toHaveBeenCalledWith("main { color: red; }");
   });
 
+  it("clears stale CSS when the fallback template has no saved CSS", () => {
+    const setCss = vi.fn();
+
+    const result = restoreTemplateContent({
+      projectData: null,
+      html: "<main>plain page</main>",
+      css: "",
+      loadProjectData: vi.fn(),
+      setHtml: vi.fn(),
+      setCss,
+    });
+
+    expect(result).toBe(true);
+    expect(setCss).toHaveBeenCalledWith("");
+  });
+
   it("returns false if no usable project snapshot or HTML exists", () => {
     expect(
       restoreTemplateContent({
