@@ -32,7 +32,7 @@ export function restoreTemplateContent<T>({
 
   try {
     setHtml(html);
-    if (css && setCss) setCss(css);
+    if (setCss) setCss(css || "");
     return true;
   } catch {
     return false;
