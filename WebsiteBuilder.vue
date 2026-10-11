@@ -6486,7 +6486,9 @@ const updateEditorFromMessage = (tpl: any) => {
 
     if (projectData) {
       loadProjectData(projectData);
-    } else if (html) {
+    } else {
+      // An intentionally blank template is valid too. Always apply the HTML
+      // fallback so the previous page cannot remain visible when html is "".
       setEditorHtml(html);
     }
     // Apply empty values too: an empty field means "no saved asset", not
