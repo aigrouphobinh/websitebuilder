@@ -44,6 +44,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Tách chuẩn hóa từ khóa tìm kiếm thành `utils/element-search.ts` để có thể kiểm thử độc lập.
 - [x] Tách quyết định đồng bộ HTML đầu vào thành `utils/model-html-sync.ts` và nối vào watcher `v-model`.
 - [x] Tách khâu ghép HTML/CSS của `getHtmlWithCss()` thành `utils/html-with-css.ts`; HTML truyền vào được giữ nguyên, không xử lý lại placeholder trong helper.
+- [x] Escape giá trị thuộc tính HTML khi xuất `lang` và `href` stylesheet để giá trị nhập từ canvas không phá cấu trúc thẻ.
 - [x] Bổ sung `__tests__/element-search.test.ts` cho bỏ dấu tiếng Việt, chuẩn hóa chữ hoa/khoảng trắng, tìm chuỗi con và truy vấn rỗng.
 - [ ] Chạy test hiện có cho đăng ký 31 block và test tìm kiếm mới.
 - [x] Thêm unit tests cho quyết định `v-model`: HTML rỗng, HTML trùng canvas, echo từ parent và HTML mới từ parent.
@@ -61,7 +62,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 
 ### P3 — Kiểm thử trải nghiệm builder
 - [ ] Kéo-thả, chọn, di chuyển, duplicate và xóa block.
-- [ ] Kiểm tra preview và export HTML/CSS trong trình duyệt; đã có test đơn vị cho hàm ghép HTML/CSS.
+- [x] Bổ sung `utils/escape-html-attribute.ts` và test cho escaping dấu nháy, dấu `&`, `<`, `>` trong thuộc tính.
+- [ ] Kiểm tra preview và export HTML/CSS trong trình duyệt; các test helper hiện chưa được chạy.
 - [ ] Kiểm tra desktop/tablet/mobile và các block có form/accordion/carousel.
 - [ ] Kiểm tra console, thao tác bàn phím và trạng thái chưa lưu.
 
