@@ -5922,6 +5922,7 @@ import HelpDialog from "./dialogs/HelpDialog.vue";
 import { normalizeElementSearch } from "./utils/element-search";
 import { getIncomingHtmlAction } from "./utils/model-html-sync";
 import { composeHtmlWithCss } from "./utils/html-with-css";
+import { escapeHtmlAttribute } from "./utils/escape-html-attribute";
 import PageSeoDialog from "./dialogs/PageSeoDialog.vue";
 import { useEventPlaceholders } from "./composables/useEventPlaceholders";
 const { buildEventPlaceholderReplacements, replaceEventPlaceholders, replaceEventIdPlaceholder } = useEventPlaceholders();
@@ -15667,7 +15668,7 @@ function getHtmlWithCss() {
 
     const links = collectHeadLinks();
     const linkTags = links
-      .map((l) => `<link rel="stylesheet" href="${l.href}">`)
+      .map((l) => `<link rel="stylesheet" href="${escapeHtmlAttribute(l.href)}">`)
       .join("\n");
 
     const scOpen = "<scr" + "ipt";
@@ -15752,7 +15753,7 @@ async function getExportHtml(
       opts?.includeLinks === false
         ? ""
         : headLinks
-            .map((l) => `<link rel="stylesheet" href="${l.href}">`)
+            .map((l) => `<link rel="stylesheet" href="${escapeHtmlAttribute(l.href)}">`)
             .join("\n");
 
     const headBase = `<meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">`;
@@ -15815,7 +15816,7 @@ async function getExportHtml(
     const doc = editor?.Canvas.getDocument();
     const lang = doc?.documentElement?.getAttribute("lang") || "en";
 
-    return `<!doctype html><html lang="${lang}"><head>${head}</head><body>${html}${bodyScripts}</body></html>`;
+    return `<!doctype html><html lang="${escapeHtmlAttribute(lang)}"><head>${head}</head><body>${html}${bodyScripts}</body></html>`;
   } catch (e) {
     console.error("getExportHtml failed:", e);
     const fallbackHtml = editor ? editor.getHtml() : "";
