@@ -74,3 +74,10 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - Không xóa thư mục/file chỉ dựa trên nhận định “dead code” trong kế hoạch cũ; xác minh import/reference trước.
 - Không tạo dữ liệu giả cho event context; không thay placeholder động nếu chưa có context thật.
 - Mỗi lần cập nhật cần có commit riêng, ghi rõ thay đổi và nêu trung thực test nào đã chạy.
+
+
+## UI/UX nâng cấp (đợt tiếp theo)
+- [x] Thêm phản hồi trực tiếp khi tìm thành phần: hiển thị số kết quả hoặc hướng dẫn khi không tìm thấy; dùng live region để hỗ trợ trình đọc màn hình.
+- [x] Bổ sung nhãn truy cập và trạng thái ARIA cho nút mở thanh thành phần, trình đơn, kích thước xem trước và bảng thuộc tính.
+- [x] Tạo trạng thái focus rõ ràng và vùng tương tác thân thiện với thiết bị cảm ứng trong giao diện builder.
+- [ ] Kiểm tra thao tác bàn phím, độ tương phản, bố cục trên màn hình nhỏ và kiểm thử người dùng thực tế; chưa chạy build/test trong môi trường dự án.
