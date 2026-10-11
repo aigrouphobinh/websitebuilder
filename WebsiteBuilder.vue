@@ -6477,30 +6477,32 @@ const updateEditorFromMessage = (tpl: any) => {
   }
 
   try {
+    // Replacing a template must also replace its supporting assets. Otherwise
+    // stylesheets and scripts from the previously opened template can leak
+    // into the new canvas when the incoming template omits those fields.
+    clearImportedHeadAssets();
+    installedHeadScripts.value = headScripts;
+    installedBodyScripts.value = bodyScripts;
+
     if (projectData) {
       loadProjectData(projectData);
     } else if (html) {
       setEditorHtml(html);
     }
-    if (css) {
-      setCanvasImportCss(css);
-    }
-    if (headCss) {
-      injectSavedHeadCss(headCss);
-    }
-    if (headLinks.length > 0) {
-      injectSavedHeadLinks(headLinks);
-    }
-    if (runtimeCode) {
-      injectSavedRuntime(runtimeCode);
-    }
-    if (headScripts.length > 0) {
-      installSavedScripts(headScripts, "head");
-    }
-    if (bodyScripts.length > 0) {
-      installSavedScripts(bodyScripts, "body");
-    }
-  } catch {}
+    // Apply empty values too: an empty field means "no saved asset", not
+    // "keep the previous template's asset".
+    setCanvasImportCss(css);
+    if (headCss) injectSavedHeadCss(headCss);
+    if (headLinks.length > 0) injectSavedHeadLinks(headLinks);
+    if (runtimeCode) injectSavedRuntime(runtimeCode);
+    if (headScripts.length > 0) installSavedScripts(headScripts, "head");
+    if (bodyScripts.length > 0) installSavedScripts(bodyScripts, "body");
+  } catch (error) {
+    try {
+      console.error("[WebsiteBuilder] Không thể nạp template từ cửa sổ cha:", error);
+      showFeedback("Không thể nạp đầy đủ template. Vui lòng thử tải lại.", "error");
+    } catch {}
+  }
 };
 
 const updateEditorFromMessageDebounced = debounce(updateEditorFromMessage, 300);
