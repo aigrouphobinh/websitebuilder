@@ -7,7 +7,8 @@ Cập nhật: 2026-10-12
 ## 1. Trạng thái đã xác minh trong mã nguồn
 
 ### Đăng ký block
-- [x] 18 block nền tảng/event được import và gọi hàm đăng ký.
+- [x] 5 block core được import và gọi hàm đăng ký.
+- [x] 13 block event-specific được import và gọi hàm đăng ký.
 - [x] 13 block landing bổ sung được import và gọi hàm đăng ký.
 - [x] Test hiện có kiểm tra tổng số 31 block, ID, label, content và markup HTML cơ bản.
 - [ ] Chưa có kết quả xác nhận test/build thực tế trong môi trường chạy tại thời điểm cập nhật này.
@@ -15,13 +16,16 @@ Cập nhật: 2026-10-12
 
 ### Danh sách block hiện được đăng ký
 
-**Core/landing (13):**
-`landing-header`, `landing-hero`, `landing-features`, `landing-content-right`, `landing-footer`, `landing-testimonials`, `landing-content-left`, `landing-faq`, `landing-team`, `landing-contact`, `landing-partners`, `landing-speakers`, `landing-sponsors`, `landing-benefits`, `landing-audience`, `landing-topics`, `landing-stats`, `landing-gallery`.
+**Core (5):**
+`landing-header`, `landing-hero`, `landing-features`, `landing-content-right`, `landing-footer`.
+
+**Landing additions (13):**
+`landing-testimonials`, `landing-content-left`, `landing-faq`, `landing-team`, `landing-contact`, `landing-partners`, `landing-speakers`, `landing-sponsors`, `landing-benefits`, `landing-audience`, `landing-topics`, `landing-stats`, `landing-gallery`.
 
 **Event-specific (13):**
 `landing-event-hero`, `landing-event-speakers`, `landing-event-agenda`, `landing-event-pricing`, `landing-event-hero-countdown`, `landing-event-sponsors`, `landing-event-contact`, `landing-event-faq`, `landing-event-benefits`, `landing-event-audience`, `landing-event-topics`, `landing-event-stats`, `landing-event-gallery`.
 
-> Tổng số chính xác theo test và lời gọi đăng ký là 31: 18 core/event nền tảng + event-specific/landing theo cách nhóm trong source. Nhóm mô tả chỉ để dễ đọc; ID trong code mới là nguồn sự thật.
+> Tổng số chính xác theo test và lời gọi đăng ký là 31: 5 core + 13 landing additions + 13 event-specific. ID trong code là nguồn sự thật.
 
 ## 2. Đồng bộ v-model HTML
 
