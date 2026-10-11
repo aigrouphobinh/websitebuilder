@@ -84,4 +84,5 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Thêm phản hồi trực tiếp khi tìm thành phần: hiển thị số kết quả hoặc hướng dẫn khi không tìm thấy; dùng live region để hỗ trợ trình đọc màn hình.
 - [x] Bổ sung nhãn truy cập và trạng thái ARIA cho nút mở thanh thành phần, trình đơn, kích thước xem trước và bảng thuộc tính.
 - [x] Tạo trạng thái focus rõ ràng và vùng tương tác thân thiện với thiết bị cảm ứng trong giao diện builder.
+- [x] Bổ sung `aria-label` và `aria-busy` cho nút lưu/xuất bản để trạng thái đang lưu được công nghệ hỗ trợ nhận diện; thêm nhãn rõ ràng cho thao tác khôi phục trang chủ và lưu mẫu hệ thống.
 - [ ] Kiểm tra thao tác bàn phím, độ tương phản, bố cục trên màn hình nhỏ và kiểm thử người dùng thực tế; chưa chạy build/test trong môi trường dự án.
