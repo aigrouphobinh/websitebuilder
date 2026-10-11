@@ -45,13 +45,15 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Bổ sung `__tests__/element-search.test.ts` cho bỏ dấu tiếng Việt, chuẩn hóa chữ hoa/khoảng trắng, tìm chuỗi con và truy vấn rỗng.
 - [ ] Chạy test hiện có cho đăng ký 31 block và test tìm kiếm mới.
 - [ ] Thêm test cho các trường hợp v-model HTML rỗng, echo từ parent, parent thay HTML bên ngoài và save.
+- [x] Bổ sung `__tests__/event-placeholders.test.ts` cho thay token, giữ placeholder chưa biết, dữ liệu lồng nhau và chuỗi có ký tự JSON đặc biệt.
 - [ ] Xác minh nội dung HTML/CSS được giữ nguyên qua save/reload; tránh làm mất class, id, data-* hoặc placeholder động.
 - [ ] Chạy TypeScript/build nếu repository có scripts và môi trường phụ thuộc tương ứng.
 
 ### P2 — Kiểm tra tương thích key và event context
 - [ ] Xác định nguồn types/config thực tế đang được sử dụng trước khi tạo alias mới.
 - [ ] Đối chiếu key `event:*` với ID `landing-event-*` ở nơi tiêu thụ config; chỉ thêm alias nếu có caller thực sự yêu cầu.
-- [ ] Kiểm tra placeholder như `[ev_name]`, `[ev_location]`, `[ev_description]`, `[ev_order_url]`, `[company_name]` được giữ nguyên khi lưu và được thay thế đúng ở bước render phù hợp.
+- [x] Bổ sung test cho placeholder event: token đã biết được thay thế, token chưa biết được giữ nguyên.
+- [ ] Xác minh end-to-end placeholder như `[ev_name]`, `[ev_location]`, `[ev_description]`, `[ev_order_url]`, `[company_name]` được giữ nguyên khi lưu và được thay thế đúng ở bước render phù hợp.
 
 ### P3 — Kiểm thử trải nghiệm builder
 - [ ] Kéo-thả, chọn, di chuyển, duplicate và xóa block.
