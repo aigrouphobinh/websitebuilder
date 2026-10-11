@@ -5925,6 +5925,7 @@ import { composeHtmlWithCss } from "./utils/html-with-css";
 import { escapeHtmlAttribute } from "./utils/escape-html-attribute";
 import { composeExportBodyScripts } from "./utils/export-body-scripts";
 import { composeExportScriptTag } from "./utils/export-script-tag";
+import { restoreTemplateContent } from "./utils/restore-template-content";
 import PageSeoDialog from "./dialogs/PageSeoDialog.vue";
 import { useEventPlaceholders } from "./composables/useEventPlaceholders";
 const { buildEventPlaceholderReplacements, replaceEventPlaceholders, replaceEventIdPlaceholder } = useEventPlaceholders();
@@ -14744,15 +14745,17 @@ async function loadHomepageTemplate(): Promise<boolean> {
     // Clear existing assets first
     clearImportedHeadAssets();
 
-    // Priority: 1. projectData (GrapesJS format), 2. html (raw HTML)
-    if (gjs.projectData) {
-      editor.loadProjectData(gjs.projectData);
-    } else if (html) {
-      editor.setComponents(html);
-      setCanvasImportCss(css);
-    } else {
-      return false;
-    }
+    // Prefer the GrapesJS snapshot, but recover from saved HTML/CSS if it
+    // was produced by an incompatible editor version or cannot be restored.
+    const restored = restoreTemplateContent({
+      projectData: gjs.projectData,
+      html,
+      css,
+      loadProjectData: (data) => editor.loadProjectData(data),
+      setHtml: (value) => editor.setComponents(value),
+      setCss: (value) => setCanvasImportCss(value),
+    });
+    if (!restored) return false;
 
     // Inject additional assets if available
     if (headCss) injectSavedHeadCss(headCss);
@@ -17824,17 +17827,17 @@ async function loadCompanyTemplate() {
       // Clear existing assets first
       clearImportedHeadAssets();
 
-      // Priority: 1. projectData (GrapesJS format), 2. html (raw HTML)
-      if (gjs.projectData) {
-        editor.loadProjectData(gjs.projectData);
-      } else if (gjs.html) {
-        editor.setComponents(gjs.html);
-        if (gjs.css) {
-          editor.setStyle(gjs.css);
-        }
-      } else {
-        return false;
-      }
+      // Prefer the GrapesJS snapshot, but recover from saved HTML/CSS if
+      // the snapshot is malformed or incompatible with this editor version.
+      const restored = restoreTemplateContent({
+        projectData: gjs.projectData,
+        html: gjs.html,
+        css: gjs.css,
+        loadProjectData: (data) => editor.loadProjectData(data),
+        setHtml: (value) => editor.setComponents(value),
+        setCss: (value) => editor.setStyle(value),
+      });
+      if (!restored) return false;
 
       // Inject additional assets if available
       if (gjs.headCss) {
