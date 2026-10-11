@@ -66,7 +66,6 @@ export function useEventPlaceholders() {
     if (!content || !evt) return content;
 
     const replacements = buildEventPlaceholderReplacements(evt);
-    const replacements = buildEventPlaceholderReplacements(evt);
 
     // Match token-shaped text once. Inserted replacement values are not scanned
     // again, preventing accidental cascading substitutions.
