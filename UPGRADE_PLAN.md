@@ -41,7 +41,9 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 ## 3. Ưu tiên tiếp theo
 
 ### P1 — Xác minh và bổ sung regression tests
-- [ ] Chạy test hiện có cho đăng ký 31 block.
+- [x] Tách chuẩn hóa từ khóa tìm kiếm thành `utils/element-search.ts` để có thể kiểm thử độc lập.
+- [x] Bổ sung `__tests__/element-search.test.ts` cho bỏ dấu tiếng Việt, chuẩn hóa chữ hoa/khoảng trắng, tìm chuỗi con và truy vấn rỗng.
+- [ ] Chạy test hiện có cho đăng ký 31 block và test tìm kiếm mới.
 - [ ] Thêm test cho các trường hợp v-model HTML rỗng, echo từ parent, parent thay HTML bên ngoài và save.
 - [ ] Xác minh nội dung HTML/CSS được giữ nguyên qua save/reload; tránh làm mất class, id, data-* hoặc placeholder động.
 - [ ] Chạy TypeScript/build nếu repository có scripts và môi trường phụ thuộc tương ứng.
