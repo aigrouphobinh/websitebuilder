@@ -388,9 +388,18 @@
             type="text"
             placeholder="Tìm kiếm thành phần..."
             aria-label="Tìm kiếm thành phần"
+            @keydown.esc="elementQuery = ''"
           />
 
-          <IconSearch size="16" class="sb-search-icon" />
+          <button
+            v-if="elementQuery"
+            class="sb-search-clear"
+            type="button"
+            aria-label="Xóa tìm kiếm thành phần"
+            title="Xóa tìm kiếm"
+            @click="elementQuery = ''"
+          >×</button>
+          <IconSearch v-else size="16" class="sb-search-icon" />
         </div>
 
         <div v-show="sbActiveTab === 'elements'">
@@ -7899,10 +7908,18 @@ const selectedComponent = ref<Component | null>(null);
 const showTemplateList = ref(false);
 const templateQuery = ref("");
 const elementQuery = ref("");
+function normalizeElementSearch(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("vi")
+    .trim();
+}
 function matchElement(name: string | null | undefined) {
-  if (!elementQuery.value) return true;
+  const query = normalizeElementSearch(elementQuery.value);
+  if (!query) return true;
   if (!name) return false;
-  return String(name).toLowerCase().includes(elementQuery.value.toLowerCase());
+  return normalizeElementSearch(String(name)).includes(query);
 }
 
 const showGlobalStyle = ref(false);
@@ -19880,6 +19897,30 @@ function enableResizable(model: ResizableComponent | null) {
 .sb-search-icon {
   margin-left: auto;
   color: #9ca3af;
+  flex-shrink: 0;
+}
+.sb-search-clear {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7280;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.sb-search-clear:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+.sb-search-clear:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 .sb-group {
   display: flex;
