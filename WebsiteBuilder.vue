@@ -5923,6 +5923,7 @@ import { normalizeElementSearch } from "./utils/element-search";
 import { getIncomingHtmlAction } from "./utils/model-html-sync";
 import { composeHtmlWithCss } from "./utils/html-with-css";
 import { escapeHtmlAttribute } from "./utils/escape-html-attribute";
+import { composeExportBodyScripts } from "./utils/export-body-scripts";
 import PageSeoDialog from "./dialogs/PageSeoDialog.vue";
 import { useEventPlaceholders } from "./composables/useEventPlaceholders";
 const { buildEventPlaceholderReplacements, replaceEventPlaceholders, replaceEventIdPlaceholder } = useEventPlaceholders();
@@ -15681,10 +15682,10 @@ function getHtmlWithCss() {
       async?: boolean;
       defer?: boolean;
     }) => {
-      const t = s.type ? ` type="${s.type}"` : "";
+      const t = s.type ? ` type="${escapeHtmlAttribute(s.type)}"` : "";
       const a = s.async ? " async" : "";
       const d = s.defer ? " defer" : "";
-      if (s.src) return `${scOpen} src="${s.src}"${t}${a}${d}>${scClose}`;
+      if (s.src) return `${scOpen} src="${escapeHtmlAttribute(s.src)}"${t}${a}${d}>${scClose}`;
       return `${scOpen}${t}>${s.code || ""}${scClose}`;
     };
 
@@ -15763,8 +15764,8 @@ async function getExportHtml(
     const scClose = "</scr" + "ipt>";
 
     const genScript = (s: { src?: string; type?: string; code?: string }) => {
-      const t = s.type ? ` type="${s.type}"` : "";
-      if (s.src) return `${scOpen} src="${s.src}"${t}>${scClose}`;
+      const t = s.type ? ` type="${escapeHtmlAttribute(s.type)}"` : "";
+      if (s.src) return `${scOpen} src="${escapeHtmlAttribute(s.src)}"${t}>${scClose}`;
       return `${scOpen}${t}>${s.code || ""}${scClose}`;
     };
 
@@ -15775,12 +15776,12 @@ async function getExportHtml(
     const mobileToggleScript = `${scOpen}>(function(){document.addEventListener('click',function(e){var t=e.target.closest('.wb-mobile-toggle');if(t){var c=t.closest('.wb-header-container');if(c)c.classList.toggle('is-open');}});})();${scClose}`;
     const anchorScrollScript = `${scOpen}>(function(){document.addEventListener('click',function(e){var a=e.target.closest('a[href^=\"#\"]');if(!a)return;var href=a.getAttribute('href')||'';if(!href||href==='#')return;var id=href.slice(1);var t=document.getElementById(id)||document.querySelector('[name=\"'+id+'\"]');if(t){e.preventDefault();try{t.scrollIntoView({behavior:'smooth',block:'start'});}catch(_){t.scrollIntoView(true);}var c=a.closest('.wb-header-container');if(c&&c.classList.contains('is-open'))c.classList.remove('is-open');}});})();${scClose}`;
 
-    const bodyScripts =
-      (opts?.includeScripts === false
-        ? ""
-        : installedBodyScripts.value.map(genScript).join("\n")) +
-      mobileToggleScript +
-      anchorScrollScript;
+    const bodyScripts = composeExportBodyScripts({
+      includeScripts: opts?.includeScripts !== false,
+      installedScripts: installedBodyScripts.value.map(genScript).join("\n"),
+      mobileToggleScript,
+      anchorScrollScript,
+    });
 
     let baseUrl = "";
     try {
@@ -15797,7 +15798,7 @@ async function getExportHtml(
     const popupScript =
       opts?.includeScripts === false
         ? ""
-        : `${scOpen} src="${baseUrl}/ticketing/popup.js?v=${Date.now()}">${scClose}\n${scOpen} src="${baseUrl}/ticketing/render-tickets.js?v=${Date.now()}">${scClose}`;
+        : `${scOpen} src="${escapeHtmlAttribute(baseUrl)}/ticketing/popup.js?v=${Date.now()}">${scClose}\n${scOpen} src="${escapeHtmlAttribute(baseUrl)}/ticketing/render-tickets.js?v=${Date.now()}">${scClose}`;
 
     let cssOutput = "";
     if (css && css.trim()) {
@@ -15805,7 +15806,7 @@ async function getExportHtml(
         cssOutput = `<style>${css}</style>`;
       } else {
         const uploadedCssUrl = await wbUploadCss(css);
-        cssOutput = `<link rel="stylesheet" href="${uploadedCssUrl}">`;
+        cssOutput = `<link rel="stylesheet" href="${escapeHtmlAttribute(uploadedCssUrl)}">`;
       }
     }
 
