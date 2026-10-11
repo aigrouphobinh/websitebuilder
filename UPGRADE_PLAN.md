@@ -42,9 +42,11 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 
 ### P1 — Xác minh và bổ sung regression tests
 - [x] Tách chuẩn hóa từ khóa tìm kiếm thành `utils/element-search.ts` để có thể kiểm thử độc lập.
+- [x] Tách quyết định đồng bộ HTML đầu vào thành `utils/model-html-sync.ts` và nối vào watcher `v-model`.
 - [x] Bổ sung `__tests__/element-search.test.ts` cho bỏ dấu tiếng Việt, chuẩn hóa chữ hoa/khoảng trắng, tìm chuỗi con và truy vấn rỗng.
 - [ ] Chạy test hiện có cho đăng ký 31 block và test tìm kiếm mới.
-- [ ] Thêm test cho các trường hợp v-model HTML rỗng, echo từ parent, parent thay HTML bên ngoài và save.
+- [x] Thêm unit tests cho quyết định `v-model`: HTML rỗng, HTML trùng canvas, echo từ parent và HTML mới từ parent.
+- [ ] Kiểm thử tích hợp luồng save/reload thực tế trong môi trường Vue + GrapesJS.
 - [x] Bổ sung `__tests__/event-placeholders.test.ts` cho thay token, giữ placeholder chưa biết, dữ liệu lồng nhau và chuỗi có ký tự JSON đặc biệt.
 - [ ] Xác minh nội dung HTML/CSS được giữ nguyên qua save/reload; tránh làm mất class, id, data-* hoặc placeholder động.
 - [ ] Chạy TypeScript/build nếu repository có scripts và môi trường phụ thuộc tương ứng.
