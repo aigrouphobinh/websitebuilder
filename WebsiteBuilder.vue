@@ -5919,6 +5919,7 @@
 
 <script setup lang="ts">
 import HelpDialog from "./dialogs/HelpDialog.vue";
+import { normalizeElementSearch } from "./utils/element-search";
 import PageSeoDialog from "./dialogs/PageSeoDialog.vue";
 import { useEventPlaceholders } from "./composables/useEventPlaceholders";
 const { buildEventPlaceholderReplacements, replaceEventPlaceholders, replaceEventIdPlaceholder } = useEventPlaceholders();
@@ -7908,13 +7909,6 @@ const selectedComponent = ref<Component | null>(null);
 const showTemplateList = ref(false);
 const templateQuery = ref("");
 const elementQuery = ref("");
-function normalizeElementSearch(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("vi")
-    .trim();
-}
 function matchElement(name: string | null | undefined) {
   const query = normalizeElementSearch(elementQuery.value);
   if (!query) return true;
