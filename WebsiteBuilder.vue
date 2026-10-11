@@ -306,6 +306,7 @@
           type="button"
           :disabled="isSaving"
           title="Khôi phục bản gốc"
+          aria-label="Khôi phục bản gốc trang chủ"
           @click="resetHomepageTemplate"
         >
           <IconHistory size="16" />
@@ -317,6 +318,8 @@
           class="tb-link primary-action"
           type="button"
           :title="isSaving ? 'Đang lưu...' : 'Lưu & Xuất bản Homepage'"
+          :aria-label="isSaving ? 'Đang lưu trang chủ' : 'Lưu và xuất bản trang chủ'"
+          :aria-busy="isSaving"
           :disabled="isSaving"
           @click="saveHomepageTemplate"
         >
@@ -332,6 +335,7 @@
           class="tb-link primary-action"
           type="button"
           title="Lưu làm Mẫu Hệ thống"
+          aria-label="Lưu mẫu hệ thống"
           @click="openSaveSuperDialog"
         >
           <IconTemplate size="16" />
@@ -343,6 +347,8 @@
           class="tb-link primary-action"
           type="button"
           :title="isSaving ? 'Đang lưu...' : 'Lưu & Xuất bản'"
+          :aria-label="isSaving ? 'Đang lưu website' : 'Lưu và xuất bản website'"
+          :aria-busy="isSaving"
           :disabled="isSaving"
           @click="saveCompanyTemplate"
         >
