@@ -64,7 +64,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Kéo-thả, chọn, di chuyển, duplicate và xóa block.
 - [x] Bổ sung `utils/escape-html-attribute.ts` và test cho escaping dấu nháy, dấu `&`, `<`, `>` trong thuộc tính.
 - [x] Sửa `getExportHtml()` để `includeScripts: false` không còn xuất các script tương tác nội bộ ở body; thêm test bao phủ chế độ tắt script.
-- [ ] Kiểm tra preview và export HTML/CSS trong trình duyệt; các test helper hiện chưa được chạy. `includeRuntime` vẫn là tùy chọn độc lập với `includeScripts`.
+- [x] Chuẩn hóa sinh thẻ script qua `utils/export-script-tag.ts`, escape `src`/`type` và giữ lại thuộc tính `async`/`defer` nhất quán giữa HTML lưu và HTML export.
+- [ ] Kiểm tra preview và export HTML/CSS trong trình duyệt; các test helper hiện chưa được chạy. Cần xác nhận thứ tự thực thi script thực tế trên trình duyệt sau khi giữ nguyên `async`/`defer`. `includeRuntime` vẫn là tùy chọn độc lập với `includeScripts`.
 - [ ] Kiểm tra desktop/tablet/mobile và các block có form/accordion/carousel.
 - [ ] Kiểm tra console, thao tác bàn phím và trạng thái chưa lưu.
 
