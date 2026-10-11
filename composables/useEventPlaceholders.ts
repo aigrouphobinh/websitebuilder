@@ -84,10 +84,24 @@ export function useEventPlaceholders() {
     }
 
     if (typeof content === "object") {
+      // Replace values recursively instead of serializing the whole object to JSON.
+      // This keeps replacement text containing quotes, backslashes, or newlines valid.
+      const replaceValue = (value: any): any => {
+        if (typeof value === "string") return replaceText(value);
+        if (Array.isArray(value)) return value.map(replaceValue);
+        if (value && typeof value === "object") {
+          return Object.fromEntries(
+            Object.entries(value).map(([key, nested]) => [
+              replaceText(key),
+              replaceValue(nested),
+            ]),
+          );
+        }
+        return value;
+      };
+
       try {
-        let jsonStr = JSON.stringify(content);
-        jsonStr = replaceText(jsonStr);
-        return JSON.parse(jsonStr);
+        return replaceValue(content);
       } catch {
         return content;
       }
