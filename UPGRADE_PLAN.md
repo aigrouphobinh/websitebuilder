@@ -48,7 +48,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Bổ sung `__tests__/element-search.test.ts` cho bỏ dấu tiếng Việt, chuẩn hóa chữ hoa/khoảng trắng, tìm chuỗi con và truy vấn rỗng.
 - [ ] Chạy test hiện có cho đăng ký 31 block và test tìm kiếm mới.
 - [x] Thêm unit tests cho quyết định `v-model`: HTML rỗng, HTML trùng canvas, echo từ parent và HTML mới từ parent.
-- [ ] Kiểm thử tích hợp luồng save/reload thực tế trong môi trường Vue + GrapesJS.
+- [x] Thêm `utils/restore-template-content.ts`: ưu tiên `projectData`, fallback sang HTML/CSS đã lưu nếu snapshot không tương thích hoặc không tải được.
+- [ ] Kiểm thử tích hợp luồng save/reload thực tế trong môi trường Vue + GrapesJS; helper fallback mới có unit tests nhưng chưa được chạy.
 - [x] Bổ sung `__tests__/event-placeholders.test.ts` cho thay token, giữ placeholder chưa biết, dữ liệu lồng nhau, chuỗi có ký tự JSON đặc biệt và ngăn thay thế dây chuyền.
 - [x] Bổ sung `__tests__/html-with-css.test.ts` để kiểm tra khâu ghép CSS, giữ `class`, `id`, `data-*` và placeholder động.
 - [ ] Xác minh nội dung HTML/CSS được giữ nguyên qua save/reload thực tế trong Vue + GrapesJS; test helper chưa thay thế kiểm thử tích hợp.
