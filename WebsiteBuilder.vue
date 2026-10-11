@@ -14598,6 +14598,7 @@ async function saveCompanyTemplate() {
       }
     }
 
+    let saveVerificationMismatch = false;
     try {
       const fetched = await websiteTemplateService.getCompanyTemplate();
       const fj = fetched?.gjs || {};
@@ -14613,7 +14614,10 @@ async function saveCompanyTemplate() {
         JSON.stringify(fj.headLinks || []) ===
         JSON.stringify(gjs.headLinks || []);
       if (!(okHtml && okCss && okHeadCss && okScripts && okLinks)) {
-        toast.info("Đã lưu: phát hiện khác biệt giữa client và API.");
+        saveVerificationMismatch = true;
+        toast.warning(
+          "Đã gửi dữ liệu lưu nhưng bản đọc lại chưa khớp hoàn toàn. Vui lòng tải lại để kiểm tra.",
+        );
         console.info("WB Save diff:", {
           okHtml,
           okCss,
@@ -14623,9 +14627,11 @@ async function saveCompanyTemplate() {
         });
       }
     } catch {}
-    try {
-      toast.success("Đã lưu website");
-    } catch {}
+    if (!saveVerificationMismatch) {
+      try {
+        toast.success("Đã lưu website");
+      } catch {}
+    }
   } catch (e) {
     try {
       toast.error("Lỗi khi lưu website");
