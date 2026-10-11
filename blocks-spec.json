@@ -1,0 +1,579 @@
+{
+  "version": "1.0.0",
+  "blocks": [
+    {
+      "id": "base:container",
+      "tags": [
+        "div",
+        "section",
+        "article",
+        "main",
+        "aside"
+      ],
+      "defaults": {
+        "style": {
+          "display": "block",
+          "margin": "8px 0",
+          "padding": "16px",
+          "background": "#ffffff",
+          "border": "1px solid #e5e7eb",
+          "box-shadow": "0 1px 3px rgba(0,0,0,0.06)",
+          "position": "static"
+        }
+      },
+      "cssProps": {
+        "layout": [
+          "position",
+          "display",
+          "float",
+          "flex",
+          "grid"
+        ],
+        "boxModel": [
+          "width",
+          "height",
+          "margin",
+          "padding",
+          "border"
+        ],
+        "visual": [
+          "color",
+          "background",
+          "box-shadow",
+          "opacity"
+        ],
+        "layer": [
+          "z-index",
+          "overflow"
+        ]
+      },
+      "dom": {
+        "children": [
+          "*"
+        ],
+        "nesting": {
+          "allowed": true
+        },
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "events": {
+        "mouse": [
+          "click",
+          "mouseenter",
+          "mouseleave",
+          "drag"
+        ],
+        "keyboard": [
+          "keydown",
+          "keyup"
+        ],
+        "form": []
+      },
+      "effects": {
+        "transition": {
+          "properties": [
+            "all"
+          ],
+          "duration": 200,
+          "easing": "ease"
+        },
+        "animation": {
+          "keyframes": [],
+          "iteration": 1
+        },
+        "transform": [
+          "scale",
+          "rotate",
+          "translate"
+        ]
+      },
+      "render": {
+        "mapping": {
+          "display": "style.display",
+          "position": "style.position",
+          "width": "style.width",
+          "height": "style.height",
+          "margin": "style.margin",
+          "padding": "style.padding",
+          "border": "style.border",
+          "background": "style.background",
+          "box-shadow": "style.box-shadow",
+          "opacity": "style.opacity",
+          "z-index": "style.z-index",
+          "overflow": "style.overflow"
+        },
+        "accuracy": [
+          "matchLayout",
+          "relativePosition"
+        ],
+        "interactive": [
+          "events"
+        ],
+        "performance": [
+          "raf",
+          "cache",
+          "avoidReflow"
+        ]
+      }
+    },
+    {
+      "id": "base:heading",
+      "tags": [
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6"
+      ],
+      "defaults": {
+        "style": {
+          "font-size": "24px",
+          "font-weight": "700",
+          "line-height": "1.2",
+          "color": "#111827",
+          "margin": "0 0 16px 0"
+        }
+      },
+      "cssProps": {
+        "typography": [
+          "font-size",
+          "font-weight",
+          "line-height",
+          "color",
+          "font-family"
+        ],
+        "layout": [
+          "text-align",
+          "margin",
+          "padding"
+        ],
+        "visual": [
+          "text-shadow",
+          "text-decoration"
+        ]
+      },
+      "dom": {
+        "children": [
+          "*"
+        ],
+        "nesting": {
+          "allowed": false
+        },
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "events": {
+        "mouse": [
+          "click"
+        ],
+        "keyboard": [
+          "keydown"
+        ]
+      },
+      "effects": {
+        "transition": {
+          "properties": [
+            "color",
+            "font-size"
+          ],
+          "duration": 200,
+          "easing": "ease"
+        }
+      },
+      "render": {
+        "mapping": {
+          "font-size": "style.font-size",
+          "font-weight": "style.font-weight",
+          "color": "style.color",
+          "text-align": "style.text-align",
+          "margin": "style.margin"
+        }
+      }
+    },
+    {
+      "id": "base:paragraph",
+      "tags": [
+        "p"
+      ],
+      "defaults": {
+        "style": {
+          "font-size": "16px",
+          "line-height": "1.5",
+          "color": "#4b5563",
+          "margin": "0 0 16px 0"
+        }
+      },
+      "cssProps": {
+        "typography": [
+          "font-size",
+          "line-height",
+          "color",
+          "font-family"
+        ],
+        "layout": [
+          "text-align",
+          "margin",
+          "padding"
+        ]
+      },
+      "dom": {
+        "children": [
+          "*"
+        ],
+        "nesting": {
+          "allowed": false
+        },
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "events": {
+        "mouse": [
+          "click"
+        ]
+      },
+      "render": {
+        "mapping": {
+          "font-size": "style.font-size",
+          "color": "style.color",
+          "text-align": "style.text-align",
+          "margin": "style.margin"
+        }
+      }
+    },
+    {
+      "id": "base:image",
+      "tags": [
+        "img"
+      ],
+      "defaults": {
+        "style": {
+          "width": "100%",
+          "height": "auto",
+          "object-fit": "cover",
+          "border-radius": "8px"
+        }
+      },
+      "cssProps": {
+        "layout": [
+          "width",
+          "height",
+          "object-fit"
+        ],
+        "visual": [
+          "border-radius",
+          "box-shadow"
+        ],
+        "effects": [
+          "filter"
+        ]
+      },
+      "dom": {
+        "attributes": [
+          "src",
+          "alt"
+        ],
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "events": {
+        "mouse": [
+          "click",
+          "load",
+          "error"
+        ]
+      },
+      "render": {
+        "mapping": {
+          "src": "attributes.src",
+          "alt": "attributes.alt",
+          "width": "style.width",
+          "height": "style.height",
+          "object-fit": "style.object-fit",
+          "border-radius": "style.border-radius"
+        }
+      }
+    },
+    {
+      "id": "base:video",
+      "tags": [
+        "video"
+      ],
+      "defaults": {
+        "style": {
+          "width": "100%",
+          "height": "auto",
+          "aspect-ratio": "16/9"
+        }
+      },
+      "cssProps": {
+        "layout": [
+          "width",
+          "height",
+          "aspect-ratio"
+        ],
+        "controls": [
+          "controls",
+          "autoplay",
+          "loop"
+        ]
+      },
+      "dom": {
+        "attributes": [
+          "src",
+          "poster"
+        ],
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "events": {
+        "media": [
+          "play",
+          "pause",
+          "ended"
+        ]
+      },
+      "render": {
+        "mapping": {
+          "src": "attributes.src",
+          "poster": "attributes.poster",
+          "width": "style.width",
+          "height": "style.height",
+          "aspect-ratio": "style.aspect-ratio"
+        }
+      }
+    },
+    {
+      "id": "base:grid",
+      "tags": [
+        "div"
+      ],
+      "defaults": {
+        "style": {
+          "display": "grid",
+          "grid-template-columns": "repeat(3, 1fr)",
+          "gap": "16px",
+          "align-items": "start"
+        }
+      },
+      "cssProps": {
+        "layout": [
+          "display",
+          "grid-template-columns",
+          "grid-template-rows",
+          "gap",
+          "align-items",
+          "justify-items"
+        ],
+        "responsive": [
+          "breakpoints"
+        ]
+      },
+      "dom": {
+        "children": [
+          "*"
+        ],
+        "nesting": {
+          "allowed": true
+        },
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "render": {
+        "mapping": {
+          "display": "style.display",
+          "grid-template-columns": "style.grid-template-columns",
+          "gap": "style.gap",
+          "align-items": "style.align-items"
+        }
+      }
+    },
+    {
+      "id": "base:button",
+      "tags": [
+        "a",
+        "button"
+      ],
+      "defaults": {
+        "style": {
+          "padding": "12px 24px",
+          "background-color": "#2563eb",
+          "color": "#ffffff",
+          "border-radius": "6px",
+          "font-weight": "600",
+          "text-decoration": "none",
+          "display": "inline-block"
+        }
+      },
+      "cssProps": {
+        "layout": [
+          "padding",
+          "display"
+        ],
+        "visual": [
+          "background-color",
+          "color",
+          "border-radius",
+          "box-shadow"
+        ],
+        "typography": [
+          "font-weight",
+          "text-decoration"
+        ],
+        "states": [
+          "hover",
+          "active"
+        ]
+      },
+      "dom": {
+        "attributes": [
+          "href",
+          "target"
+        ],
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "events": {
+        "mouse": [
+          "click"
+        ]
+      },
+      "render": {
+        "mapping": {
+          "href": "attributes.href",
+          "target": "attributes.target",
+          "padding": "style.padding",
+          "background-color": "style.background-color",
+          "color": "style.color",
+          "border-radius": "style.border-radius"
+        }
+      }
+    },
+    {
+      "id": "base:divider",
+      "tags": [
+        "hr"
+      ],
+      "defaults": {
+        "style": {
+          "width": "100%",
+          "height": "1px",
+          "background": "#e5e7eb",
+          "margin": "24px 0",
+          "border-style": "none"
+        }
+      },
+      "cssProps": {
+        "layout": [
+          "width",
+          "height",
+          "margin"
+        ],
+        "visual": [
+          "background"
+        ]
+      },
+      "dom": {
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "render": {
+        "mapping": {
+          "width": "style.width",
+          "height": "style.height",
+          "background": "style.background",
+          "margin": "style.margin"
+        }
+      }
+    },
+    {
+      "id": "base:spacer",
+      "tags": [
+        "div"
+      ],
+      "defaults": {
+        "style": {
+          "height": "32px"
+        }
+      },
+      "cssProps": {
+        "layout": [
+          "height"
+        ]
+      },
+      "dom": {
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "render": {
+        "mapping": {
+          "height": "style.height"
+        }
+      }
+    },
+    {
+      "id": "base:html",
+      "tags": [
+        "div",
+        "code"
+      ],
+      "defaults": {
+        "style": {
+          "padding": "16px",
+          "background-color": "#f3f4f6",
+          "border-radius": "6px",
+          "font-family": "monospace"
+        }
+      },
+      "cssProps": {
+        "layout": [
+          "padding"
+        ],
+        "visual": [
+          "background-color",
+          "border-radius"
+        ],
+        "typography": [
+          "font-family"
+        ]
+      },
+      "dom": {
+        "dataAttributes": [
+          "data-*"
+        ]
+      },
+      "render": {
+        "mapping": {
+          "padding": "style.padding",
+          "background-color": "style.background-color",
+          "border-radius": "style.border-radius",
+          "font-family": "style.font-family"
+        }
+      }
+    }
+  ],
+  "docs": {
+    "container": "Block vùng chứa dùng để nhóm nội dung. Áp dụng padding/margin mặc định, phù hợp mobile-first. Dùng để phân chia section.",
+    "table": "Block bảng cơ bản, sử dụng border-collapse và full width. Dùng thead/tbody để phân chia dữ liệu.",
+    "form": "Block form với các thành phần input/select/textarea/button. Hỗ trợ sự kiện input/change/submit.",
+    "media": "Block đa phương tiện tổng quát. Dùng cho hình/video/iframe, mặc định responsive.",
+    "text": "Block văn bản tổng quát cho heading, paragraph, inline text.",
+    "grid": "Thiết lập lưới 1 cột cho mobile; có thể chỉnh số cột theo thiết bị lớn hơn.",
+    "spacing": "Khoảng trống dọc tái sử dụng, giúp tạo nhịp spacing giữa block.",
+    "heading": "Heading h1–h6, mặc định h1 24px/700. Dùng cho tiêu đề phân cấp.",
+    "paragraph": "Đoạn văn chuẩn 16px, line-height 1.7, dễ đọc trên mobile.",
+    "image": "Ảnh responsive max-width:100%, height:auto. Dùng cho media tĩnh.",
+    "video": "Video player width:100%, bật controls. Dùng cho nội dung động.",
+    "html": "Mã HTML tùy chỉnh."
+  }
+}
