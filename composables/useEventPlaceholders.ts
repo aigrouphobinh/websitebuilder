@@ -68,7 +68,11 @@ export function useEventPlaceholders() {
     const replacements = buildEventPlaceholderReplacements(evt);
     const tokens = Object.keys(replacements);
 
-    const replaceText = (text: string): string => {
+    // Match tokens only in the original text. Inserted replacement values are
+    // not scanned again, preventing accidental cascading substitutions.
+    const tokenPattern = new RegExp(
+      tokens
+        .map((token) => token.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\    const replaceText = (text: string): string => {
       let result = text;
       for (const token of tokens) {
         const value = replacements[token];
@@ -77,7 +81,15 @@ export function useEventPlaceholders() {
         }
       }
       return result;
-    };
+    };"))
+        .join("|"),
+      "g",
+    );
+    const replaceText = (text: string): string =>
+      text.replace(tokenPattern, (token) => {
+        const value = replacements[token];
+        return value === undefined || value === null ? token : String(value);
+      });
 
     if (typeof content === "string") {
       return replaceText(content);
