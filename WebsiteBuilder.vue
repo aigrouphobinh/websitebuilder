@@ -5921,6 +5921,7 @@
 import HelpDialog from "./dialogs/HelpDialog.vue";
 import { normalizeElementSearch } from "./utils/element-search";
 import { getIncomingHtmlAction } from "./utils/model-html-sync";
+import { composeHtmlWithCss } from "./utils/html-with-css";
 import PageSeoDialog from "./dialogs/PageSeoDialog.vue";
 import { useEventPlaceholders } from "./composables/useEventPlaceholders";
 const { buildEventPlaceholderReplacements, replaceEventPlaceholders, replaceEventIdPlaceholder } = useEventPlaceholders();
@@ -15696,10 +15697,12 @@ function getHtmlWithCss() {
       .filter(Boolean)
       .join("\n");
 
-    if (!css || !css.trim()) {
-      return `${combinedHead}\n${html}\n${bodyScripts}`;
-    }
-    return `${combinedHead}\n<style>${css}</style>\n${html}\n${bodyScripts}`;
+    return composeHtmlWithCss({
+      head: combinedHead,
+      css,
+      html,
+      bodyScripts,
+    });
   } catch {
     return editor ? editor.getHtml() : "";
   }
