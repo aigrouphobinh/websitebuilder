@@ -14252,6 +14252,7 @@ function _save() {
     page: selectedPage.value,
     seo: getSeoMeta(),
   };
+  lastEmittedHtml.value = payload.html;
   emit("update:modelValue", payload.html);
   emit("save", payload);
   if (
@@ -19399,15 +19400,26 @@ watch(
 watch(
   () => componentProps.modelValue,
   (val) => {
-    if (!editor) return;
-    if (typeof val === "string" && val) {
-      if (val === lastEmittedHtml.value) return;
-      const cur = editor.getHtml();
-      if (val !== cur) {
-        editor.setComponents(val);
-        lastEmittedHtml.value = val;
+    if (!editor || typeof val !== "string") return;
+
+    const currentHtml = editor.getHtml() || "";
+
+    // An empty v-model value is an explicit request to clear the canvas.
+    // Handle it before the echo guard: the editor may contain a starter
+    // template even when the last value emitted to the parent was empty.
+    if (val === "") {
+      if (currentHtml !== "") {
+        editor.setComponents("");
       }
+      lastEmittedHtml.value = "";
+      return;
     }
+
+    // Ignore unchanged values, including the parent's echo of our own update.
+    if (val === currentHtml || val === lastEmittedHtml.value) return;
+
+    editor.setComponents(val);
+    lastEmittedHtml.value = val;
   },
 );
 
