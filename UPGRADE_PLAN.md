@@ -93,4 +93,6 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Phân biệt trường hợp API đọc lại sau lưu bị lỗi: cảnh báo chưa xác minh được dữ liệu thay vì âm thầm hiển thị thông báo lưu thành công.
 - [x] Làm gọn phần đầu cột thuộc tính: tiêu đề và hướng dẫn theo ngữ cảnh, ô tìm kiếm toàn chiều rộng, nút xóa tìm kiếm và trạng thái focus dễ nhận biết.
 - [x] Cải thiện bảng thuộc tính bên phải: nhóm tab rõ ràng hơn, biểu tượng và trạng thái tab được chọn cho trình đọc màn hình, trường nhập dễ đọc và vùng chạm thoải mái hơn.
+- [x] Tìm cài đặt trong cột phải không phân biệt dấu tiếng Việt (ví dụ `khoang cach` tìm được `Khoảng cách`); giữ nguyên cơ chế lọc thuộc tính hiện có.
+- [ ] Xác minh thủ công tìm kiếm có dấu/không dấu trên từng tab và kiểm tra không có nhóm cài đặt bị ẩn ngoài ý muốn.
 - [ ] Kiểm tra thao tác bàn phím, độ tương phản, bố cục trên màn hình nhỏ và kiểm thử người dùng thực tế; chưa chạy build/test trong môi trường dự án.
