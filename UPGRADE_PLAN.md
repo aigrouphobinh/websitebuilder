@@ -169,6 +169,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Loại bỏ nhóm sự kiện bị lặp khỏi tab Kiểu dáng sau khi chuyển sang tab Tương tác; bỏ state chỉ phục vụ nhóm lặp.
 - [x] Chỉ hiển thị lối tắt “Mở cài đặt liên kết” khi phần tử được chọn thực sự là nút/liên kết, giúp người dùng chuyển thẳng đến thuộc tính URL đang có.
 - [x] Mở rộng tìm kiếm có dấu/không dấu cho các nhóm thuộc tính Cài đặt: nâng cao, ảnh, video, nút/liên kết, HTML, navbar, hero, ảnh nền, slider, gallery, accordion và form; bổ sung từ đồng nghĩa dựa trên nhãn trường có thật.
+- [x] Lọc các nhóm Kiểu dáng theo từ khóa, tự mở phần trùng khớp khi đang tìm, ẩn thẻ nhóm trống và hiển thị hướng dẫn khi không có kết quả.
+- [x] Bổ sung trạng thái không có kết quả cho Cài đặt/Tương tác; dùng lại `normalizeElementSearch` đã kiểm thử để thống nhất xử lý dấu tiếng Việt và nhiều khoảng trắng.
 - [ ] Kiểm tra tìm kiếm thực tế trên từng tab và xác minh không có nhóm thuộc tính bị lọc mất ngoài ý muốn.
 - [ ] Kiểm tra mọi nhóm thuộc tính trong ba tab và xác minh không bị CSS cắt/che.
 - [ ] Ưu tiên thao tác thường dùng; gom nhóm nâng cao dưới nhóm có tên rõ ràng.
@@ -209,6 +211,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — P7: vòng rà soát tiếp theo xác nhận nhóm sự kiện còn bị lặp giữa Kiểu dáng và Tương tác sau thay đổi trước; đã bỏ bản lặp khỏi Kiểu dáng, gỡ state không còn caller và thêm nút chuyển tới Cài đặt liên kết chỉ khi chọn đúng loại phần tử. Chỉ kiểm tra tĩnh; build/test/trình duyệt vẫn chưa chạy.
 
 - 2026-10-12 — P7: mở rộng bộ từ khóa tìm kiếm cho 12 nhóm Cài đặt để truy vấn như “alt”, “URL ảnh”, “tốc độ”, “khoảng cách”, “hero” có thể lọc đúng nhóm tương ứng. Đã xác minh tĩnh cấu trúc HTML/Vue có 2.519 tag trong template, không còn thẻ lệch; test/build/trình duyệt vẫn chưa chạy.
+
+- 2026-10-12 — P7: hoàn thiện lọc tìm kiếm trên ba tab; Kiểu dáng lọc các mục layout/spacing/sizing/grid/background/border/position/effects và mở nhóm phù hợp trong lúc tìm. Cài đặt/Tương tác có thông báo khi không khớp. Sidebar dùng chung `normalizeElementSearch` và không còn normalizer trùng lặp. Đã kiểm tra cấu trúc template tĩnh; vẫn cần chạy Vue compile/test và xác minh bằng trình duyệt khi có host project.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
