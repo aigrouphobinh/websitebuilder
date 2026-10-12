@@ -11,6 +11,11 @@ describe("normalizeElementSearch", () => {
     expect(normalizeElementSearch("  NÚT Mua Vé  ")).toBe("nut mua ve");
   });
 
+  it("normalizes Vietnamese d-stroke characters", () => {
+    expect(normalizeElementSearch("Đăng ký")).toBe("dang ky");
+    expect(normalizeElementSearch("địa điểm")).toBe("dia diem");
+  });
+
   it("supports substring matching after normalization", () => {
     const label = normalizeElementSearch("Phần đầu trang Hero");
     const query = normalizeElementSearch("phan dau");
