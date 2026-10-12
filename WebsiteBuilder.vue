@@ -2659,7 +2659,10 @@
             </div>
           </div>
           <div v-if="rightTab === 'settings'" class="settings-section">
-            <div v-if="isSuperAdminPerm" class="setting-group">
+            <div
+              v-if="isSuperAdminPerm && matchesSearch('Advanced', 'Nâng cao', 'ID Element', 'CSS Classes', 'Breakpoint', 'Điểm ngắt')"
+              class="setting-group"
+            >
               <div class="group-header">
                 <span>Nâng cao (Advanced)</span>
               </div>
@@ -2705,7 +2708,8 @@
 
             <div
               v-if="
-                isImageComponent(selectedComponent) && matchesSearch('Image')
+                isImageComponent(selectedComponent) &&
+                matchesSearch('Image', 'Hình ảnh', 'Src', 'URL ảnh', 'Alt Text', 'Fit', 'Vừa khung', 'Position', 'Vị trí')
               "
               class="setting-group"
             >
@@ -2782,7 +2786,8 @@
             </div>
             <div
               v-if="
-                isVideoComponent(selectedComponent) && matchesSearch('Video')
+                isVideoComponent(selectedComponent) &&
+                matchesSearch('Video', 'Src', 'URL video', 'Controls', 'Điều khiển', 'Autoplay', 'Tự động phát', 'Loop', 'Lặp lại', 'Muted', 'Tắt tiếng', 'Poster', 'Ảnh bìa', 'Preload', 'Tải trước')
               "
               class="setting-group"
             >
@@ -2894,7 +2899,7 @@
               v-if="
                 (isButtonComponent(selectedComponent) ||
                   hasLinkInSelection(selectedComponent)) &&
-                matchesSearch('Button', 'Link')
+                matchesSearch('Button', 'Link', 'Nút', 'Liên kết', 'Href', 'URL', 'Rel', 'Tiêu đề', 'Nhãn Aria', 'Tải xuống', 'Popup Mua Vé', 'Biến thể', 'Kích thước', 'Nội dung')
               "
               class="setting-group"
             >
@@ -3047,7 +3052,7 @@
               v-if="
                 (isHtmlComponent(selectedComponent) ||
                   isIframeComponent(selectedComponent)) &&
-                matchesSearch('HTML', 'Code')
+                matchesSearch('HTML', 'Code', 'Nội dung HTML')
               "
               class="setting-group"
             >
@@ -3067,7 +3072,8 @@
               </div>
             </div>
             <div
-              v-if="isNavbarComponent(selectedComponent)"
+              v-if="isNavbarComponent(selectedComponent) &&
+                matchesSearch('Navbar', 'Thanh điều hướng', 'Căn chỉnh', 'Justify', 'Dính', 'Sticky', 'Khoảng cách', 'Đệm', 'Bán kính', 'Nền', 'Màu nền')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3152,7 +3158,8 @@
             </div>
             
             <div
-              v-if="isHeroComponent(selectedComponent)"
+              v-if="isHeroComponent(selectedComponent) &&
+                matchesSearch('Hero', 'Phần đầu trang', 'Tiêu đề', 'Phụ đề', 'URL ảnh nền', 'Màu chữ', 'Màu lớp phủ', 'Độ mờ lớp phủ')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3257,7 +3264,8 @@
               </div>
             </div>
             <div
-              v-if="isBackgroundImageComponent(selectedComponent)"
+              v-if="isBackgroundImageComponent(selectedComponent) &&
+                matchesSearch('Ảnh nền', 'Background', 'URL ảnh', 'Kích thước', 'Vị trí', 'Màu lớp phủ', 'Độ mờ lớp phủ', 'Zoom video')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3365,7 +3373,8 @@
               </div>
             </div>
             <div
-              v-if="isSliderComponent(selectedComponent)"
+              v-if="isSliderComponent(selectedComponent) &&
+                matchesSearch('Slider', 'Thanh trượt', 'Role', 'Mũi tên', 'Dấu chấm', 'Tự động phát', 'Khoảng thời gian', 'Dừng khi di chuột', 'Chuyển cảnh', 'Số slide', 'Easing', 'Tốc độ')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3490,7 +3499,8 @@
               </div>
             </div>
             <div
-              v-if="isGalleryComponent(selectedComponent)"
+              v-if="isGalleryComponent(selectedComponent) &&
+                matchesSearch('Gallery', 'Thư viện ảnh', 'Cột', 'Khoảng cách')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3523,7 +3533,8 @@
               </div>
             </div>
             <div
-              v-if="isAccordionComponent(selectedComponent)"
+              v-if="isAccordionComponent(selectedComponent) &&
+                matchesSearch('Accordion', 'Cho phép mở nhiều', 'Hiệu ứng động', 'Thời gian')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3566,7 +3577,8 @@
               </div>
             </div>
             <div
-              v-if="isFormComponent(selectedComponent) && matchesSearch('Form')"
+              v-if="isFormComponent(selectedComponent) &&
+                matchesSearch('Form', 'Trường nhập liệu', 'Văn bản', 'Số', 'Lựa chọn', 'Chấp nhận', 'Radio', 'Xác thực')"
               class="setting-group ui-form"
             >
               <div class="group-header">
