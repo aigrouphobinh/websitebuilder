@@ -262,3 +262,11 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Cập nhật SEO Meta vào document head đang dùng cho preview/export; cho phép xóa giá trị meta/link bằng cách để trống trường.
 - [x] Dùng useToast() để thông báo thành công/lỗi và hướng dẫn nhấn **Lưu & Xuất bản** sau khi áp dụng.
 - [ ] Chưa chạy build hoặc kiểm thử tương tác trong trình duyệt; repository chỉ chứa source component, không có manifest chạy độc lập.
+
+
+## 2026-10-13 — Fix logo trong Cài đặt & SEO
+- [x] Khi cập nhật logo, chỉ sửa component ảnh thật (`type=image` hoặc `img`); không gán `src` lên wrapper/link `data-role="logo"` vì sẽ không hiển thị ảnh.
+- [x] Tìm ảnh con trong wrapper logo và trong header trước khi tạo ảnh mới, tránh tạo logo trùng khi template đã có ảnh lồng bên trong.
+- [x] Bổ sung preview logo trong hộp thoại Cài đặt & SEO để phát hiện URL sai trước khi áp dụng.
+- [x] Xác minh tĩnh các thay đổi đã có trên `main`.
+- [ ] Kiểm thử tương tác thực tế trên host Vue + GrapesJS: chọn/tải ảnh, cập nhật canvas, lưu, tải lại template và xuất HTML. Repository này không có app host hoặc package manifest độc lập nên chưa thể xác nhận end-to-end tại đây.
