@@ -187,6 +187,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Gắn nhãn landmark cho bảng thuộc tính và liên kết nút bật/tắt panel với vùng điều khiển bằng `aria-controls`/ `aria-expanded`.
 - [x] Thay thẻ `label` bao quanh ô tìm kiếm và nút xóa bằng `div` có semantics phù hợp; input giữ `aria-label` độc lập để tránh lồng nhiều điều khiển trong label.
 - [x] Khi xóa từ khóa tìm kiếm, đưa focus trở lại ô nhập sau khi nút xóa biến mất để bàn phím có thể tiếp tục nhập ngay.
+- [x] Trong ô tìm kiếm, `Escape` xóa truy vấn trước; khi truy vấn đã rỗng, `Escape` mới đóng panel và trả focus về toggle.
 - [x] Đánh dấu trạng thái không có kết quả bằng `role="status"`/`aria-live="polite"` để thay đổi do tìm kiếm được trình đọc màn hình thông báo.
 - [x] Tăng vùng nhấn của nút xóa tìm kiếm từ 24px lên 32px, thuận tiện hơn khi thao tác cảm ứng mà vẫn vừa ô tìm kiếm.
 - [x] Mở rộng từ khóa tìm kiếm thuộc tính nút/liên kết cho các trường mục tiêu `target`, `noopener`, `noreferrer`, `nofollow`, download, nhãn ARIA và ID sự kiện để tìm được cả nhóm chứa các điều khiển nâng cao.
@@ -252,6 +253,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — P7/P8: rà nhãn trường nút/liên kết, phát hiện từ khóa “target”, “noopener”, “nofollow”, “noreferrer” và ID sự kiện chưa mở được nhóm thuộc tính tương ứng; đồng bộ các từ khóa giữa bộ lọc nhóm và trạng thái tìm kiếm để nhóm được hiển thị khi khớp.
 
 - 2026-10-12 — P7: mở rộng chỉ mục từ khóa của nhóm bố cục/định vị và ảnh theo các giá trị option thực tế (`row-reverse`, `nowrap`, `fixed`, `sticky`, `cover`, `contain`, v.v.) để người dùng có thể tìm theo chính tùy chọn họ cần áp dụng.
+
+- 2026-10-12 — P8: xử lý Escape riêng khi focus ở ô tìm kiếm: ưu tiên xóa truy vấn (giữ panel mở và focus ở input), chỉ đóng panel khi truy vấn đã rỗng; không để handler Escape của panel nhận cùng sự kiện.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
