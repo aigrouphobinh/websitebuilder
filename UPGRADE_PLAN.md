@@ -166,6 +166,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Đã tinh gọn khoảng cách và giảm độ nặng của card bằng CSS.
 - [x] Sửa điều kiện render của nhóm thuộc tính phần tử: tab Cài đặt hiển thị các nhóm hình ảnh/video/nút/liên kết/HTML và thuộc tính nâng cao thay vì bị gắn nhầm vào tab Kiểu dáng.
 - [x] Thêm nội dung tab Tương tác với điều khiển sự kiện và hành động JavaScript, dùng lại state/handler hiện có `eventType`, `eventAction`, `applyEvents`; không thêm API mới.
+- [x] Loại bỏ nhóm sự kiện bị lặp khỏi tab Kiểu dáng sau khi chuyển sang tab Tương tác; bỏ state chỉ phục vụ nhóm lặp.
+- [x] Chỉ hiển thị lối tắt “Mở cài đặt liên kết” khi phần tử được chọn thực sự là nút/liên kết, giúp người dùng chuyển thẳng đến thuộc tính URL đang có.
 - [ ] Kiểm tra mọi nhóm thuộc tính trong ba tab và xác minh không bị CSS cắt/che.
 - [ ] Ưu tiên thao tác thường dùng; gom nhóm nâng cao dưới nhóm có tên rõ ràng.
 - [ ] Chỉ ẩn nhóm không liên quan theo loại phần tử đang chọn khi đã xác minh điều kiện; không bỏ handler/API.
@@ -201,6 +203,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - **Nghiệm thu cuối:** roadmap phản ánh đúng trạng thái, kiểm tra có bằng chứng, không còn blocker nghiêm trọng.
 
 - 2026-10-12 — P7: rà soát tĩnh phát hiện nhóm thuộc tính nội dung bị gắn nhầm điều kiện tab Kiểu dáng, khiến tab Cài đặt không có panel riêng; đã chuyển nhóm đó sang tab Cài đặt và thêm panel Tương tác dùng lại state/handler sự kiện hiện có. Chưa xác minh bằng trình duyệt và chưa chạy build/test do repository thiếu manifest/cấu hình chạy.
+
+- 2026-10-12 — P7: vòng rà soát tiếp theo xác nhận nhóm sự kiện còn bị lặp giữa Kiểu dáng và Tương tác sau thay đổi trước; đã bỏ bản lặp khỏi Kiểu dáng, gỡ state không còn caller và thêm nút chuyển tới Cài đặt liên kết chỉ khi chọn đúng loại phần tử. Chỉ kiểm tra tĩnh; build/test/trình duyệt vẫn chưa chạy.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
