@@ -211,6 +211,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 ### P10 — Rà soát chất lượng, bảo mật và hiệu năng
 - [ ] Rà soát xử lý HTML/script/URL, tránh đưa nội dung không tin cậy vào ngữ cảnh thực thi.
 - [ ] Kiểm tra tài nguyên/listener được dọn khi đổi template và khi component unmount.
+- [x] Tắt mặc định lớp chẩn đoán canvas/CSS chạy liên tục; chỉ bật khi thêm `?wb_debug=1`. Khi debug tắt, bỏ qua snapshot iframe và gắn observer vòng đời để tránh log/chi phí xử lý không cần thiết.
 - [ ] Kiểm tra hiệu năng với trang lớn và nhiều block; tránh watcher/render không cần thiết.
 - [ ] Chỉ tối ưu sau khi có bằng chứng đo hoặc lỗi tái hiện.
 - **Nghiệm thu:** không có rủi ro nghiêm trọng chưa xử lý; không đánh đổi tương thích để lấy tối ưu nhỏ.
@@ -224,6 +225,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 
 
 ### Nhật ký thực hiện tuần tự
+- 2026-10-12 — P10: rà soát tĩnh phát hiện lớp chẩn đoán canvas/CSS luôn bật, có thể ghi log liên tục và chạy snapshot iframe lặp lại trong trải nghiệm thông thường. Đã chuyển sang opt-in qua `?wb_debug=1` và bỏ qua snapshot/observer khi debug tắt. Chưa chạy build/test hoặc đo hiệu năng trong host project.
 - 2026-10-12 — P0: đã đối chiếu cây repository, PR #2 và trạng thái so sánh với main. Phát hiện repo không chứa package.json/lockfile/test runner/CI workflow; cần chạy kiểm tra trong host project đang sử dụng component.
 - 2026-10-12 — P1: rà soát tĩnh test/helper, phát hiện tìm kiếm component không chuẩn hóa ký tự đ/Đ. Đã sửa utils/element-search.ts và thêm test cho “Đăng ký”/“địa điểm”.
 - 2026-10-12 — P1: tiếp tục cải thiện tìm kiếm dễ dùng hơn: chuẩn hóa khoảng trắng liên tiếp và thêm test hồi quy cho truy vấn có nhiều khoảng trắng/xuống dòng. Chưa chạy test/build: repository không có package.json, lockfile, test runner config hoặc GitHub Actions workflow; cần môi trường host tích hợp component để xác minh.
