@@ -5331,9 +5331,11 @@
                     width: 120px;
                   "
                   :disabled="isApplyingTemplate"
+                  :aria-busy="isApplyingTemplate"
                   @click.stop="applyAndSaveCompany(t.id)"
                 >
-                  Áp dụng & Lưu
+                  <IconLoader2 v-if="isApplyingTemplate" class="animate-spin" size="14" />
+                  {{ isApplyingTemplate ? "Đang áp dụng & lưu..." : "Áp dụng & Lưu" }}
                 </button>
               </div>
 
@@ -5598,9 +5600,12 @@
             transition: all 0.2s;
           "
           class="hover:bg-blue-600"
+          :disabled="isSavingSuperTemplate"
+          :aria-busy="isSavingSuperTemplate"
           @click="confirmSaveSuperTemplate"
         >
-          Lưu
+          <IconLoader2 v-if="isSavingSuperTemplate" class="animate-spin" size="16" />
+          {{ isSavingSuperTemplate ? "Đang lưu..." : "Lưu" }}
         </button>
       </div>
     </div>
@@ -5783,9 +5788,12 @@
             transition: all 0.2s;
           "
           class="hover:bg-blue-600"
+          :disabled="isSavingEditSuperTemplate"
+          :aria-busy="isSavingEditSuperTemplate"
           @click="confirmEditSuperTemplate"
         >
-          Lưu
+          <IconLoader2 v-if="isSavingEditSuperTemplate" class="animate-spin" size="16" />
+          {{ isSavingEditSuperTemplate ? "Đang lưu..." : "Lưu" }}
         </button>
       </div>
     </div>
@@ -6218,7 +6226,7 @@ import { debounce, throttle } from "lodash-es";
 import spec from "./blocks-spec.json";
 import { websiteTemplateService } from "@/services/websiteTemplateService";
 import { mediaService } from "@/services/mediaService";
-import { useToast } from "@/composables/useToast";
+import { useToast } from "vue-toastification";
 import type { SuperTemplateMeta } from "@/services/websiteTemplateService";
 import domtoimage from "dom-to-image";
 import html2canvas from "html2canvas";
@@ -7668,6 +7676,8 @@ const isApplyingTemplate = ref(false);
 const superTemplatesMeta = ref<SuperTemplateMeta[]>([]);
 const superTplQuery = ref("");
 const showSaveSuperDialog = ref(false);
+const isSavingSuperTemplate = ref(false);
+const isSavingEditSuperTemplate = ref(false);
 const superTplName = ref("");
 const superTplDesc = ref("");
 const filteredSuperTemplates = computed(() => {
@@ -9854,7 +9864,8 @@ function openEditSuperTemplate(t: SuperTemplateMeta) {
 }
 
 async function confirmEditSuperTemplate() {
-  if (!editTplId.value) return;
+  if (!editTplId.value || isSavingEditSuperTemplate.value) return;
+  isSavingEditSuperTemplate.value = true;
   try {
     await websiteTemplateService.updateSuperTemplate(editTplId.value, {
       name: editTplName.value,
@@ -9863,13 +9874,11 @@ async function confirmEditSuperTemplate() {
     showEditSuperDialog.value = false;
     superTemplatesMeta.value =
       await websiteTemplateService.listSuperTemplatesMeta();
-    try {
-      toast.success("Đã cập nhật mẫu");
-    } catch {}
+    toast.success("Đã cập nhật mẫu");
   } catch {
-    try {
-      toast.error("Không cập nhật được mẫu");
-    } catch {}
+    toast.error("Không cập nhật được mẫu");
+  } finally {
+    isSavingEditSuperTemplate.value = false;
   }
 }
 
@@ -14817,7 +14826,8 @@ async function openSaveSuperDialog() {
 }
 
 async function confirmSaveSuperTemplate() {
-  if (!editor || !isSuperAdmin.value) return;
+  if (!editor || !isSuperAdmin.value || isSavingSuperTemplate.value) return;
+  isSavingSuperTemplate.value = true;
   const name = String(
     superTplName.value || siteTitle.value || "Template",
   ).trim();
@@ -14841,13 +14851,11 @@ async function confirmSaveSuperTemplate() {
       thumbnail,
     });
     showSaveSuperDialog.value = false;
-    try {
-      toast.success("Đã lưu mẫu SuperAdmin");
-    } catch {}
-  } catch (e) {
-    try {
-      toast.error("Lỗi khi lưu mẫu SuperAdmin");
-    } catch {}
+    toast.success("Đã lưu mẫu SuperAdmin");
+  } catch {
+    toast.error("Lỗi khi lưu mẫu SuperAdmin");
+  } finally {
+    isSavingSuperTemplate.value = false;
   }
 }
 
