@@ -187,6 +187,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Gắn nhãn landmark cho bảng thuộc tính và liên kết nút bật/tắt panel với vùng điều khiển bằng `aria-controls`/ `aria-expanded`.
 - [x] Hiển thị nút bật/tắt bảng thuộc tính trên cả desktop lẫn màn hình nhỏ, tránh trường hợp đóng panel trên desktop nhưng không có nút để mở lại.
 - [x] Khi mở panel bằng nút toolbar, đưa focus vào ô tìm kiếm; khi đóng bằng nút X hoặc Escape trong panel, đưa focus về nút bật/tắt.
+- [x] Khi panel tự thu gọn do viewport chuyển sang mobile, dùng cùng luồng đóng panel để trả focus về toolbar toggle thay vì làm mất focus cùng phần tử bị unmount.
 - [x] Trên màn hình rất hẹp (≤360px), ẩn icon trang trí trong tab để dành chỗ cho nhãn tiếng Việt.
 - [ ] Kiểm tra desktop, tablet và mobile; sidebar không che mất nút quan trọng hoặc cắt nội dung.
 - [ ] Chạy thử keyboard navigation, focus khi mở/đóng panel, screen reader và tương phản trong trình duyệt tích hợp.
@@ -231,6 +232,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — P8: sửa luồng mở/đóng panel: nút toolbar giờ có mặt trên mọi kích thước màn hình để người dùng desktop mở lại panel sau khi đóng; mở panel focus ô tìm kiếm, đóng qua X/Escape trả focus về nút toggle. Giữ nguyên logic nội dung/API và thêm handler bàn phím cục bộ cho panel. Chưa chạy keyboard/browser test.
 - 2026-10-12 — P7: lối tắt liên kết ở tab Tương tác giờ nhận các từ khóa tìm thuộc tính thông dụng như href, target, rel, tải xuống, aria label và noopener/noreferrer/nofollow; chỉ hiện khi phần tử được chọn là nút/liên kết.
 - 2026-10-12 — P7: mở rộng tìm kiếm sự kiện trong tab Tương tác với click/nhấp chuột, mouseenter/mouseleave, di chuột, alert/script và nhãn kích hoạt để người dùng tìm theo giá trị họ thấy trong điều khiển.
+
+- 2026-10-12 — P8: sửa thêm trường hợp resize làm panel tự unmount khi focus còn ở bên trong: nhánh auto-collapse mobile giờ gọi cùng handler đóng panel và trả focus về nút toolbar. Đây là kiểm tra code path tĩnh; cần xác nhận hành vi khi đổi kích thước thực tế trong trình duyệt.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
