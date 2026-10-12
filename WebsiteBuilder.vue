@@ -282,7 +282,7 @@
           :class="{ active: showProperties }"
           :aria-label="showProperties ? 'Ẩn bảng thuộc tính' : 'Hiện bảng thuộc tính'"
           :aria-expanded="showProperties"
-          aria-controls="inspector-properties-panel"
+          :aria-controls="showProperties ? 'inspector-properties-panel' : undefined"
           @click="toggleInspectorProperties"
         >
           <IconSettings size="20" />
