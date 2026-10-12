@@ -6281,10 +6281,12 @@ function wbDebug(...args: any[]) {
 }
 
 function wbDebugWarn(...args: any[]) {
+  if (!WB_DEBUG_ENABLED) return;
   wbDebug("WARN", ...args);
   try { console.warn("[WB-DEBUG]", ...args); } catch {}
 }
 function wbDebugError(...args: any[]) {
+  if (!WB_DEBUG_ENABLED) return;
   wbDebug("ERROR", ...args);
   try { console.error("[WB-DEBUG]", ...args); } catch {}
 }
