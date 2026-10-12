@@ -185,6 +185,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Ba tab có ID, `aria-controls`/labelled tabpanel và `tabindex` để chỉ tab đang chọn nằm trong thứ tự Tab thông thường.
 - [x] Hỗ trợ bàn phím trong tablist: Left/Right đổi tab và chuyển focus, Home về tab đầu, End đến tab cuối.
 - [x] Gắn nhãn landmark cho bảng thuộc tính và liên kết nút bật/tắt panel với vùng điều khiển bằng `aria-controls`/ `aria-expanded`.
+- [x] Hiển thị nút bật/tắt bảng thuộc tính trên cả desktop lẫn màn hình nhỏ, tránh trường hợp đóng panel trên desktop nhưng không có nút để mở lại.
+- [x] Khi mở panel bằng nút toolbar, đưa focus vào ô tìm kiếm; khi đóng bằng nút X hoặc Escape trong panel, đưa focus về nút bật/tắt.
 - [x] Trên màn hình rất hẹp (≤360px), ẩn icon trang trí trong tab để dành chỗ cho nhãn tiếng Việt.
 - [ ] Kiểm tra desktop, tablet và mobile; sidebar không che mất nút quan trọng hoặc cắt nội dung.
 - [ ] Chạy thử keyboard navigation, focus khi mở/đóng panel, screen reader và tương phản trong trình duyệt tích hợp.
@@ -225,6 +227,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — P8: nâng khả năng truy cập tab thuộc tính bằng ID và quan hệ ARIA tab/tabpanel, chỉ tab đang chọn có tabindex=0; thêm phím Left/Right/Home/End với chuyển focus sau nextTick; tối ưu nhãn tab ở màn hình ≤360px bằng cách ẩn icon trang trí. Đã ghi code, chưa chạy kiểm thử bàn phím/trình duyệt do chưa có môi trường host.
 
 - 2026-10-12 — P8: gắn nhãn accessible cho landmark bảng thuộc tính và thêm quan hệ aria-controls cho nút mở/đóng panel. Kiểm tra tĩnh sau đó sẽ rà soát ID, liên kết tab/panel và cấu trúc template; chưa thay thế kiểm thử screen reader/browser.
+
+- 2026-10-12 — P8: sửa luồng mở/đóng panel: nút toolbar giờ có mặt trên mọi kích thước màn hình để người dùng desktop mở lại panel sau khi đóng; mở panel focus ô tìm kiếm, đóng qua X/Escape trả focus về nút toggle. Giữ nguyên logic nội dung/API và thêm handler bàn phím cục bộ cho panel. Chưa chạy keyboard/browser test.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
