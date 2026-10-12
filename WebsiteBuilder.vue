@@ -8551,12 +8551,18 @@ onMounted(() => {
           }
         }
 
-        // Auto collapse on mobile to ensure canvas is visible
+        // Auto collapse on mobile to ensure canvas is visible.
         if (isMobile.value) {
           if (sidebarOpen.value) sidebarOpen.value = false;
-          // Use the same close path as the X/Escape controls so keyboard focus
-          // returns to the persistent toolbar toggle when the panel is removed.
-          if (showProperties.value) closeInspectorProperties();
+          if (showProperties.value) {
+            const inspectorPanel =
+              rootEl.value?.querySelector(".inspector.properties") ?? null;
+            const shouldRestoreInspectorFocus =
+              !!inspectorPanel?.contains(document.activeElement);
+            // Restore focus only when resize removes the element that held it.
+            // Do not steal focus from the canvas/toolbar on initial mobile layout.
+            closeInspectorProperties(shouldRestoreInspectorFocus);
+          }
         } else if (w < 1024 && sidebarOpen.value && showProperties.value) {
           // On tablet, maybe close one?
           // Don't auto-close properties if user manually opened it or if we want to allow it
@@ -8777,8 +8783,9 @@ function toggleInspectorProperties() {
   nextTick(() => inspectorSearchInput.value?.focus());
 }
 
-function closeInspectorProperties() {
+function closeInspectorProperties(restoreFocus = true) {
   showProperties.value = false;
+  if (!restoreFocus) return;
   nextTick(() => inspectorToggleButton.value?.focus());
 }
 
