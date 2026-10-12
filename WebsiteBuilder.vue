@@ -13440,9 +13440,24 @@ function applyGlobalSiteSettings() {
       // Prefer explicit logo elements anywhere in the page; some templates do not
       // use semantic <header> markup or the .wb-header-container class.
       let logoImages = findComponents('[data-role="logo"]');
+      // A template may assign data-role="logo" to a wrapper or link rather than
+      // an actual image. Updating src on those elements does not render a logo.
+      logoImages = logoImages.filter((image) => {
+        const tag = String(
+          image.get?.("tagName") || image.getEl?.()?.tagName || "",
+        ).toLowerCase();
+        const type = String(image.get?.("type") || "").toLowerCase();
+        return type === "image" || tag === "img";
+      });
       if (!logoImages.length) {
         logoImages = headers.flatMap((header) =>
-          (header.find?.("img") || []) as Component[],
+          ((header.find?.("img") || []) as Component[]).filter((image) => {
+            const tag = String(
+              image.get?.("tagName") || image.getEl?.()?.tagName || "",
+            ).toLowerCase();
+            const type = String(image.get?.("type") || "").toLowerCase();
+            return type === "image" || tag === "img";
+          }),
         );
       }
 
