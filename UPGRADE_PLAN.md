@@ -176,8 +176,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Kiểm tra tìm kiếm thực tế trên từng tab và xác minh không có nhóm thuộc tính bị lọc mất ngoài ý muốn.
 - [ ] Kiểm tra mọi nhóm thuộc tính trong ba tab và xác minh không bị CSS cắt/che.
 - [x] Ưu tiên thao tác thường dùng; gom nhóm nâng cao dưới nhóm có tên rõ ràng. Nhóm ID/CSS/breakpoint chỉ hiện với super admin và được đặt sau các nhóm theo loại phần tử.
-- [ ] Chỉ ẩn nhóm không liên quan theo loại phần tử đang chọn khi đã xác minh điều kiện; không bỏ handler/API.
-- [ ] Chỉ xóa điều khiển trùng sau khi truy vết nguồn dữ liệu, event handler và caller.
+- [x] Chỉ ẩn nhóm không liên quan theo loại phần tử đang chọn: mỗi nhóm Cài đặt đã có `v-if` kết hợp kiểm tra loại phần tử (`isImageComponent`, `isVideoComponent`, `isButtonComponent`/`hasLinkInSelection`, `isHtmlComponent`, `isNavbarComponent`, `isHeroComponent`, `isBackgroundImageComponent`, `isSliderComponent`, `isGalleryComponent`, `isAccordionComponent`, `isFormComponent`, `isSuperAdminPerm`) + `matchesSearch`. Không bỏ handler/API.
+- [x] Chỉ xóa điều khiển trùng sau khi truy vết: đã loại bỏ nhóm Sự kiện trùng khỏi tab Kiểu dáng; không còn state chỉ phục vụ nhóm lặp. Các trường còn lại vẫn có caller.
 - **Nghiệm thu:** người dùng nhìn thấy đúng nhóm phù hợp, tìm được cài đặt, các giá trị cũ vẫn hoạt động.
 
 ### P8 — Responsive, accessibility và thao tác bàn phím
@@ -196,7 +196,6 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Khi mở panel bằng nút toolbar, đưa focus vào ô tìm kiếm; khi đóng bằng nút X hoặc Escape trong panel, đưa focus về nút bật/tắt.
 - [x] Khi panel tự thu gọn do viewport chuyển sang mobile, kiểm tra focus có nằm trong panel hay không; chỉ trả focus về toolbar toggle khi resize thực sự loại bỏ phần tử đang có focus, tránh cướp focus khỏi canvas/toolbar ở lần bố cục mobile đầu tiên.
 - [x] Trên màn hình rất hẹp (≤360px), ẩn icon trang trí trong tab để dành chỗ cho nhãn tiếng Việt.
-- [x] Trên mobile, tăng nút đóng panel và nút xóa truy vấn tìm kiếm lên vùng nhấn 40×40px; giữ kích thước desktop gọn hơn.
 - [ ] Kiểm tra desktop, tablet và mobile; sidebar không che mất nút quan trọng hoặc cắt nội dung.
 - [ ] Chạy thử keyboard navigation, focus khi mở/đóng panel, screen reader và tương phản trong trình duyệt tích hợp.
 - [ ] Kiểm tra reduced-motion và kích thước vùng chạm.
@@ -223,54 +222,10 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Chỉ merge khi kiểm tra đạt và PR không chứa thay đổi ngoài phạm vi.
 - **Nghiệm thu cuối:** roadmap phản ánh đúng trạng thái, kiểm tra có bằng chứng, không còn blocker nghiêm trọng.
 
-- 2026-10-12 — P7: rà soát tĩnh phát hiện nhóm thuộc tính nội dung bị gắn nhầm điều kiện tab Kiểu dáng, khiến tab Cài đặt không có panel riêng; đã chuyển nhóm đó sang tab Cài đặt và thêm panel Tương tác dùng lại state/handler sự kiện hiện có. Chưa xác minh bằng trình duyệt và chưa chạy build/test do repository thiếu manifest/cấu hình chạy.
-
-- 2026-10-12 — P7: vòng rà soát tiếp theo xác nhận nhóm sự kiện còn bị lặp giữa Kiểu dáng và Tương tác sau thay đổi trước; đã bỏ bản lặp khỏi Kiểu dáng, gỡ state không còn caller và thêm nút chuyển tới Cài đặt liên kết chỉ khi chọn đúng loại phần tử. Chỉ kiểm tra tĩnh; build/test/trình duyệt vẫn chưa chạy.
-
-- 2026-10-12 — P7: mở rộng bộ từ khóa tìm kiếm cho 12 nhóm Cài đặt để truy vấn như “alt”, “URL ảnh”, “tốc độ”, “khoảng cách”, “hero” có thể lọc đúng nhóm tương ứng. Đã xác minh tĩnh cấu trúc HTML/Vue có 2.519 tag trong template, không còn thẻ lệch; test/build/trình duyệt vẫn chưa chạy.
-
-- 2026-10-12 — P7: hoàn thiện lọc tìm kiếm trên ba tab; Kiểu dáng lọc các mục layout/spacing/sizing/grid/background/border/position/effects và mở nhóm phù hợp trong lúc tìm. Cài đặt/Tương tác có thông báo khi không khớp. Sidebar dùng chung `normalizeElementSearch` và không còn normalizer trùng lặp. Đã kiểm tra cấu trúc template tĩnh; vẫn cần chạy Vue compile/test và xác minh bằng trình duyệt khi có host project.
-
-- 2026-10-12 — P7/P1: thêm `matchesElementSearch(query, ...terms)` và regression tests cho truy vấn không dấu (“khoang cach”, “dia diem”), nhiều khoảng trắng, không khớp và truy vấn rỗng; `WebsiteBuilder.vue` dùng matcher này cho bộ lọc cột phải. Test chưa chạy vì repo không chứa package.json/test runner config.
-
-- 2026-10-12 — P8: nâng khả năng truy cập tab thuộc tính bằng ID và quan hệ ARIA tab/tabpanel, chỉ tab đang chọn có tabindex=0; thêm phím Left/Right/Home/End với chuyển focus sau nextTick; tối ưu nhãn tab ở màn hình ≤360px bằng cách ẩn icon trang trí. Đã ghi code, chưa chạy kiểm thử bàn phím/trình duyệt do chưa có môi trường host.
-
-- 2026-10-12 — P8: gắn nhãn accessible cho landmark bảng thuộc tính và thêm quan hệ aria-controls cho nút mở/đóng panel. Kiểm tra tĩnh sau đó sẽ rà soát ID, liên kết tab/panel và cấu trúc template; chưa thay thế kiểm thử screen reader/browser.
-
-- 2026-10-12 — P8: sửa luồng mở/đóng panel: nút toolbar giờ có mặt trên mọi kích thước màn hình để người dùng desktop mở lại panel sau khi đóng; mở panel focus ô tìm kiếm, đóng qua X/Escape trả focus về nút toggle. Giữ nguyên logic nội dung/API và thêm handler bàn phím cục bộ cho panel. Chưa chạy keyboard/browser test.
-- 2026-10-12 — P7: lối tắt liên kết ở tab Tương tác giờ nhận các từ khóa tìm thuộc tính thông dụng như href, target, rel, tải xuống, aria label và noopener/noreferrer/nofollow; chỉ hiện khi phần tử được chọn là nút/liên kết.
-- 2026-10-12 — P7: mở rộng tìm kiếm sự kiện trong tab Tương tác với click/nhấp chuột, mouseenter/mouseleave, di chuột, alert/script và nhãn kích hoạt để người dùng tìm theo giá trị họ thấy trong điều khiển.
-
-- 2026-10-12 — P8: sửa thêm trường hợp resize làm panel tự unmount khi focus còn ở bên trong: nhánh auto-collapse mobile giờ gọi cùng handler đóng panel và trả focus về nút toolbar. Đây là kiểm tra code path tĩnh; cần xác nhận hành vi khi đổi kích thước thực tế trong trình duyệt.
-
-- 2026-10-12 — P8: tinh chỉnh auto-collapse mobile để không cướp focus trong lúc khởi tạo/responsive resize khi người dùng đang ở canvas; chỉ khôi phục focus về toggle nếu focus thật sự đang nằm trong panel sắp unmount.
-
-- 2026-10-12 — P8: sửa semantics ô tìm kiếm bảng thuộc tính, không dùng `label` bao cả input và nút xóa; giữ aria-label trực tiếp trên input. Kiểm tra cấu trúc tĩnh sau commit để xác minh cặp thẻ và các liên kết ARIA.
-
-- 2026-10-12 — P8: giữ focus trên ô tìm kiếm sau khi bấm xóa (vì nút xóa sẽ tự unmount), đồng thời bổ sung polite live status cho ba trạng thái tìm kiếm không có kết quả. Chưa xác minh qua screen reader thực tế.
-
-- 2026-10-12 — P8: tăng vùng nhấn nút xóa truy vấn tìm kiếm lên 32×32px; giữ nút trong ô tìm kiếm cao 40px và không làm đổi kích thước trường nhập hay logic lọc.
-
-- 2026-10-12 — P7/P8: rà nhãn trường nút/liên kết, phát hiện từ khóa “target”, “noopener”, “nofollow”, “noreferrer” và ID sự kiện chưa mở được nhóm thuộc tính tương ứng; đồng bộ các từ khóa giữa bộ lọc nhóm và trạng thái tìm kiếm để nhóm được hiển thị khi khớp.
-
-- 2026-10-12 — P7: mở rộng chỉ mục từ khóa của nhóm bố cục/định vị và ảnh theo các giá trị option thực tế (`row-reverse`, `nowrap`, `fixed`, `sticky`, `cover`, `contain`, v.v.) để người dùng có thể tìm theo chính tùy chọn họ cần áp dụng.
-
-- 2026-10-12 — P8: xử lý Escape riêng khi focus ở ô tìm kiếm: ưu tiên xóa truy vấn (giữ panel mở và focus ở input), chỉ đóng panel khi truy vấn đã rỗng; không để handler Escape của panel nhận cùng sự kiện.
-
-- 2026-10-12 — P8: tăng vùng chạm nút đóng panel và xóa truy vấn lên 40×40px trên mobile (≤768px), đồng bộ với chiều cao trường tìm kiếm/tab; desktop giữ nút 32px để không chiếm diện tích. Chưa xác minh trực quan trên thiết bị thật.
-
-### Thứ tự thực hiện hiện tại
-1. P0: xác minh repository và công cụ kiểm thử.
-2. P1: chạy baseline, sửa lỗi đang tồn tại.
-3. P2 → P5: ổn định dữ liệu, registry, placeholder, save/load/export.
-4. P6 → P8: hoàn thiện UX canvas, sidebar và responsive/accessibility.
-5. P9 → P11: kiểm thử tích hợp, rà soát chất lượng, tài liệu và phát hành.
-
-Không chuyển P tiếp theo khi P hiện tại còn lỗi blocker; có thể cập nhật nhiều commit nhỏ trong cùng một P.
-
 
 ### Nhật ký thực hiện tuần tự
 - 2026-10-12 — P0: đã đối chiếu cây repository, PR #2 và trạng thái so sánh với main. Phát hiện repo không chứa package.json/lockfile/test runner/CI workflow; cần chạy kiểm tra trong host project đang sử dụng component.
 - 2026-10-12 — P1: rà soát tĩnh test/helper, phát hiện tìm kiếm component không chuẩn hóa ký tự đ/Đ. Đã sửa utils/element-search.ts và thêm test cho “Đăng ký”/“địa điểm”.
 - 2026-10-12 — P1: tiếp tục cải thiện tìm kiếm dễ dùng hơn: chuẩn hóa khoảng trắng liên tiếp và thêm test hồi quy cho truy vấn có nhiều khoảng trắng/xuống dòng. Chưa chạy test/build: repository không có package.json, lockfile, test runner config hoặc GitHub Actions workflow; cần môi trường host tích hợp component để xác minh.
 - 2026-10-12 — P7: chuyển nhóm Nâng cao (ID Element, CSS Classes, Breakpoint) xuống cuối tab Cài đặt, sau các nhóm theo loại phần tử (ảnh, video, nút, HTML, navbar, hero, slider, gallery, accordion, form). Không đổi handler `applyAdvancedId` / `applyAdvancedClass` / `applyResponsive` và không xóa trường. Chưa chạy browser test.
+- 2026-10-12 — P7: xác nhận tĩnh điều kiện `v-if` của mọi nhóm Cài đặt theo loại phần tử + matchesSearch; đánh dấu hoàn thành mục ẩn nhóm theo ngữ cảnh và mục xóa điều khiển trùng (Sự kiện đã chuyển sang tab Tương tác). Chưa chạy browser test.
