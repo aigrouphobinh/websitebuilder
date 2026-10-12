@@ -248,3 +248,4 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 
 - [x] Đưa nút **Key sự kiện** lên topbar chính, có icon key và nhãn rõ ràng; mở đúng hộp thoại key động khi nhấn.
 - 2026-10-12 — P6: thu gọn nhóm Mẫu Landing Page theo mặc định nhằm giảm chiều dài danh sách ban đầu; khi có từ khóa tìm kiếm, nhóm tự mở để các block landing vẫn tìm thấy được. Không xóa block/ID/handler và không đổi API. Đã commit lên main; chưa chạy browser/build/test do thiếu môi trường host trong repo.
+- 2026-10-12 — P6: rà soát thư viện block, phát hiện 13 block Landing Page (đánh giá, FAQ, đội ngũ, đối tác, diễn giả, nhà tài trợ, lợi ích, đối tượng, chủ đề, thống kê, thư viện ảnh, nội dung trái, liên hệ) bị lặp lại ở 3 nhóm. Đã giữ bản gốc trong nhóm Landing Page và loại 26 nút lặp khỏi các nhóm Văn bản & Nút/Bố cục & Form; không xóa registry, ID, hàm xử lý hay API. Đã xác minh lại số lần xuất hiện của các nút trong source; chưa chạy browser/build/test.
