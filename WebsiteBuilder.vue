@@ -4287,191 +4287,152 @@
   </div>
   <!-- Help Dialog -->
   <HelpDialog v-model="showHelpDialog" />
-  <!-- Placeholder Keys Help Dialog -->
-  <div
-    v-if="showPlaceholderHelpDialog"
-    style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    "
-    @click.self="showPlaceholderHelpDialog = false"
-  >
+  <!-- Dynamic event keys help dialog -->
+  <Teleport to="body">
     <div
-      style="
-        background: white;
-        border-radius: 12px;
-        overflow: hidden;
-        max-height: 90vh;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        max-width: 900px;
-        box-shadow:
-          0 20px 25px -5px rgba(0, 0, 0, 0.1),
-          0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      "
+      v-if="showPlaceholderHelpDialog"
+      class="wb-dynamic-keys-backdrop"
+      @click.self="showPlaceholderHelpDialog = false"
+      @keydown.esc="showPlaceholderHelpDialog = false"
     >
-      <div
-        style="
-          padding: 16px 24px;
-          border-bottom: 1px solid #e5e7eb;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        "
-      >
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #2563eb, #3b82f6); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-            <IconKey size="18" style="color: white;" />
+      <section class="wb-dynamic-keys-dialog" role="dialog" aria-modal="true" aria-labelledby="wb-dynamic-keys-title">
+        <header class="wb-dynamic-keys-header">
+          <div class="wb-dynamic-keys-heading">
+            <span class="wb-dynamic-keys-icon"><IconKey size="20" /></span>
+            <div>
+              <h2 id="wb-dynamic-keys-title">Các key động cho sự kiện</h2>
+              <p>Chọn key để chèn vào nội dung hoặc nhấn nút sao chép.</p>
+            </div>
           </div>
-          <div>
-            <div style="font-size: 16px; font-weight: 700; color: #111827;">Các Key Động Cho Sự Kiện</div>
-            <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">{{ filteredKeys.length }} key khả dụng • Click để copy</div>
-          </div>
-        </div>
-        <button
-          type="button"
-          style="
-            color: #6b7280;
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            transition: all 0.2s;
-          "
-          class="hover:bg-gray-200 hover:text-374151"
-          @click="showPlaceholderHelpDialog = false"
-          title="Đóng"
-        >
-          <IconX size="20" />
-        </button>
-      </div>
-      <div style="padding: 20px 24px; overflow-y: auto; flex: 1;">
-        <div style="display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
-          <!-- Search Box -->
-          <div style="flex: 1; min-width: 200px; position: relative;">
-            <IconSearch style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; width: 18px; height: 18px;" />
-            <input
-              v-model="searchKey"
-              placeholder="Tìm kiếm tên key, mô tả..."
-              style="width: 100%; padding: 10px 12px 10px 40px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background: #fafafa;"
-            />
-          </div>
-          <!-- Category Filter -->
-          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+          <button type="button" class="wb-dynamic-keys-close" aria-label="Đóng" @click="showPlaceholderHelpDialog = false"><IconX size="20" /></button>
+        </header>
+
+        <div class="wb-dynamic-keys-toolbar">
+          <label class="wb-dynamic-keys-search">
+            <IconSearch size="18" />
+            <input v-model="searchKey" type="search" placeholder="Tìm theo key, tên hoặc mô tả…" aria-label="Tìm key động" />
+            <button v-if="searchKey" type="button" aria-label="Xóa tìm kiếm" @click="searchKey = ''"><IconX size="15" /></button>
+          </label>
+          <div class="wb-dynamic-keys-filters" aria-label="Lọc theo nhóm">
+            <button
+              type="button"
+              :class="{ active: !categoryFilter }"
+              @click="categoryFilter = ''"
+            >Tất cả <span>{{ allKeys.length }}</span></button>
             <button
               v-for="cat in categories"
               :key="cat.name"
-              :class="['px-3 py-1.5 rounded-full text-xs font-medium transition-all', categoryFilter === cat.name ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200']"
+              type="button"
+              :class="{ active: categoryFilter === cat.name }"
               @click="categoryFilter = categoryFilter === cat.name ? '' : cat.name"
-              style="border: none; cursor: pointer;"
+            >{{ cat.label.replace(/^\S+\s*/, '') }} <span>{{ allKeys.filter(k => k.category === cat.name).length }}</span></button>
+          </div>
+        </div>
+
+        <div class="wb-dynamic-keys-notice">
+          <IconInfoCircle size="17" />
+          <p><strong>Dùng đúng nhóm key:</strong> <code>[ev_*]</code> cho trang sự kiện; <code>[company_*]</code> cho thông tin công ty; <code>[ticket_*]</code> cho email/vé. Một số key hệ thống chỉ dùng trong mẫu email.</p>
+        </div>
+
+        <main class="wb-dynamic-keys-content">
+          <div v-if="filteredKeys.length === 0" class="wb-dynamic-keys-empty">
+            <IconSearch size="26" />
+            <strong>Không tìm thấy key phù hợp</strong>
+            <span>Thử từ khóa khác hoặc xóa bộ lọc.</span>
+            <button type="button" @click="searchKey = ''; categoryFilter = ''">Xóa bộ lọc</button>
+          </div>
+          <template v-else>
+            <section
+              v-for="category in categories"
+              :key="category.name"
+              v-show="getKeysByCategory(category.name).length > 0"
+              class="wb-dynamic-keys-group"
             >
-              {{ cat.label }}
-            </button>
-          </div>
-        </div>
+              <div class="wb-dynamic-keys-group-title">
+                <h3>{{ category.label.replace(/^\S+\s*/, '') }}</h3>
+                <span>{{ getKeysByCategory(category.name).length }} key</span>
+              </div>
+              <div class="wb-dynamic-keys-list">
+                <article v-for="key in getKeysByCategory(category.name)" :key="key.name" class="wb-dynamic-key">
+                  <div class="wb-dynamic-key-main">
+                    <code>{{ key.name }}</code>
+                    <span class="wb-dynamic-key-scope" :class="key.forWeb ? 'is-web' : 'is-template'">{{ key.forWeb ? 'Website' : 'Mẫu email / hệ thống' }}</span>
+                  </div>
+                  <p>{{ key.description }}</p>
+                  <div class="wb-dynamic-key-example"><span>Ví dụ</span><code>{{ key.example }}</code></div>
+                  <button type="button" class="wb-dynamic-key-copy" @click="copyToClipboard(key.name)" :aria-label="'Sao chép ' + key.name">
+                    <IconCheck v-if="copiedKeys.has(key.name)" size="15" />
+                    <IconCopy v-else size="15" />
+                    {{ copiedKeys.has(key.name) ? 'Đã sao chép' : 'Sao chép key' }}
+                  </button>
+                </article>
+              </div>
+            </section>
+          </template>
+        </main>
 
-        <p
-          style="
-            font-size: 12px;
-            color: #6b7280;
-            margin: 0 0 16px;
-            line-height: 1.5;
-            padding: 10px 12px;
-            background: #fef3c7;
-            border-radius: 6px;
-            border: 1px solid #fcd34d;
-          "
-        >
-          <IconInfoCircle size="14" style="vertical-align: middle; margin-right: 6px;" />
-          <strong>Lưu ý:</strong> Các key <code style="background: #fde68a; padding: 1px 4px; border-radius: 3px;">[ev_*]</code> dùng cho website sự kiện, key <code style="background: #fde68a; padding: 1px 4px; border-radius: 3px;">[ticket_*]</code> chỉ dùng trong email/quét vé. Key <code style="background: #fde68a; padding: 1px 4px; border-radius: 3px;">[company_*]</code> lấy từ cài đặt công ty.
-        </p>
-
-        <!-- Key Categories -->
-        <template v-if="categories && categories.length > 0">
-        <template v-for="category in (categories as { name: string, label: string }[])">
-          <div :key="category.name" class="key-category" v-if="getKeysByCategory(category?.name).length > 0">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb;">
-            <span style="font-size: 15px; font-weight: 600; color: #111827;">{{ category.label }}</span>
-            <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">{{ getKeysByCategory(category.name).length }}</span>
-          </div>
-          <div
-            v-for="key in getKeysByCategory(category?.name)"
-            :key="key?.name"
-            style="display: grid; grid-template-columns: 1fr 2fr 2fr; gap: 12px; padding: 10px 8px; border-bottom: 1px solid #f3f4f6; align-items: center; transition: background 0.15s;"
-            class="hover:bg-gray-50 rounded-lg"
-            @mouseenter="hoveredKey = key.name"
-            @mouseleave="hoveredKey = null"
-          >
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <code
-                class="key-code"
-                :style="[
-                  'font-family: \'JetBrains Mono\', \'Fira Code\', \'Monaco\', \'Courier New\', monospace; background: ' + (hoveredKey === key.name ? '#dbeafe' : '#f3f4f6') + '; padding: 6px 10px; border-radius: 6px; font-size: 13px; color: #1e40af; cursor: pointer; border: 1px solid ' + (hoveredKey === key.name ? '#bfdbfe' : '#e5e7eb') + '; transition: all 0.15s; min-width: 140px; text-align: center; font-weight: 500;'
-                ]"
-                @click="copyToClipboard(key.name)"
-                :title="hoveredKey === key.name ? 'Đã copy!' : 'Click để copy'"
-              >
-              {{ key.name }}
-            </code>
-              <IconCopy v-if="hoveredKey === key.name" size="14" style="color: #10b981; animation: popIn 0.2s ease;" />
-              <IconCheck v-else-if="copiedKeys.has(key.name)" size="14" style="color: #10b981;" />
-            </div>
-            <span style="font-size: 13px; color: #4b5563; line-height: 1.5;">{{ key.description }}</span>
-            <span style="font-size: 12px; color: #9ca3af; font-style: italic; font-family: 'JetBrains Mono', monospace;">{{ key.example }}</span>
-          </div>
-        </div>
-        </template>
-        </template>
-      </div>
-      <div
-        style="
-          padding: 14px 24px;
-          border-top: 1px solid #e5e7eb;
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          background: #f9fafb;
-        "
-      >
-        <button
-          type="button"
-          style="
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #374151;
-            background: white;
-            border: 1px solid #d1d5db;
-            cursor: pointer;
-            transition: all 0.2s;
-          "
-          class="hover:bg-gray-50 hover:border-gray-400"
-          @click="showPlaceholderHelpDialog = false"
-        >
-          Đóng
-        </button>
-      </div>
+        <footer class="wb-dynamic-keys-footer">
+          <span>Hiển thị <strong>{{ filteredKeys.length }}</strong> / {{ allKeys.length }} key</span>
+          <button type="button" @click="showPlaceholderHelpDialog = false">Đóng</button>
+        </footer>
+      </section>
     </div>
-  </div>
-  
+  </Teleport>
 
+  <style>
+  .wb-dynamic-keys-backdrop{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(15,23,42,.58);backdrop-filter:blur(3px)}
+  .wb-dynamic-keys-dialog{display:flex;flex-direction:column;width:min(1080px,100%);max-height:min(90dvh,920px);min-height:0;overflow:hidden;background:#fff;border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 24px 80px rgba(15,23,42,.28);color:#0f172a}
+  .wb-dynamic-keys-header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px 26px;border-bottom:1px solid #e9eef5;background:#fff}
+  .wb-dynamic-keys-heading{display:flex;align-items:center;gap:14px;min-width:0}
+  .wb-dynamic-keys-icon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:13px;background:#eff6ff;color:#2563eb}
+  .wb-dynamic-keys-heading h2{margin:0;font-size:19px;font-weight:750;letter-spacing:-.025em}
+  .wb-dynamic-keys-heading p{margin:5px 0 0;color:#64748b;font-size:13px;line-height:1.45}
+  .wb-dynamic-keys-close{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border:1px solid #e2e8f0;border-radius:10px;background:#fff;color:#64748b;cursor:pointer}
+  .wb-dynamic-keys-close:hover{background:#f1f5f9;color:#0f172a}
+  .wb-dynamic-keys-toolbar{padding:18px 26px 12px;border-bottom:1px solid #f1f5f9}
+  .wb-dynamic-keys-search{display:flex;align-items:center;gap:10px;width:100%;padding:0 13px;height:44px;border:1px solid #dbe3ee;border-radius:11px;background:#f8fafc;color:#64748b}
+  .wb-dynamic-keys-search:focus-within{border-color:#60a5fa;box-shadow:0 0 0 3px rgba(59,130,246,.12);background:#fff}
+  .wb-dynamic-keys-search input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;color:#0f172a;font:inherit;font-size:14px}
+  .wb-dynamic-keys-search button{display:grid;place-items:center;border:0;background:transparent;color:#64748b;cursor:pointer}
+  .wb-dynamic-keys-filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+  .wb-dynamic-keys-filters button{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:9px;background:#fff;color:#475569;font-size:12px;font-weight:600;cursor:pointer}
+  .wb-dynamic-keys-filters button.active{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8}
+  .wb-dynamic-keys-filters button span{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:6px;background:#f1f5f9;color:#64748b;font-size:11px}
+  .wb-dynamic-keys-filters button.active span{background:#dbeafe;color:#1d4ed8}
+  .wb-dynamic-keys-notice{display:flex;align-items:flex-start;gap:10px;margin:14px 26px 0;padding:12px 14px;border:1px solid #dbeafe;border-radius:10px;background:#f5f9ff;color:#2563eb}
+  .wb-dynamic-keys-notice svg{flex:0 0 auto;margin-top:1px}
+  .wb-dynamic-keys-notice p{margin:0;color:#475569;font-size:12px;line-height:1.6}
+  .wb-dynamic-keys-notice code{padding:2px 5px;border-radius:5px;background:#e2eafe;color:#1d4ed8;font-size:11px}
+  .wb-dynamic-keys-content{flex:1;min-height:0;overflow:auto;padding:18px 26px 24px;overscroll-behavior:contain}
+  .wb-dynamic-keys-group+.wb-dynamic-keys-group{margin-top:24px}
+  .wb-dynamic-keys-group-title{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .wb-dynamic-keys-group-title h3{margin:0;font-size:14px;font-weight:750;color:#1e293b}
+  .wb-dynamic-keys-group-title span{padding:3px 7px;border-radius:6px;background:#f1f5f9;color:#64748b;font-size:11px;font-weight:650}
+  .wb-dynamic-keys-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .wb-dynamic-key{display:flex;flex-direction:column;align-items:flex-start;gap:9px;min-width:0;padding:14px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;transition:border-color .15s,box-shadow .15s}
+  .wb-dynamic-key:hover{border-color:#bfdbfe;box-shadow:0 3px 12px rgba(37,99,235,.06)}
+  .wb-dynamic-key-main{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;flex-wrap:wrap}
+  .wb-dynamic-key-main>code{padding:6px 8px;border:1px solid #dbeafe;border-radius:7px;background:#eff6ff;color:#1d4ed8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:650;overflow-wrap:anywhere}
+  .wb-dynamic-key-scope{padding:4px 6px;border-radius:6px;font-size:10px;font-weight:650}
+  .wb-dynamic-key-scope.is-web{background:#ecfdf5;color:#047857}
+  .wb-dynamic-key-scope.is-template{background:#f1f5f9;color:#64748b}
+  .wb-dynamic-key>p{margin:0;color:#334155;font-size:13px;line-height:1.45}
+  .wb-dynamic-key-example{display:flex;align-items:flex-start;gap:8px;width:100%;padding-top:8px;border-top:1px solid #f1f5f9}
+  .wb-dynamic-key-example>span{flex:0 0 auto;color:#94a3b8;font-size:11px}
+  .wb-dynamic-key-example code{min-width:0;color:#64748b;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;overflow-wrap:anywhere}
+  .wb-dynamic-key-copy{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:32px;margin-top:2px;padding:6px 9px;border:1px solid #dbe3ee;border-radius:8px;background:#fff;color:#334155;font-size:12px;font-weight:650;cursor:pointer}
+  .wb-dynamic-key-copy:hover{border-color:#93c5fd;background:#eff6ff;color:#1d4ed8}
+  .wb-dynamic-key-copy:has(svg){color:#047857}
+  .wb-dynamic-keys-empty{display:flex;flex-direction:column;align-items:center;gap:9px;padding:48px 16px;color:#64748b;text-align:center}
+  .wb-dynamic-keys-empty strong{color:#1e293b;font-size:14px}
+  .wb-dynamic-keys-empty span{font-size:13px}
+  .wb-dynamic-keys-empty button{margin-top:6px;padding:8px 12px;border:1px solid #dbeafe;border-radius:8px;background:#eff6ff;color:#1d4ed8;font-weight:650;cursor:pointer}
+  .wb-dynamic-keys-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 26px;border-top:1px solid #e9eef5;background:#f8fafc;color:#64748b;font-size:12px}
+  .wb-dynamic-keys-footer strong{color:#334155}
+  .wb-dynamic-keys-footer button{padding:9px 16px;border:1px solid #dbe3ee;border-radius:9px;background:#fff;color:#334155;font-size:13px;font-weight:650;cursor:pointer}
+  .wb-dynamic-keys-footer button:hover{background:#f1f5f9}
+  @media(max-width:700px){.wb-dynamic-keys-backdrop{padding:8px}.wb-dynamic-keys-dialog{max-height:96dvh;border-radius:14px}.wb-dynamic-keys-header{padding:16px}.wb-dynamic-keys-heading h2{font-size:16px}.wb-dynamic-keys-heading p{font-size:12px}.wb-dynamic-keys-toolbar{padding:14px 16px 10px}.wb-dynamic-keys-filters{gap:6px}.wb-dynamic-keys-filters button{padding:6px 8px;font-size:11px}.wb-dynamic-keys-notice{margin:12px 16px 0}.wb-dynamic-keys-content{padding:16px}.wb-dynamic-keys-list{grid-template-columns:minmax(0,1fr)}.wb-dynamic-keys-footer{padding:12px 16px}}
+  </style>
 
   <!-- SEO Dialog merged into Page Settings -->
 
