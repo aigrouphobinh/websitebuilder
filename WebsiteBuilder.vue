@@ -1460,7 +1460,6 @@
               aria-label="Đóng bảng thuộc tính"
               aria-controls="inspector-properties-panel"
               title="Đóng bảng thuộc tính"
-              ref="inspectorCloseButton"
               @click="closeInspectorProperties"
             >
               <IconX size="18" />
@@ -8788,7 +8787,6 @@ const visibleInspectorTabs: InspectorVisibleTab[] = [
   "interactions",
 ];
 const inspectorToggleButton = ref<HTMLButtonElement | null>(null);
-const inspectorCloseButton = ref<HTMLButtonElement | null>(null);
 const inspectorSearchInput = ref<HTMLInputElement | null>(null);
 const inspectorStyleTab = ref<HTMLButtonElement | null>(null);
 const inspectorSettingsTab = ref<HTMLButtonElement | null>(null);
