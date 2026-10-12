@@ -123,6 +123,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Chạy toàn bộ test hiện có và ghi kết quả thực tế; hiện chưa thể chạy trực tiếp từ repository do thiếu package manifest và cấu hình test.
 - [ ] Chạy type-check/build/lint trong host project tích hợp component.
 - [x] Sửa lỗi chuẩn hóa tìm kiếm tiếng Việt: chữ đ/Đ không tự phân rã qua Unicode NFD nên đã bổ sung chuẩn hóa về d/D và test hồi quy.
+- [x] Chuẩn hóa nhiều khoảng trắng liên tiếp thành một khoảng trắng để truy vấn tìm kiếm không phụ thuộc cách người dùng gõ; bổ sung test hồi quy.
 - [ ] Sửa các lỗi baseline còn lại trước khi thêm thay đổi chức năng mới.
 - **Nghiệm thu:** ghi rõ lệnh nào chạy, số test pass/fail và lỗi còn lại; không đánh dấu pass nếu chưa chạy.
 
@@ -209,4 +210,5 @@ Không chuyển P tiếp theo khi P hiện tại còn lỗi blocker; có thể c
 
 ### Nhật ký thực hiện tuần tự
 - 2026-10-12 — P0: đã đối chiếu cây repository, PR #2 và trạng thái so sánh với main. Phát hiện repo không chứa package.json/lockfile/test runner/CI workflow; cần chạy kiểm tra trong host project đang sử dụng component.
-- 2026-10-12 — P1: rà soát tĩnh test/helper, phát hiện tìm kiếm component không chuẩn hóa ký tự đ/Đ. Đã sửa utils/element-search.ts và thêm test cho “Đăng ký”/“địa điểm”. Chưa chạy test vì repo không có môi trường thực thi được khai báo.
+- 2026-10-12 — P1: rà soát tĩnh test/helper, phát hiện tìm kiếm component không chuẩn hóa ký tự đ/Đ. Đã sửa utils/element-search.ts và thêm test cho “Đăng ký”/“địa điểm”.
+- 2026-10-12 — P1: tiếp tục cải thiện tìm kiếm dễ dùng hơn: chuẩn hóa khoảng trắng liên tiếp và thêm test hồi quy cho truy vấn có nhiều khoảng trắng/xuống dòng. Chưa chạy test/build: repository không có package.json, lockfile, test runner config hoặc GitHub Actions workflow; cần môi trường host tích hợp component để xác minh.
