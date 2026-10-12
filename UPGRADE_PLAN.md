@@ -196,6 +196,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Khi mở panel bằng nút toolbar, đưa focus vào ô tìm kiếm; khi đóng bằng nút X hoặc Escape trong panel, đưa focus về nút bật/tắt.
 - [x] Khi panel tự thu gọn do viewport chuyển sang mobile, kiểm tra focus có nằm trong panel hay không; chỉ trả focus về toolbar toggle khi resize thực sự loại bỏ phần tử đang có focus, tránh cướp focus khỏi canvas/toolbar ở lần bố cục mobile đầu tiên.
 - [x] Trên màn hình rất hẹp (≤360px), ẩn icon trang trí trong tab để dành chỗ cho nhãn tiếng Việt.
+- [x] Trên mobile, tăng nút đóng panel và nút xóa truy vấn tìm kiếm lên vùng nhấn 40×40px; giữ kích thước desktop gọn hơn.
 - [ ] Kiểm tra desktop, tablet và mobile; sidebar không che mất nút quan trọng hoặc cắt nội dung.
 - [ ] Chạy thử keyboard navigation, focus khi mở/đóng panel, screen reader và tương phản trong trình duyệt tích hợp.
 - [ ] Kiểm tra reduced-motion và kích thước vùng chạm.
@@ -255,6 +256,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — P7: mở rộng chỉ mục từ khóa của nhóm bố cục/định vị và ảnh theo các giá trị option thực tế (`row-reverse`, `nowrap`, `fixed`, `sticky`, `cover`, `contain`, v.v.) để người dùng có thể tìm theo chính tùy chọn họ cần áp dụng.
 
 - 2026-10-12 — P8: xử lý Escape riêng khi focus ở ô tìm kiếm: ưu tiên xóa truy vấn (giữ panel mở và focus ở input), chỉ đóng panel khi truy vấn đã rỗng; không để handler Escape của panel nhận cùng sự kiện.
+
+- 2026-10-12 — P8: tăng vùng chạm nút đóng panel và xóa truy vấn lên 40×40px trên mobile (≤768px), đồng bộ với chiều cao trường tìm kiếm/tab; desktop giữ nút 32px để không chiếm diện tích. Chưa xác minh trực quan trên thiết bị thật.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
