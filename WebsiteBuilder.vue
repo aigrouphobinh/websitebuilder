@@ -1574,7 +1574,10 @@
             </div>
           </div>
           <div v-if="rightTab === 'style'" class="settings-section">
-            <div v-if="isTextSelection" class="setting-group">
+            <div
+              v-if="isTextSelection && matchesSearch('Kiểu chữ', 'Typography', 'Nội dung', 'Cỡ chữ', 'Font', 'Khoảng dòng', 'Line Height', 'Độ đậm', 'Weight', 'Khoảng chữ', 'Letter Spacing', 'Màu chữ', 'Text Color')"
+              class="setting-group"
+            >
               <div
                 class="group-header"
                 @click="typographyOpen = !typographyOpen"
@@ -1585,7 +1588,7 @@
                   class="chev"
                 />
               </div>
-              <div v-show="typographyOpen" class="group-body">
+              <div v-show="typographyOpen || !!sidebarSearch" class="group-body">
                 <div class="field mb-3">
                   <div class="field-label">Nội dung</div>
                   <input
@@ -1675,6 +1678,7 @@
             </div>
             <div class="setting-group">
               <div
+                v-if="matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'Gap', 'Khoảng cách')"
                 class="group-header"
                 @click="displayLayoutOpen = !displayLayoutOpen"
               >
@@ -1684,7 +1688,7 @@
                   class="chev"
                 />
               </div>
-              <div v-show="displayLayoutOpen" class="group-body">
+              <div v-if="matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'Gap', 'Khoảng cách')" v-show="displayLayoutOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Hiển thị (Display)</div>
                   <div class="grid-2">
@@ -1841,14 +1845,14 @@
               </div>
             </div>
             <div class="setting-group">
-              <div class="group-header" @click="spacingOpen = !spacingOpen">
+              <div v-if="matchesSearch('Khoảng cách', 'Spacing', 'Margin', 'Lề ngoài', 'Padding', 'Lề trong')" class="group-header" @click="spacingOpen = !spacingOpen">
                 <span>Khoảng cách</span>
                 <component
                   :is="spacingOpen ? IconChevronDown : IconChevronRight"
                   class="chev"
                 />
               </div>
-              <div v-show="spacingOpen" class="group-body">
+              <div v-if="matchesSearch('Khoảng cách', 'Spacing', 'Margin', 'Lề ngoài', 'Padding', 'Lề trong')" v-show="spacingOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Margin (Lề ngoài)</div>
                   <div class="grid-4">
@@ -1940,14 +1944,14 @@
                   </div>
                 </div>
               </div>
-              <div class="group-header" @click="sizingOpen = !sizingOpen">
+              <div v-if="matchesSearch('Kích thước', 'Sizing', 'Width', 'Height', 'Rộng', 'Cao', 'Min W', 'Min H', 'Max W', 'Max H', 'Tỷ lệ', 'Đơn vị', 'Aspect', 'Auto', 'Khóa')" class="group-header" @click="sizingOpen = !sizingOpen">
                 <span>Kích thước</span>
                 <component
                   :is="sizingOpen ? IconChevronDown : IconChevronRight"
                   class="chev"
                 />
               </div>
-              <div v-show="sizingOpen" class="group-body">
+              <div v-if="matchesSearch('Kích thước', 'Sizing', 'Width', 'Height', 'Rộng', 'Cao', 'Min W', 'Min H', 'Max W', 'Max H', 'Tỷ lệ', 'Đơn vị', 'Aspect', 'Auto', 'Khóa')" v-show="sizingOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-header-row">
                     <div class="field-label">Đơn vị & Tỷ lệ</div>
@@ -2095,7 +2099,7 @@
                 </div>
               </div>
               <div
-                v-if="isGenericGridComponent(selectedComponent)"
+                v-if="isGenericGridComponent(selectedComponent) && matchesSearch('Lưới', 'Grid', 'Cột', 'Columns', 'Khoảng cách', 'Gap')"
                 class="group-header"
                 @click="gridOpen = !gridOpen"
               >
@@ -2107,7 +2111,7 @@
               </div>
               <div
                 v-if="isGenericGridComponent(selectedComponent)"
-                v-show="gridOpen"
+                v-show="gridOpen || !!sidebarSearch"
                 class="group-body"
               >
                 <div class="field">
@@ -2133,6 +2137,7 @@
                 </div>
               </div>
               <div
+                v-if="matchesSearch('Nền', 'Background', 'Màu nền', 'Ảnh nền', 'Lặp lại', 'Vị trí', 'Kích thước', 'Attachment', 'Cố định')"
                 class="group-header"
                 @click="backgroundOpen = !backgroundOpen"
               >
@@ -2142,7 +2147,7 @@
                   class="chev"
                 />
               </div>
-              <div v-show="backgroundOpen" class="group-body">
+              <div v-if="matchesSearch('Nền', 'Background', 'Màu nền', 'Ảnh nền', 'Lặp lại', 'Vị trí', 'Kích thước', 'Attachment', 'Cố định')" v-show="backgroundOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Màu nền</div>
                   <div class="input-with-prefix">
@@ -2241,14 +2246,14 @@
                   </select>
                 </div>
               </div>
-              <div class="group-header" @click="borderOpen = !borderOpen">
+              <div v-if="matchesSearch('Viền', 'Border', 'Kiểu viền', 'Độ dày', 'Màu viền', 'Bo góc', 'Radius')" class="group-header" @click="borderOpen = !borderOpen">
                 <span>Viền (Border)</span>
                 <component
                   :is="borderOpen ? IconChevronDown : IconChevronRight"
                   class="chev"
                 />
               </div>
-              <div v-show="borderOpen" class="group-body">
+              <div v-if="matchesSearch('Viền', 'Border', 'Kiểu viền', 'Độ dày', 'Màu viền', 'Bo góc', 'Radius')" v-show="borderOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Kiểu viền</div>
                   <select
@@ -2307,6 +2312,7 @@
               </div>
 
               <div
+                v-if="matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity')"
                 class="group-header"
                 @click="positioningOpen = !positioningOpen"
               >
@@ -2316,7 +2322,7 @@
                   class="chev"
                 />
               </div>
-              <div v-show="positioningOpen" class="group-body">
+              <div v-if="matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity')" v-show="positioningOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Kiểu</div>
                   <select
@@ -2421,16 +2427,19 @@
                   </div>
                 </div>
               </div>
-              <div class="group-header" @click="effectsOpen = !effectsOpen">
+              <div v-if="matchesSearch('Hiệu ứng', 'Effects', 'Đổ bóng', 'Shadow', 'Hover', 'Chuyển đổi', 'Transition', 'Biến đổi', 'Transform', 'Xoay', 'Rotate', 'Scale', 'Skew', 'Bộ lọc', 'Filter', 'Làm mờ', 'Blur', 'Độ sáng', 'Brightness', 'Nền mờ', 'Backdrop', 'Thời gian', 'Easing')" class="group-header" @click="effectsOpen = !effectsOpen">
                 <span>Hiệu ứng</span>
                 <component
                   :is="effectsOpen ? IconChevronDown : IconChevronRight"
                   class="chev"
                 />
               </div>
-              <div v-show="effectsOpen" class="group-body">
+              <div v-show="effectsOpen || !!sidebarSearch" class="group-body">
                 <!-- Shadows -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Đổ bóng', 'Shadows', 'Shadow', 'Hover', 'Bật đổ bóng')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectShadowOpen = !effectShadowOpen"
@@ -2446,7 +2455,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectShadowOpen"
+                    v-show="effectShadowOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="field-checkbox">
@@ -2462,7 +2471,10 @@
                 </div>
 
                 <!-- Transitions -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Chuyển đổi', 'Transition', 'Easing', 'Thời gian', 'Kiểu')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectTransitionOpen = !effectTransitionOpen"
@@ -2480,7 +2492,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectTransitionOpen"
+                    v-show="effectTransitionOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="grid-2">
@@ -2515,7 +2527,10 @@
                 </div>
 
                 <!-- Transform -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Biến đổi', 'Transform', 'Xoay', 'Rotate', 'Scale', 'Skew')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectTransformOpen = !effectTransformOpen"
@@ -2531,7 +2546,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectTransformOpen"
+                    v-show="effectTransformOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="grid-2">
@@ -2577,7 +2592,10 @@
                 </div>
 
                 <!-- Filter -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Bộ lọc', 'Filter', 'Làm mờ', 'Blur', 'Độ sáng', 'Brightness')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectFilterOpen = !effectFilterOpen"
@@ -2593,7 +2611,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectFilterOpen"
+                    v-show="effectFilterOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="grid-2">
@@ -2622,7 +2640,10 @@
                 </div>
 
                 <!-- Backdrop -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Nền mờ', 'Backdrop', 'Blur', 'Làm mờ')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectBackdropOpen = !effectBackdropOpen"
@@ -2638,7 +2659,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectBackdropOpen"
+                    v-show="effectBackdropOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="field">
