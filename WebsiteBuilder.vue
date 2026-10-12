@@ -1443,44 +1443,43 @@
         :class="['inspector', 'properties', { compact: inspectorCompact }]"
       >
         <header class="inspector__header">
-          <h2 class="inspector__title">{{ propertiesTitle }}</h2>
-          <div style="display: flex; align-items: center; gap: 8px">
-            <div style="position: relative; width: 200px">
-              <IconSearch
-                size="16"
-                style="
-                  position: absolute;
-                  left: 8px;
-                  top: 50%;
-                  transform: translateY(-50%);
-                  color: #9ca3af;
-                "
-              />
-              <input
-                v-model="sidebarSearch"
-                type="text"
-                placeholder="Tìm kiếm cài đặt..."
-                style="
-                  width: 100%;
-                  height: 32px;
-                  padding: 0 10px 0 28px;
-                  border: 1px solid #e5e7eb;
-                  border-radius: 6px;
-                  font-size: 13px;
-                  outline: none;
-                "
-                class="input-focus"
-              />
+          <div class="inspector__topline">
+            <div class="inspector__heading">
+              <h2 class="inspector__title">{{ propertiesTitle }}</h2>
+              <p class="inspector__hint">
+                {{ isTextSelection ? "Đang chỉnh sửa văn bản" : "Chọn một khối trên trang để chỉnh sửa" }}
+              </p>
             </div>
             <button
               class="icon-button"
               type="button"
-              aria-label="Đóng"
+              aria-label="Đóng bảng thuộc tính"
+              title="Đóng bảng thuộc tính"
               @click="showProperties = false"
             >
               <IconX size="18" />
             </button>
           </div>
+          <label class="inspector__search">
+            <IconSearch size="16" aria-hidden="true" />
+            <input
+              v-model="sidebarSearch"
+              type="search"
+              placeholder="Tìm nhanh cài đặt..."
+              aria-label="Tìm nhanh cài đặt trong bảng thuộc tính"
+              class="input-focus"
+            />
+            <button
+              v-if="sidebarSearch"
+              class="inspector__search-clear"
+              type="button"
+              aria-label="Xóa nội dung tìm kiếm"
+              title="Xóa tìm kiếm"
+              @click="sidebarSearch = ''"
+            >
+              <IconX size="14" />
+            </button>
+          </label>
         </header>
 
         <nav class="inspector-tabs" role="tablist">
@@ -20188,9 +20187,9 @@ function enableResizable(model: ResizableComponent | null) {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  row-gap: 8px;
-  padding: 12px 16px;
-  border-bottom: 1px solid #f3f4f6;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -20198,13 +20197,86 @@ function enableResizable(model: ResizableComponent | null) {
   background: #ffffff;
 }
 
+.inspector__topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.inspector__heading {
+  min-width: 0;
+}
+
 .inspector__title {
   margin: 0;
   font-size: 14px;
-  font-weight: 600;
+  line-height: 1.35;
+  font-weight: 700;
   color: #111827;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+}
+
+.inspector__hint {
+  margin: 3px 0 0;
+  color: #6b7280;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.inspector__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #f9fafb;
+  color: #6b7280;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.inspector__search:focus-within {
+  border-color: #6366f1;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.inspector__search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #111827;
+  font-size: 12px;
+}
+
+.inspector__search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.inspector__search-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.inspector__search-clear:hover {
+  background: #e5e7eb;
+  color: #111827;
 }
 
 .inspector-tabs {
