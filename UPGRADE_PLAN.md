@@ -156,6 +156,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 
 ### P6 — UX canvas và thư viện thành phần
 - [x] Có phản hồi tìm kiếm thành phần, số kết quả và trạng thái không tìm thấy.
+- [x] Thu gọn nhóm Mẫu Landing Page theo mặc định để ưu tiên các block cơ bản; khi người dùng tìm kiếm, nhóm tự hiện ra để không làm mất khả năng tìm thấy block.
 - [ ] Kiểm thử kéo-thả, chọn, di chuyển, duplicate, xóa và chèn block bằng click.
 - [ ] Làm rõ trạng thái chọn/hover/drag, empty state và hướng dẫn thao tác đầu tiên.
 - [ ] Đảm bảo tìm kiếm không dấu và có dấu hoạt động ổn định.
@@ -246,3 +247,4 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Kiểm thử tương tác trực tiếp trong ứng dụng host; repository này chưa được xác nhận có thể chạy độc lập.
 
 - [x] Đưa nút **Key sự kiện** lên topbar chính, có icon key và nhãn rõ ràng; mở đúng hộp thoại key động khi nhấn.
+- 2026-10-12 — P6: thu gọn nhóm Mẫu Landing Page theo mặc định nhằm giảm chiều dài danh sách ban đầu; khi có từ khóa tìm kiếm, nhóm tự mở để các block landing vẫn tìm thấy được. Không xóa block/ID/handler và không đổi API. Đã commit lên main; chưa chạy browser/build/test do thiếu môi trường host trong repo.
