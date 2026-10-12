@@ -181,9 +181,12 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - **Nghiệm thu:** người dùng nhìn thấy đúng nhóm phù hợp, tìm được cài đặt, các giá trị cũ vẫn hoạt động.
 
 ### P8 — Responsive, accessibility và thao tác bàn phím
-- [x] Đã bổ sung focus-visible, một số ARIA label/state và quy tắc responsive.
+- [x] Đã bổ sung focus-visible, ARIA label/state và quy tắc responsive.
+- [x] Ba tab có ID, `aria-controls`/labelled tabpanel và `tabindex` để chỉ tab đang chọn nằm trong thứ tự Tab thông thường.
+- [x] Hỗ trợ bàn phím trong tablist: Left/Right đổi tab và chuyển focus, Home về tab đầu, End đến tab cuối.
+- [x] Trên màn hình rất hẹp (≤360px), ẩn icon trang trí trong tab để dành chỗ cho nhãn tiếng Việt.
 - [ ] Kiểm tra desktop, tablet và mobile; sidebar không che mất nút quan trọng hoặc cắt nội dung.
-- [ ] Kiểm tra keyboard navigation, focus khi mở/đóng panel, nhãn screen reader và tương phản.
+- [ ] Chạy thử keyboard navigation, focus khi mở/đóng panel, screen reader và tương phản trong trình duyệt tích hợp.
 - [ ] Kiểm tra reduced-motion và kích thước vùng chạm.
 - **Nghiệm thu:** các thao tác chính dùng được bằng chuột, bàn phím và màn hình nhỏ.
 
@@ -217,6 +220,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — P7: hoàn thiện lọc tìm kiếm trên ba tab; Kiểu dáng lọc các mục layout/spacing/sizing/grid/background/border/position/effects và mở nhóm phù hợp trong lúc tìm. Cài đặt/Tương tác có thông báo khi không khớp. Sidebar dùng chung `normalizeElementSearch` và không còn normalizer trùng lặp. Đã kiểm tra cấu trúc template tĩnh; vẫn cần chạy Vue compile/test và xác minh bằng trình duyệt khi có host project.
 
 - 2026-10-12 — P7/P1: thêm `matchesElementSearch(query, ...terms)` và regression tests cho truy vấn không dấu (“khoang cach”, “dia diem”), nhiều khoảng trắng, không khớp và truy vấn rỗng; `WebsiteBuilder.vue` dùng matcher này cho bộ lọc cột phải. Test chưa chạy vì repo không chứa package.json/test runner config.
+
+- 2026-10-12 — P8: nâng khả năng truy cập tab thuộc tính bằng ID và quan hệ ARIA tab/tabpanel, chỉ tab đang chọn có tabindex=0; thêm phím Left/Right/Home/End với chuyển focus sau nextTick; tối ưu nhãn tab ở màn hình ≤360px bằng cách ẩn icon trang trí. Đã ghi code, chưa chạy kiểm thử bàn phím/trình duyệt do chưa có môi trường host.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
