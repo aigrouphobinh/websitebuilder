@@ -3789,7 +3789,7 @@
               v-if="
                 (isButtonComponent(selectedComponent) ||
                   hasLinkInSelection(selectedComponent)) &&
-                matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL')
+                matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL', 'Href', 'Mục tiêu', 'Target', 'Rel', 'Tải xuống', 'Nhãn Aria', 'Tiêu đề', 'Popup Mua Vé', 'noopener', 'noreferrer', 'nofollow')
               "
               class="setting-group"
             >
@@ -9779,7 +9779,7 @@ function hasInteractionSearchMatches() {
   return (
     matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript') ||
     ((isButtonComponent(component) || hasLinkInSelection(component)) &&
-      matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL'))
+      matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL', 'Href', 'Mục tiêu', 'Target', 'Rel', 'Tải xuống', 'Nhãn Aria', 'Tiêu đề', 'Popup Mua Vé', 'noopener', 'noreferrer', 'nofollow'))
   );
 }
 
