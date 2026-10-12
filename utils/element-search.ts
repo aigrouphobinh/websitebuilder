@@ -8,5 +8,6 @@ export function normalizeElementSearch(value: string): string {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[đĐ]/g, (char) => (char === "Đ" ? "D" : "d"))
     .toLocaleLowerCase("vi")
+    .replace(/\s+/g, " ")
     .trim();
 }
