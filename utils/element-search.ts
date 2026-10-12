@@ -11,3 +11,17 @@ export function normalizeElementSearch(value: string): string {
     .replace(/\s+/g, " ")
     .trim();
 }
+
+/**
+ * Match a user query against one or more inspector labels.
+ * Empty queries intentionally match every label so callers can keep the
+ * default, unfiltered UI visible.
+ */
+export function matchesElementSearch(query: string, ...terms: string[]): boolean {
+  const normalizedQuery = normalizeElementSearch(query);
+  if (!normalizedQuery) return true;
+
+  return terms.some((term) =>
+    normalizeElementSearch(term).includes(normalizedQuery),
+  );
+}
