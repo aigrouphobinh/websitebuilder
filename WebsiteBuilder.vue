@@ -16093,6 +16093,8 @@ function clearImportedHeadAssets() {
   d.head?.querySelectorAll("style[data-saved-head-css]").forEach((el) => el.remove());
   d.head?.querySelectorAll("link[data-saved-link]").forEach((el) => el.remove());
   d.head?.querySelectorAll("script[data-import-script]").forEach((el) => el.remove());
+  d.head?.querySelectorAll("script[data-import-seq]").forEach((el) => el.remove());
+  d.head?.querySelectorAll("script[data-import-inline]").forEach((el) => el.remove());
   d.head?.querySelectorAll('script[data-saved-script="head"]').forEach((el) => el.remove());
   d.body?.querySelectorAll('script[data-saved-script="body"]').forEach((el) => el.remove());
   d.head?.querySelectorAll("script[data-saved-runtime]").forEach((el) => el.remove());
@@ -17902,6 +17904,11 @@ async function loadCompanyTemplate() {
     const res = await websiteTemplateService.getCompanyTemplate();
     if (res && res.gjs) {
       const gjs = res.gjs;
+
+      // Reset exported script state as well as canvas DOM. Otherwise a template
+      // without saved scripts can accidentally export scripts from the prior one.
+      installedHeadScripts.value = Array.isArray(gjs.headScripts) ? [...gjs.headScripts] : [];
+      installedBodyScripts.value = Array.isArray(gjs.bodyScripts) ? [...gjs.bodyScripts] : [];
 
       // Clear existing assets first
       clearImportedHeadAssets();
