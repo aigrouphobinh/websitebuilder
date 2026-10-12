@@ -8554,7 +8554,9 @@ onMounted(() => {
         // Auto collapse on mobile to ensure canvas is visible
         if (isMobile.value) {
           if (sidebarOpen.value) sidebarOpen.value = false;
-          if (showProperties.value) showProperties.value = false;
+          // Use the same close path as the X/Escape controls so keyboard focus
+          // returns to the persistent toolbar toggle when the panel is removed.
+          if (showProperties.value) closeInspectorProperties();
         } else if (w < 1024 && sidebarOpen.value && showProperties.value) {
           // On tablet, maybe close one?
           // Don't auto-close properties if user manually opened it or if we want to allow it
