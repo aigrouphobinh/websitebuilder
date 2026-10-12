@@ -164,6 +164,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 ### P7 — Sidebar phải: gọn, có thứ bậc, theo ngữ cảnh
 - [x] Đã thêm thiết kế tiêu đề, ô tìm kiếm, ba tab và trường nhập nhất quán trên nhánh UI.
 - [x] Đã tinh gọn khoảng cách và giảm độ nặng của card bằng CSS.
+- [x] Sửa điều kiện render của nhóm thuộc tính phần tử: tab Cài đặt hiển thị các nhóm hình ảnh/video/nút/liên kết/HTML và thuộc tính nâng cao thay vì bị gắn nhầm vào tab Kiểu dáng.
+- [x] Thêm nội dung tab Tương tác với điều khiển sự kiện và hành động JavaScript, dùng lại state/handler hiện có `eventType`, `eventAction`, `applyEvents`; không thêm API mới.
 - [ ] Kiểm tra mọi nhóm thuộc tính trong ba tab và xác minh không bị CSS cắt/che.
 - [ ] Ưu tiên thao tác thường dùng; gom nhóm nâng cao dưới nhóm có tên rõ ràng.
 - [ ] Chỉ ẩn nhóm không liên quan theo loại phần tử đang chọn khi đã xác minh điều kiện; không bỏ handler/API.
@@ -197,6 +199,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Rà soát diff, commit, PR description, checklist và kết quả CI.
 - [ ] Chỉ merge khi kiểm tra đạt và PR không chứa thay đổi ngoài phạm vi.
 - **Nghiệm thu cuối:** roadmap phản ánh đúng trạng thái, kiểm tra có bằng chứng, không còn blocker nghiêm trọng.
+
+- 2026-10-12 — P7: rà soát tĩnh phát hiện nhóm thuộc tính nội dung bị gắn nhầm điều kiện tab Kiểu dáng, khiến tab Cài đặt không có panel riêng; đã chuyển nhóm đó sang tab Cài đặt và thêm panel Tương tác dùng lại state/handler sự kiện hiện có. Chưa xác minh bằng trình duyệt và chưa chạy build/test do repository thiếu manifest/cấu hình chạy.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
