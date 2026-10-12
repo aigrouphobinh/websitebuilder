@@ -463,15 +463,6 @@
                 <button
                   class="sb-item"
                   type="button"
-                  style="cursor: pointer; position: relative; z-index: 10"
-                  @click.stop.prevent="openBannerTemplateDialog"
-                  @mousedown.stop
-                >
-                  <IconPresentation size="24" /><span>Phần đầu trang</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
                   draggable="true"
                   @dragstart="onBlockDragStart('landing-event-hero')"
                   @click="addFromBlockManager('landing-event-hero')"
