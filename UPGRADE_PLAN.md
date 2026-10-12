@@ -175,7 +175,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Chạy unit tests mới trong host project có Vitest; test đã viết nhưng chưa được thực thi từ repository source-only này.
 - [ ] Kiểm tra tìm kiếm thực tế trên từng tab và xác minh không có nhóm thuộc tính bị lọc mất ngoài ý muốn.
 - [ ] Kiểm tra mọi nhóm thuộc tính trong ba tab và xác minh không bị CSS cắt/che.
-- [ ] Ưu tiên thao tác thường dùng; gom nhóm nâng cao dưới nhóm có tên rõ ràng.
+- [x] Ưu tiên thao tác thường dùng; gom nhóm nâng cao dưới nhóm có tên rõ ràng. Nhóm ID/CSS/breakpoint chỉ hiện với super admin và được đặt sau các nhóm theo loại phần tử.
 - [ ] Chỉ ẩn nhóm không liên quan theo loại phần tử đang chọn khi đã xác minh điều kiện; không bỏ handler/API.
 - [ ] Chỉ xóa điều khiển trùng sau khi truy vết nguồn dữ liệu, event handler và caller.
 - **Nghiệm thu:** người dùng nhìn thấy đúng nhóm phù hợp, tìm được cài đặt, các giá trị cũ vẫn hoạt động.
@@ -273,3 +273,4 @@ Không chuyển P tiếp theo khi P hiện tại còn lỗi blocker; có thể c
 - 2026-10-12 — P0: đã đối chiếu cây repository, PR #2 và trạng thái so sánh với main. Phát hiện repo không chứa package.json/lockfile/test runner/CI workflow; cần chạy kiểm tra trong host project đang sử dụng component.
 - 2026-10-12 — P1: rà soát tĩnh test/helper, phát hiện tìm kiếm component không chuẩn hóa ký tự đ/Đ. Đã sửa utils/element-search.ts và thêm test cho “Đăng ký”/“địa điểm”.
 - 2026-10-12 — P1: tiếp tục cải thiện tìm kiếm dễ dùng hơn: chuẩn hóa khoảng trắng liên tiếp và thêm test hồi quy cho truy vấn có nhiều khoảng trắng/xuống dòng. Chưa chạy test/build: repository không có package.json, lockfile, test runner config hoặc GitHub Actions workflow; cần môi trường host tích hợp component để xác minh.
+- 2026-10-12 — P7: chuyển nhóm Nâng cao (ID Element, CSS Classes, Breakpoint) xuống cuối tab Cài đặt, sau các nhóm theo loại phần tử (ảnh, video, nút, HTML, navbar, hero, slider, gallery, accordion, form). Không đổi handler `applyAdvancedId` / `applyAdvancedClass` / `applyResponsive` và không xóa trường. Chưa chạy browser test.

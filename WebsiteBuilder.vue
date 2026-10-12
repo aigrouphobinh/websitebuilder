@@ -2743,51 +2743,6 @@
             >
               Không tìm thấy cài đặt phù hợp cho phần tử này. Thử từ khóa khác hoặc kiểm tra loại phần tử đang chọn.
             </p>
-            <div
-              v-if="isSuperAdminPerm && matchesSearch('Advanced', 'Nâng cao', 'ID Element', 'CSS Classes', 'Breakpoint', 'Điểm ngắt')"
-              class="setting-group"
-            >
-              <div class="group-header">
-                <span>Nâng cao (Advanced)</span>
-              </div>
-              <div class="group-body">
-                <div class="field">
-                  <div class="field-label">ID Element</div>
-                  <input
-                    v-model="advancedId"
-                    class="chip-input"
-                    type="text"
-                    @change="applyAdvancedId"
-                  />
-                </div>
-                <div class="field">
-                  <div class="field-label">CSS Classes</div>
-                  <input
-                    v-model="advancedClass"
-                    class="chip-input"
-                    type="text"
-                    @change="applyAdvancedClass"
-                  />
-                </div>
-                <div class="field">
-                  <div class="field-label">Điểm ngắt (Breakpoint)</div>
-                  <div class="input-with-button">
-                    <select v-model="responsiveDevice" class="chip-select">
-                      <option
-                        v-for="dev in responsiveDevices"
-                        :key="dev"
-                        :value="dev"
-                      >
-                        {{ dev }}
-                      </option>
-                    </select>
-                    <button class="chip" type="button" @click="applyResponsive">
-                      Áp dụng
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
             <!-- Page/Site settings moved to header dialog -->
 
             <div
@@ -3736,6 +3691,52 @@
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+
+            <div
+              v-if="isSuperAdminPerm && matchesSearch('Advanced', 'Nâng cao', 'ID Element', 'CSS Classes', 'Breakpoint', 'Điểm ngắt')"
+              class="setting-group"
+            >
+              <div class="group-header">
+                <span>Nâng cao (Advanced)</span>
+              </div>
+              <div class="group-body">
+                <div class="field">
+                  <div class="field-label">ID Element</div>
+                  <input
+                    v-model="advancedId"
+                    class="chip-input"
+                    type="text"
+                    @change="applyAdvancedId"
+                  />
+                </div>
+                <div class="field">
+                  <div class="field-label">CSS Classes</div>
+                  <input
+                    v-model="advancedClass"
+                    class="chip-input"
+                    type="text"
+                    @change="applyAdvancedClass"
+                  />
+                </div>
+                <div class="field">
+                  <div class="field-label">Điểm ngắt (Breakpoint)</div>
+                  <div class="input-with-button">
+                    <select v-model="responsiveDevice" class="chip-select">
+                      <option
+                        v-for="dev in responsiveDevices"
+                        :key="dev"
+                        :value="dev"
+                      >
+                        {{ dev }}
+                      </option>
+                    </select>
+                    <button class="chip" type="button" @click="applyResponsive">
+                      Áp dụng
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
