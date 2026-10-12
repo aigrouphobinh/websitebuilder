@@ -6888,6 +6888,45 @@ function createCompanyEventBlockHtml(
   }
 }
 
+
+/* Final hierarchy polish: avoid a stack of heavy cards and keep controls unclipped. */
+.website-builder .floating-panel-content .setting-group {
+  overflow: visible;
+  border-color: #edf1f6;
+  box-shadow: 0 1px 1px rgba(15, 23, 42, .015);
+}
+.website-builder .floating-panel-content .group-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.website-builder .floating-panel-content .group-header:hover {
+  background: #f8fafc;
+}
+.website-builder .floating-panel-content .group-header .chev {
+  flex: 0 0 auto;
+  color: #94a3b8;
+}
+.website-builder .floating-panel-content .group-body {
+  background: #fff;
+}
+.website-builder .floating-panel-content .field-label {
+  display: block;
+}
+.website-builder .floating-panel-content .grid-2,
+.website-builder .floating-panel-content .grid-3 {
+  min-width: 0;
+  gap: 8px;
+}
+.website-builder .floating-panel-content .chip-input,
+.website-builder .floating-panel-content .chip-select {
+  max-width: 100%;
+}
+
 </style>
   `;
 
