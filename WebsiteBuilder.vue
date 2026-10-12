@@ -13437,24 +13437,33 @@ function applyGlobalSiteSettings() {
     ].filter((component, index, all) => all.indexOf(component) === index);
 
     if (logo) {
-      headers.forEach((header) => {
-        let logos = (header.find?.('[data-role="logo"]') || []) as Component[];
-        if (!logos.length) logos = (header.find?.("img") || []) as Component[];
-        if (logos.length) {
-          logos.forEach((image) => image.addAttributes({ src: logo, alt: title || "Logo" }));
-          return;
-        }
+      // Prefer explicit logo elements anywhere in the page; some templates do not
+      // use semantic <header> markup or the .wb-header-container class.
+      let logoImages = findComponents('[data-role="logo"]');
+      if (!logoImages.length) {
+        logoImages = headers.flatMap((header) =>
+          (header.find?.("img") || []) as Component[],
+        );
+      }
 
+      if (logoImages.length) {
+        logoImages.forEach((image) =>
+          image.addAttributes({ src: logo, alt: title || "Logo" }),
+        );
+      } else {
         const attributes = {
           "data-role": "logo",
           src: logo,
           alt: title || "Logo",
-          style: "height:24px;width:auto;object-fit:contain",
+          style: "display:block;height:32px;max-width:180px;width:auto;object-fit:contain",
         };
-        const collection = header.components?.();
+        // If this page has no recognized header, add the logo to the page root
+        // instead of silently reporting success without changing the canvas.
+        const target = headers[0] || wrappers;
+        const collection = target.components?.();
         if (collection?.add) collection.add({ type: "image", attributes }, { at: 0 });
-        else header.append?.({ type: "image", attributes });
-      });
+        else target.append?.({ type: "image", attributes });
+      }
     }
 
     toast.success("Đã áp dụng tiêu đề, phụ đề và logo vào trang. Nhấn “Lưu & Xuất bản” để lưu thay đổi.");
@@ -13576,18 +13585,29 @@ function openAssetPicker(target: "siteLogo" | "ogImage" | "favicon") {
   }) => {
     const src = String(
       (asset?.get?.("src") ?? asset?.src ?? asset?.attributes?.src ?? "") || "",
-    );
-    if (src) {
-      if (currentAssetTarget === "siteLogo") siteLogoUrl.value = src;
-      else if (currentAssetTarget === "ogImage") seoMeta.value.ogImage = src;
-      else if (currentAssetTarget === "favicon") pageFaviconUrl.value = src;
+    ).trim();
+    if (!src) {
+      toast.warning("Tệp được chọn chưa có URL hợp lệ. Hãy tải ảnh lên hoặc chọn lại.");
+      return;
     }
+
+    if (currentAssetTarget === "siteLogo") siteLogoUrl.value = src;
+    else if (currentAssetTarget === "ogImage") seoMeta.value.ogImage = src;
+    else if (currentAssetTarget === "favicon") pageFaviconUrl.value = src;
+
+    toast.success(
+      currentAssetTarget === "siteLogo"
+        ? "Đã chọn logo. Nhấn “Cập nhật Logo/Tiêu đề vào canvas” để áp dụng."
+        : currentAssetTarget === "ogImage"
+          ? "Đã chọn ảnh chia sẻ mạng xã hội."
+          : "Đã chọn favicon.",
+    );
     try {
       am.close?.();
     } catch {}
     try {
       if (editor?.off && assetSelectHandler)
-        editor?.off("asset:select", assetSelectHandler);
+        editor.off("asset:select", assetSelectHandler);
     } catch {}
     currentAssetTarget = null;
     assetSelectHandler = null;
@@ -13596,8 +13616,26 @@ function openAssetPicker(target: "siteLogo" | "ogImage" | "favicon") {
     editor.on("asset:select", assetSelectHandler);
   } catch {}
   try {
-    am.open?.();
-  } catch {}
+    // GrapesJS calls this callback when the user confirms an asset in the
+    // manager. Keep the event listener for versions/configurations that emit it.
+    am.open?.({
+      select: (asset: {
+        get?: (k: string) => unknown;
+        src?: string;
+        attributes?: { src?: string };
+      }) => assetSelectHandler?.(asset),
+      types: ["image"],
+    });
+  } catch (error) {
+    console.error("Could not open asset manager:", error);
+    toast.error("Không mở được thư viện ảnh. Vui lòng thử lại.");
+    try {
+      if (editor?.off && assetSelectHandler)
+        editor.off("asset:select", assetSelectHandler);
+    } catch {}
+    currentAssetTarget = null;
+    assetSelectHandler = null;
+  }
 }
 
 function openHeaderPopup() {
