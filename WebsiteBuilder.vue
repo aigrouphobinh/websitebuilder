@@ -3747,7 +3747,7 @@
               Không tìm thấy tương tác phù hợp. Thử tìm “sự kiện”, “JavaScript” hoặc chọn một nút/liên kết.
             </p>
             <div
-              v-if="matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript')"
+              v-if="matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript', 'Click', 'Nhấp chuột', 'Mouseenter', 'Mouseleave', 'Di chuột', 'Kích hoạt', 'Event Type', 'Alert', 'Script', 'Mã')"
               class="setting-group"
             >
               <div class="group-header">
@@ -9777,7 +9777,7 @@ function hasSettingsSearchMatches() {
 function hasInteractionSearchMatches() {
   const component = selectedComponent.value;
   return (
-    matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript') ||
+    matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript', 'Click', 'Nhấp chuột', 'Mouseenter', 'Mouseleave', 'Di chuột', 'Kích hoạt', 'Event Type', 'Alert', 'Script', 'Mã') ||
     ((isButtonComponent(component) || hasLinkInSelection(component)) &&
       matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL', 'Href', 'Mục tiêu', 'Target', 'Rel', 'Tải xuống', 'Nhãn Aria', 'Tiêu đề', 'Popup Mua Vé', 'noopener', 'noreferrer', 'nofollow'))
   );
