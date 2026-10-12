@@ -55,6 +55,8 @@
                     :value="siteLogoUrl"
                     class="chip-input"
                     type="text"
+                    placeholder="https://.../logo.png"
+                    aria-label="URL logo trang web"
                     @input="emit('update:siteLogoUrl', ($event.target as HTMLInputElement).value)"
                   />
                   <button
@@ -64,6 +66,14 @@
                   >
                     Chọn file
                   </button>
+                </div>
+                <div v-if="siteLogoUrl.trim()" class="logo-preview" aria-live="polite">
+                  <img
+                    :src="siteLogoUrl.trim()"
+                    alt="Xem trước logo"
+                    @error="($event.target as HTMLImageElement).classList.add('logo-preview__image--error')"
+                  />
+                  <span>Kiểm tra logo trước khi cập nhật vào canvas</span>
                 </div>
               </div>
               <div class="field">
@@ -317,6 +327,10 @@ function updateSeo(key: keyof SeoMeta, val: string) {
 .page-settings-group .chip-input:focus,
 .page-settings-group .chip-select:focus { outline: 2px solid rgba(99, 102, 241, .22); border-color: #6366f1; }
 .page-settings-group .input-with-button { display: flex; align-items: stretch; gap: 8px; min-width: 0; }
+.logo-preview { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 10px 12px; border: 1px dashed #cbd5e1; border-radius: 8px; background: #f8fafc; color: #64748b; font-size: 12px; }
+.logo-preview img { display: block; width: auto; height: auto; max-width: 180px; max-height: 56px; object-fit: contain; }
+.logo-preview img.logo-preview__image--error { display: none; }
+.logo-preview span { min-width: 0; overflow-wrap: anywhere; }
 .page-settings-group .input-with-button .chip-input { flex: 1 1 auto; }
 .page-settings-group .chip {
   display: inline-flex;
