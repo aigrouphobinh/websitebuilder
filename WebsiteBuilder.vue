@@ -6789,7 +6789,106 @@ function createCompanyEventBlockHtml(
         width: 100% !important;
         box-sizing: border-box !important;
       }
-    </style>
+    
+/* Compact inspector pass: prioritize hierarchy and reduce vertical noise. */
+.website-builder .inspector__header {
+  gap: 9px;
+  padding: 12px 12px 10px;
+}
+.website-builder .inspector__topline {
+  align-items: flex-start;
+  gap: 8px;
+}
+.website-builder .inspector__title {
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+.website-builder .inspector__hint {
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.website-builder .inspector__search {
+  min-height: 36px;
+  padding: 0 9px;
+  gap: 7px;
+}
+.website-builder .inspector-tabs {
+  margin: 8px 10px 6px;
+  padding: 3px;
+  gap: 3px;
+}
+.website-builder .inspector-tab {
+  min-height: 33px;
+  padding: 5px 3px;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.website-builder .floating-panel-content {
+  padding: 2px 9px 16px;
+}
+.website-builder .floating-panel-content .settings-section {
+  padding: 2px 0 8px;
+}
+.website-builder .floating-panel-content .setting-group {
+  margin-bottom: 6px;
+  border-radius: 9px;
+}
+.website-builder .floating-panel-content .group-header {
+  min-height: 38px;
+  padding: 9px 11px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.website-builder .floating-panel-content .group-body {
+  padding: 10px;
+  gap: 8px;
+}
+.website-builder .floating-panel-content .field {
+  margin-bottom: 7px;
+}
+.website-builder .floating-panel-content .field-label {
+  margin-bottom: 4px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+.website-builder .floating-panel-content .chip-input,
+.website-builder .floating-panel-content .chip-select {
+  min-height: 34px;
+  height: 34px;
+  padding-left: 9px;
+  padding-right: 9px;
+  font-size: 12px;
+}
+.website-builder .floating-panel-content .selected-text-info {
+  margin-bottom: 8px;
+  padding: 10px;
+}
+.website-builder .floating-panel-content .text-actions {
+  gap: 5px;
+}
+.website-builder .floating-panel-content .text-actions .action {
+  min-height: 30px;
+  padding: 5px 8px;
+  font-size: 11px;
+}
+@media (max-width: 768px) {
+  .website-builder .inspector__header {
+    padding: 10px 10px 8px;
+  }
+  .website-builder .inspector-tab {
+    min-height: 36px;
+    font-size: 10px;
+  }
+  .website-builder .floating-panel-content {
+    padding-right: 7px;
+    padding-left: 7px;
+  }
+}
+
+</style>
   `;
 
   // 1. HORIZONTAL (Image Left, Content Right)
