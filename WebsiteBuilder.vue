@@ -276,6 +276,16 @@
       </div>
       <div class="tb-right">
         <button
+          class="tb-link wb-event-keys-topbar"
+          type="button"
+          title="Xem các key động dùng trong website sự kiện"
+          aria-label="Các key động cho sự kiện"
+          @click="showPlaceholderHelpDialog = true"
+        >
+          <IconKey size="17" />
+          <span>Key sự kiện</span>
+        </button>
+        <button
           ref="inspectorToggleButton"
           class="tb-link"
           type="button"
@@ -22675,6 +22685,11 @@ function enableResizable(model: ResizableComponent | null) {
 }
 
 
+
+.wb-event-keys-topbar{display:inline-flex;align-items:center;gap:7px!important;padding:0 12px!important;border:1px solid #bfdbfe!important;border-radius:9px!important;background:#eff6ff!important;color:#1d4ed8!important;font-size:12px!important;font-weight:700!important;white-space:nowrap;box-shadow:0 1px 2px rgba(37,99,235,.06)}
+.wb-event-keys-topbar:hover{border-color:#93c5fd!important;background:#dbeafe!important;color:#1e40af!important}
+.wb-event-keys-topbar svg{flex:0 0 auto}
+@media(max-width:600px){.wb-event-keys-topbar{gap:5px!important;padding:0 8px!important;font-size:11px!important}.wb-event-keys-topbar span{display:inline!important}}
 
 /* Dynamic event keys dialog: clearer grouping, search and copy actions */
   .wb-dynamic-keys-backdrop{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(15,23,42,.58);backdrop-filter:blur(3px)}
