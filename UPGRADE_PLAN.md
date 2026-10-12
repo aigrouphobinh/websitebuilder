@@ -97,6 +97,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Tạo trạng thái focus rõ ràng và vùng tương tác thân thiện với thiết bị cảm ứng trong giao diện builder.
 - [x] Bổ sung `aria-label` và `aria-busy` cho nút lưu/xuất bản để trạng thái đang lưu được công nghệ hỗ trợ nhận diện; thêm nhãn rõ ràng cho thao tác khôi phục trang chủ và lưu mẫu hệ thống.
 - [x] Đặt bảng thuộc tính bên phải ở chế độ dễ đọc mặc định thay vì thu gọn các trường điều khiển; hiển thị tên thành phần đang chọn ngay trên đầu bảng để người dùng biết mình đang chỉnh sửa phần nào.
+- [x] Mở rộng cột thuộc tính bên phải lên 360px trên desktop và 320px trên màn hình nhỏ; trên mobile dùng chiều rộng tối đa 360px nhưng không vượt quá khung nhìn, giữ panel dạng overlay.
 - [x] Làm rõ phản hồi khi xác minh dữ liệu sau lưu không khớp: hiển thị cảnh báo cụ thể và không hiện thêm thông báo thành công gây hiểu nhầm.
 - [x] Phân biệt trường hợp API đọc lại sau lưu bị lỗi: cảnh báo chưa xác minh được dữ liệu thay vì âm thầm hiển thị thông báo lưu thành công.
 - [x] Làm gọn phần đầu cột thuộc tính: tiêu đề và hướng dẫn theo ngữ cảnh, ô tìm kiếm toàn chiều rộng, nút xóa tìm kiếm và trạng thái focus dễ nhận biết.
@@ -228,6 +229,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 ### Nhật ký thực hiện tuần tự
 - 2026-10-12 — P10: rà soát tĩnh phát hiện lớp chẩn đoán canvas/CSS luôn bật, có thể ghi log liên tục và chạy snapshot iframe lặp lại trong trải nghiệm thông thường. Đã chuyển sang opt-in qua `?wb_debug=1` và bỏ qua snapshot/observer khi debug tắt. Chưa chạy build/test hoặc đo hiệu năng trong host project.
 - 2026-10-12 — P10: kiểm tra tiếp phát hiện hai wrapper cảnh báo/lỗi debug vẫn gọi `console.warn`/`console.error` khi debug tắt. Đã thêm guard cho cả hai wrapper để instrumentation debug không phát log riêng khi chưa bật `?wb_debug=1`. Đây là rà soát tĩnh; chưa chạy build/test.
+- 2026-10-12 — P7/P8: mở rộng inspector bên phải lên 360px desktop, 320px ở màn hình nhỏ và tối đa 360px trên mobile (có giới hạn theo viewport). Không đổi handler/API hay logic thuộc tính. Chưa kiểm thử trực quan trong host browser.
 - 2026-10-12 — P0: đã đối chiếu cây repository, PR #2 và trạng thái so sánh với main. Phát hiện repo không chứa package.json/lockfile/test runner/CI workflow; cần chạy kiểm tra trong host project đang sử dụng component.
 - 2026-10-12 — P1: rà soát tĩnh test/helper, phát hiện tìm kiếm component không chuẩn hóa ký tự đ/Đ. Đã sửa utils/element-search.ts và thêm test cho “Đăng ký”/“địa điểm”.
 - 2026-10-12 — P1: tiếp tục cải thiện tìm kiếm dễ dùng hơn: chuẩn hóa khoảng trắng liên tiếp và thêm test hồi quy cho truy vấn có nhiều khoảng trắng/xuống dòng. Chưa chạy test/build: repository không có package.json, lockfile, test runner config hoặc GitHub Actions workflow; cần môi trường host tích hợp component để xác minh.
