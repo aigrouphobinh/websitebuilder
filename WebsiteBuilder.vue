@@ -276,14 +276,14 @@
       </div>
       <div class="tb-right">
         <button
-          v-if="isSmallScreen"
+          ref="inspectorToggleButton"
           class="tb-link"
           type="button"
           :class="{ active: showProperties }"
           :aria-label="showProperties ? 'Ẩn bảng thuộc tính' : 'Hiện bảng thuộc tính'"
           :aria-expanded="showProperties"
           aria-controls="inspector-properties-panel"
-          @click="showProperties = !showProperties"
+          @click="toggleInspectorProperties"
         >
           <IconSettings size="20" />
         </button>
@@ -1444,6 +1444,7 @@
         id="inspector-properties-panel"
         aria-labelledby="inspector-panel-title"
         :class="['inspector', 'properties', { compact: inspectorCompact }]"
+        @keydown.esc.stop.prevent="closeInspectorProperties"
       >
         <header class="inspector__header">
           <div class="inspector__topline">
@@ -1459,7 +1460,8 @@
               aria-label="Đóng bảng thuộc tính"
               aria-controls="inspector-properties-panel"
               title="Đóng bảng thuộc tính"
-              @click="showProperties = false"
+              ref="inspectorCloseButton"
+              @click="closeInspectorProperties"
             >
               <IconX size="18" />
             </button>
@@ -1467,6 +1469,7 @@
           <label class="inspector__search">
             <IconSearch size="16" aria-hidden="true" />
             <input
+              ref="inspectorSearchInput"
               v-model="sidebarSearch"
               type="search"
               placeholder="Tìm nhanh cài đặt..."
@@ -8763,12 +8766,30 @@ const headerProps = ref({
   showSeparator: true,
 });
 
+function toggleInspectorProperties() {
+  if (showProperties.value) {
+    showProperties.value = false;
+    return;
+  }
+
+  showProperties.value = true;
+  nextTick(() => inspectorSearchInput.value?.focus());
+}
+
+function closeInspectorProperties() {
+  showProperties.value = false;
+  nextTick(() => inspectorToggleButton.value?.focus());
+}
+
 type InspectorVisibleTab = "style" | "settings" | "interactions";
 const visibleInspectorTabs: InspectorVisibleTab[] = [
   "style",
   "settings",
   "interactions",
 ];
+const inspectorToggleButton = ref<HTMLButtonElement | null>(null);
+const inspectorCloseButton = ref<HTMLButtonElement | null>(null);
+const inspectorSearchInput = ref<HTMLInputElement | null>(null);
 const inspectorStyleTab = ref<HTMLButtonElement | null>(null);
 const inspectorSettingsTab = ref<HTMLButtonElement | null>(null);
 const inspectorInteractionsTab = ref<HTMLButtonElement | null>(null);
