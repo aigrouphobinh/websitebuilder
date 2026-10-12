@@ -819,123 +819,19 @@
                   <IconTicket size="24" /><span>Nút Mua Vé</span>
                 </button>
 
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-testimonials')"
-                  @click="addFromBlockManager('landing-testimonials')"
-                >
-                  <IconMessageCircle size="24" /><span>Đánh giá</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-content-left')"
-                  @click="addFromBlockManager('landing-content-left')"
-                >
-                  <IconColumns size="24" /><span>Nội dung (Trái)</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-faq')"
-                  @click="addFromBlockManager('landing-faq')"
-                >
-                  <IconHelpCircle size="24" /><span>Câu hỏi thường gặp</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-team')"
-                  @click="addFromBlockManager('landing-team')"
-                >
-                  <IconUsers size="24" /><span>Đội ngũ</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-contact')"
-                  @click="addFromBlockManager('landing-contact')"
-                >
-                  <IconMail size="24" /><span>Liên hệ chung</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-partners')"
-                  @click="addFromBlockManager('landing-partners')"
-                >
-                  <IconHeartHandshake size="24" /><span>Đối tác</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-speakers')"
-                  @click="addFromBlockManager('landing-speakers')"
-                >
-                  <IconUsers size="24" /><span>Diễn giả</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-sponsors')"
-                  @click="addFromBlockManager('landing-sponsors')"
-                >
-                  <IconWindow size="24" /><span>Nhà tài trợ</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-benefits')"
-                  @click="addFromBlockManager('landing-benefits')"
-                >
-                  <IconGift size="24" /><span>Lợi ích</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-audience')"
-                  @click="addFromBlockManager('landing-audience')"
-                >
-                  <IconUsers size="24" /><span>Đối tượng</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-topics')"
-                  @click="addFromBlockManager('landing-topics')"
-                >
-                  <IconListDetails size="24" /><span>Chủ đề</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-stats')"
-                  @click="addFromBlockManager('landing-stats')"
-                >
-                  <IconTable size="24" /><span>Thống kê</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-gallery')"
-                  @click="addFromBlockManager('landing-gallery')"
-                >
-                  <IconPhoto size="24" /><span>Thư viện ảnh</span>
-                </button>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
               </div>
             </transition>
           </section>
@@ -1091,123 +987,19 @@
                   <IconSeparator size="24" /><span>Khoảng đệm</span>
                 </button>
 
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-testimonials')"
-                  @click="addFromBlockManager('landing-testimonials')"
-                >
-                  <IconMessageCircle size="24" /><span>Đánh giá</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-content-left')"
-                  @click="addFromBlockManager('landing-content-left')"
-                >
-                  <IconColumns size="24" /><span>Nội dung (Trái)</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-faq')"
-                  @click="addFromBlockManager('landing-faq')"
-                >
-                  <IconHelpCircle size="24" /><span>Câu hỏi thường gặp</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-team')"
-                  @click="addFromBlockManager('landing-team')"
-                >
-                  <IconUsers size="24" /><span>Đội ngũ</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-contact')"
-                  @click="addFromBlockManager('landing-contact')"
-                >
-                  <IconMail size="24" /><span>Liên hệ chung</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-partners')"
-                  @click="addFromBlockManager('landing-partners')"
-                >
-                  <IconHeartHandshake size="24" /><span>Đối tác</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-speakers')"
-                  @click="addFromBlockManager('landing-speakers')"
-                >
-                  <IconUsers size="24" /><span>Diễn giả</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-sponsors')"
-                  @click="addFromBlockManager('landing-sponsors')"
-                >
-                  <IconWindow size="24" /><span>Nhà tài trợ</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-benefits')"
-                  @click="addFromBlockManager('landing-benefits')"
-                >
-                  <IconGift size="24" /><span>Lợi ích</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-audience')"
-                  @click="addFromBlockManager('landing-audience')"
-                >
-                  <IconUsers size="24" /><span>Đối tượng</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-topics')"
-                  @click="addFromBlockManager('landing-topics')"
-                >
-                  <IconListDetails size="24" /><span>Chủ đề</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-stats')"
-                  @click="addFromBlockManager('landing-stats')"
-                >
-                  <IconTable size="24" /><span>Thống kê</span>
-                </button>
-                <button
-                  class="sb-item"
-                  type="button"
-                  draggable="true"
-                  @dragstart="onBlockDragStart('landing-gallery')"
-                  @click="addFromBlockManager('landing-gallery')"
-                >
-                  <IconPhoto size="24" /><span>Thư viện ảnh</span>
-                </button>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
               </div>
             </transition>
           </section>
