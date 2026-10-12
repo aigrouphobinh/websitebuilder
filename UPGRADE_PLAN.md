@@ -185,6 +185,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Ba tab có ID, `aria-controls`/labelled tabpanel và `tabindex` để chỉ tab đang chọn nằm trong thứ tự Tab thông thường.
 - [x] Hỗ trợ bàn phím trong tablist: Left/Right đổi tab và chuyển focus, Home về tab đầu, End đến tab cuối.
 - [x] Gắn nhãn landmark cho bảng thuộc tính và liên kết nút bật/tắt panel với vùng điều khiển bằng `aria-controls`/ `aria-expanded`.
+- [x] Thay thẻ `label` bao quanh ô tìm kiếm và nút xóa bằng `div` có semantics phù hợp; input giữ `aria-label` độc lập để tránh lồng nhiều điều khiển trong label.
 - [x] Hiển thị nút bật/tắt bảng thuộc tính trên cả desktop lẫn màn hình nhỏ, tránh trường hợp đóng panel trên desktop nhưng không có nút để mở lại.
 - [x] Khi mở panel bằng nút toolbar, đưa focus vào ô tìm kiếm; khi đóng bằng nút X hoặc Escape trong panel, đưa focus về nút bật/tắt.
 - [x] Khi panel tự thu gọn do viewport chuyển sang mobile, kiểm tra focus có nằm trong panel hay không; chỉ trả focus về toolbar toggle khi resize thực sự loại bỏ phần tử đang có focus, tránh cướp focus khỏi canvas/toolbar ở lần bố cục mobile đầu tiên.
@@ -236,6 +237,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — P8: sửa thêm trường hợp resize làm panel tự unmount khi focus còn ở bên trong: nhánh auto-collapse mobile giờ gọi cùng handler đóng panel và trả focus về nút toolbar. Đây là kiểm tra code path tĩnh; cần xác nhận hành vi khi đổi kích thước thực tế trong trình duyệt.
 
 - 2026-10-12 — P8: tinh chỉnh auto-collapse mobile để không cướp focus trong lúc khởi tạo/responsive resize khi người dùng đang ở canvas; chỉ khôi phục focus về toggle nếu focus thật sự đang nằm trong panel sắp unmount.
+
+- 2026-10-12 — P8: sửa semantics ô tìm kiếm bảng thuộc tính, không dùng `label` bao cả input và nút xóa; giữ aria-label trực tiếp trên input. Kiểm tra cấu trúc tĩnh sau commit để xác minh cặp thẻ và các liên kết ARIA.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
