@@ -282,6 +282,7 @@
           :class="{ active: showProperties }"
           :aria-label="showProperties ? 'Ẩn bảng thuộc tính' : 'Hiện bảng thuộc tính'"
           :aria-expanded="showProperties"
+          aria-controls="inspector-properties-panel"
           @click="showProperties = !showProperties"
         >
           <IconSettings size="20" />
@@ -1440,12 +1441,14 @@
       </main>
       <aside
         v-if="showProperties"
+        id="inspector-properties-panel"
+        aria-labelledby="inspector-panel-title"
         :class="['inspector', 'properties', { compact: inspectorCompact }]"
       >
         <header class="inspector__header">
           <div class="inspector__topline">
             <div class="inspector__heading">
-              <h2 class="inspector__title">{{ propertiesTitle }}</h2>
+              <h2 id="inspector-panel-title" class="inspector__title">{{ propertiesTitle }}</h2>
               <p class="inspector__hint">
                 {{ isTextSelection ? "Đang chỉnh sửa văn bản" : selectedComponentLabel ? "Đang chọn: " + selectedComponentLabel : "Chọn một khối trên trang để chỉnh sửa" }}
               </p>
@@ -1454,6 +1457,7 @@
               class="icon-button"
               type="button"
               aria-label="Đóng bảng thuộc tính"
+              aria-controls="inspector-properties-panel"
               title="Đóng bảng thuộc tính"
               @click="showProperties = false"
             >
