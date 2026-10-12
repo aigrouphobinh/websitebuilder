@@ -1465,7 +1465,7 @@
               <IconX size="18" />
             </button>
           </div>
-          <label class="inspector__search">
+          <div class="inspector__search">
             <IconSearch size="16" aria-hidden="true" />
             <input
               ref="inspectorSearchInput"
@@ -1485,7 +1485,7 @@
             >
               <IconX size="14" />
             </button>
-          </label>
+          </div>
         </header>
 
         <nav class="inspector-tabs" role="tablist" aria-label="Nhóm thuộc tính phần tử">
