@@ -447,11 +447,11 @@
         <div v-show="sbActiveTab === 'elements'">
           <section class="sb-group">
             <header class="sb-group-header">
-              <div class="sb-group-title">Landing Page</div>
+              <div class="sb-group-title">Mẫu Landing Page</div>
               <button
                 class="sb-collapse"
                 type="button"
-                :aria-expanded="!collapseLandingPage"
+                 :aria-expanded="!collapseLandingPage || !!elementQuery.trim()"
                 @click="collapseLandingPage = !collapseLandingPage"
               >
                 <IconChevronDown v-if="!collapseLandingPage" size="16" />
@@ -459,7 +459,7 @@
               </button>
             </header>
             <transition name="sb-slide">
-              <div v-show="!collapseLandingPage" class="sb-grid">
+              <div v-show="!collapseLandingPage || elementQuery.trim()" class="sb-grid">
                 <button
                   class="sb-item"
                   type="button"
@@ -8547,7 +8547,7 @@ const layoutStyle = computed(() => {
   };
 });
 const collapseStructure = ref(false);
-const collapseLandingPage = ref(false);
+const collapseLandingPage = ref(true);
 const collapseTypography = ref(false);
 const collapseMedia = ref(false);
 
