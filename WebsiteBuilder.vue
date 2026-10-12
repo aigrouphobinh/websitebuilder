@@ -8613,16 +8613,18 @@ onBeforeUnmount(() => {
 
 const layoutStyle = computed(() => {
   let left = sidebarOpen.value ? "280px" : "72px";
-  let right = showProperties.value ? "280px" : "0px";
+  // Give the inspector more room on desktop so labels and controls are easier
+  // to scan; keep a narrower value on small desktop/tablet layouts.
+  let right = showProperties.value ? "360px" : "0px";
 
   if (isMobile.value) {
-    // On mobile, panels take more space or overlay?
-    // For this layout structure (grid), we just reduce width to fit content
+    // Panels overlay the canvas on mobile, so keep the grid width from
+    // affecting the underlying canvas layout.
     if (sidebarOpen.value) left = "280px";
-    if (showProperties.value) right = "280px";
+    if (showProperties.value) right = "0px";
   } else if (isSmallScreen.value) {
     if (sidebarOpen.value) left = "220px";
-    if (showProperties.value) right = "280px";
+    if (showProperties.value) right = "320px";
   }
 
   return {
@@ -20294,7 +20296,8 @@ function enableResizable(model: ResizableComponent | null) {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 280px;
+  width: min(360px, calc(100vw - 24px));
+  max-width: calc(100% - 16px);
   z-index: 100;
   transform: translateX(0);
   transition: transform 0.3s ease;
