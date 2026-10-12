@@ -6133,11 +6133,20 @@ import "grapesjs/dist/css/grapes.min.css";
 // and a small in-app panel. It is focused on the exact failure mode:
 // "Canvas looks correct for ~1s, then CSS disappears".
 //
-// Disable later with: window.__WB_DEBUG_DISABLE__ = true
-// Clear panel with:   window.__WB_DEBUG_CLEAR__?.()
-// Export logs with:   window.__WB_DEBUG_EXPORT__?.()
-// ============================================================================
-const WB_DEBUG_ENABLED = true;
+// Opt in only while diagnosing canvas/CSS issues by adding ?wb_debug=1.
+// Debug instrumentation is disabled by default to avoid production console noise
+// and repeated iframe snapshots / mutation-observer work.
+const WB_DEBUG_ENABLED = (() => {
+  try {
+    return (
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("wb_debug") === "1" &&
+      !(window as any).__WB_DEBUG_DISABLE__
+    );
+  } catch {
+    return false;
+  }
+})();
 let wbDebugSeq = 0;
 let wbDebugPanel: HTMLDivElement | null = null;
 let wbDebugBody: HTMLDivElement | null = null;
@@ -6281,6 +6290,7 @@ function wbDebugError(...args: any[]) {
 }
 
 function wbCanvasSnapshot(stage: string) {
+  if (!WB_DEBUG_ENABLED) return;
   try {
     if (!editor) return wbDebug(stage, "editor=null");
     const d = editor?.Canvas.getDocument();
@@ -6337,6 +6347,7 @@ function wbCanvasSnapshot(stage: string) {
 }
 
 function wbDebugAttachFrameLifecycle() {
+  if (!WB_DEBUG_ENABLED) return;
   try {
     if (!editor) return;
     wbDebug("ATTACH frame lifecycle listeners");
