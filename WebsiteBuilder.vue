@@ -1484,37 +1484,61 @@
 
         <nav class="inspector-tabs" role="tablist" aria-label="Nhóm thuộc tính phần tử">
           <button
+            id="inspector-tab-style"
+            ref="inspectorStyleTab"
             class="inspector-tab"
             :class="{ 'is-active': rightTab === 'style' }"
             :aria-selected="rightTab === 'style'"
+            :aria-controls="'inspector-panel-style'"
+            :tabindex="rightTab === 'style' ? 0 : -1"
             role="tab"
             type="button"
             title="Chỉnh màu sắc, kiểu chữ, kích thước và khoảng cách"
             @click="rightTab = 'style'"
+            @keydown.left.prevent="moveInspectorTab(-1)"
+            @keydown.right.prevent="moveInspectorTab(1)"
+            @keydown.home.prevent="focusInspectorTab('style')"
+            @keydown.end.prevent="focusInspectorTab('interactions')"
           >
             <IconLayout size="14" aria-hidden="true" />
             <span>Kiểu dáng</span>
           </button>
           <button
+            id="inspector-tab-settings"
+            ref="inspectorSettingsTab"
             class="inspector-tab"
             :class="{ 'is-active': rightTab === 'settings' }"
             :aria-selected="rightTab === 'settings'"
+            :aria-controls="'inspector-panel-settings'"
+            :tabindex="rightTab === 'settings' ? 0 : -1"
             role="tab"
             type="button"
             title="Cài đặt nội dung và thuộc tính phần tử"
             @click="rightTab = 'settings'"
+            @keydown.left.prevent="moveInspectorTab(-1)"
+            @keydown.right.prevent="moveInspectorTab(1)"
+            @keydown.home.prevent="focusInspectorTab('style')"
+            @keydown.end.prevent="focusInspectorTab('interactions')"
           >
             <IconSettings size="14" aria-hidden="true" />
             <span>Cài đặt</span>
           </button>
           <button
+            id="inspector-tab-interactions"
+            ref="inspectorInteractionsTab"
             class="inspector-tab"
             :class="{ 'is-active': rightTab === 'interactions' }"
             :aria-selected="rightTab === 'interactions'"
+            :aria-controls="'inspector-panel-interactions'"
+            :tabindex="rightTab === 'interactions' ? 0 : -1"
             role="tab"
             type="button"
             title="Thiết lập liên kết và hành vi tương tác"
             @click="rightTab = 'interactions'"
+            @keydown.left.prevent="moveInspectorTab(-1)"
+            @keydown.right.prevent="moveInspectorTab(1)"
+            @keydown.home.prevent="focusInspectorTab('style')"
+            @keydown.end.prevent="focusInspectorTab('interactions')"
           >
             <IconLink size="14" aria-hidden="true" />
             <span>Tương tác</span>
@@ -1573,7 +1597,14 @@
               </button>
             </div>
           </div>
-          <div v-if="rightTab === 'style'" class="settings-section">
+          <div
+            v-if="rightTab === 'style'"
+            id="inspector-panel-style"
+            role="tabpanel"
+            aria-labelledby="inspector-tab-style"
+            tabindex="0"
+            class="settings-section"
+          >
             <p
               v-if="sidebarSearch && !hasStyleSearchMatches()"
               class="inspector__hint"
@@ -2685,7 +2716,14 @@
               </div>
             </div>
           </div>
-          <div v-if="rightTab === 'settings'" class="settings-section">
+          <div
+            v-if="rightTab === 'settings'"
+            id="inspector-panel-settings"
+            role="tabpanel"
+            aria-labelledby="inspector-tab-settings"
+            tabindex="0"
+            class="settings-section"
+          >
             <p
               v-if="sidebarSearch && !hasSettingsSearchMatches()"
               class="inspector__hint"
@@ -3690,6 +3728,10 @@
           </div>
           <div
             v-if="rightTab === 'interactions'"
+            id="inspector-panel-interactions"
+            role="tabpanel"
+            aria-labelledby="inspector-tab-interactions"
+            tabindex="0"
             class="settings-section"
           >
             <p
@@ -8717,9 +8759,42 @@ const headerProps = ref({
   showSeparator: true,
 });
 
+type InspectorVisibleTab = "style" | "settings" | "interactions";
+const visibleInspectorTabs: InspectorVisibleTab[] = [
+  "style",
+  "settings",
+  "interactions",
+];
+const inspectorStyleTab = ref<HTMLButtonElement | null>(null);
+const inspectorSettingsTab = ref<HTMLButtonElement | null>(null);
+const inspectorInteractionsTab = ref<HTMLButtonElement | null>(null);
+
 const rightTab = ref<"style" | "interactions" | "layouts" | "settings">(
   "style",
 );
+
+function focusInspectorTab(tab: InspectorVisibleTab) {
+  rightTab.value = tab;
+  nextTick(() => {
+    const tabRefs = {
+      style: inspectorStyleTab,
+      settings: inspectorSettingsTab,
+      interactions: inspectorInteractionsTab,
+    };
+    tabRefs[tab].value?.focus();
+  });
+}
+
+function moveInspectorTab(direction: -1 | 1) {
+  const currentIndex = visibleInspectorTabs.indexOf(
+    rightTab.value as InspectorVisibleTab,
+  );
+  const safeIndex = currentIndex < 0 ? 0 : currentIndex;
+  const nextIndex =
+    (safeIndex + direction + visibleInspectorTabs.length) %
+    visibleInspectorTabs.length;
+  focusInspectorTab(visibleInspectorTabs[nextIndex]);
+}
 const spacingUnits = ["px", "rem"];
 const sizeUnits = ["px", "%", "rem"];
 const spacingUnit = ref("px");
@@ -22571,6 +22646,22 @@ function enableResizable(model: ResizableComponent | null) {
   outline: 2px solid #818cf8;
   outline-offset: 2px;
 }
+@media (max-width: 360px) {
+  .website-builder .inspector-tab svg {
+    display: none;
+  }
+  .website-builder .inspector-tab {
+    gap: 0;
+    padding-right: 2px;
+    padding-left: 2px;
+    font-size: 10px;
+  }
+  .website-builder .inspector-tabs {
+    margin-right: 6px;
+    margin-left: 6px;
+  }
+}
+
 @media (max-width: 768px) {
   .website-builder .inspector.properties {
     min-width: 0;
