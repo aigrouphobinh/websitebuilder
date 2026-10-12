@@ -1474,6 +1474,7 @@
               placeholder="Tìm nhanh cài đặt..."
               aria-label="Tìm nhanh cài đặt trong bảng thuộc tính"
               class="input-focus"
+              @keydown.esc.stop.prevent="handleInspectorSearchEscape"
             />
             <button
               v-if="sidebarSearch"
@@ -8785,6 +8786,14 @@ const headerProps = ref({
 function clearInspectorSearch() {
   sidebarSearch.value = "";
   nextTick(() => inspectorSearchInput.value?.focus());
+}
+
+function handleInspectorSearchEscape() {
+  if (sidebarSearch.value) {
+    clearInspectorSearch();
+    return;
+  }
+  closeInspectorProperties();
 }
 
 function toggleInspectorProperties() {
