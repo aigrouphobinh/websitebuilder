@@ -104,7 +104,7 @@
               onmouseover="this.style.background='#f3f4f6'"
               onmouseout="this.style.background='transparent'"
               @click="
-                showPageDialog = true;
+                openPageSettings();
                 showMenu = false;
               "
             >
@@ -13372,120 +13372,160 @@ function applyHeroSettings() {
   if (pModel) setBlockText(pModel, heroSubtitle.value || "");
 }
 
+function openPageSettings() {
+  const doc = editor?.Canvas.getDocument();
+  if (!doc) {
+    toast.error("Trình chỉnh sửa chưa sẵn sàng. Vui lòng thử lại.");
+    return;
+  }
+
+  const readMeta = (selector: string) =>
+    doc.head.querySelector<HTMLMetaElement>(selector)?.content || "";
+  const readLink = (rel: string) =>
+    doc.head.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`)?.href || "";
+
+  siteTitle.value =
+    doc.querySelector<HTMLElement>('[data-role="site-title"]')?.textContent?.trim() ||
+    doc.querySelector<HTMLElement>("h1")?.textContent?.trim() ||
+    doc.title ||
+    "";
+  siteSubtitle.value =
+    doc.querySelector<HTMLElement>('[data-role="site-subtitle"]')?.textContent?.trim() ||
+    doc.querySelector<HTMLElement>("h1 + p")?.textContent?.trim() ||
+    "";
+  siteLogoUrl.value =
+    doc.querySelector<HTMLImageElement>('[data-role="logo"]')?.getAttribute("src") ||
+    doc.querySelector<HTMLImageElement>("header img, .wb-header-container img")?.getAttribute("src") ||
+    "";
+  seoMeta.value = {
+    title: readMeta('meta[name="title"]') || doc.title || "",
+    description: readMeta('meta[name="description"]'),
+    ogTitle: readMeta('meta[property="og:title"]'),
+    ogImage: readMeta('meta[property="og:image"]'),
+  };
+  pageCanonical.value = readLink("canonical");
+  pageFaviconUrl.value = readLink("icon");
+  pageLang.value = doc.documentElement.getAttribute("lang") || "";
+  showPageDialog.value = true;
+}
+
 function applyGlobalSiteSettings() {
   const title = (siteTitle.value || "").trim();
   const subtitle = (siteSubtitle.value || "").trim();
   const logo = (siteLogoUrl.value || "").trim();
-  if (!editor) return;
+  const wrappers = editor?.getWrapper?.();
+  if (!editor || !wrappers) {
+    toast.error("Không thể cập nhật cấu hình chung vì trình chỉnh sửa chưa sẵn sàng.");
+    return;
+  }
+
   try {
-    const wrappers = editor.getWrapper?.();
-    if (!wrappers) return;
-    const sections = (wrappers.find?.("section") || []) as Component[];
-    sections.forEach((sec: Component) => {
-      const st = sec.getStyle?.() || {};
-      const bg = String(st["background-image"] || "");
-      if (/url\(/i.test(bg)) {
-        const titles = (sec.find?.("h2") || []) as Component[];
-        const paras = (sec.find?.("p") || []) as Component[];
-        const tModel = titles[0] || null;
-        const pModel = paras[0] || null;
-        if (tModel && title) setBlockText(tModel, title);
-        if (pModel && subtitle) setBlockText(pModel, subtitle);
-      }
-    });
-    const explicitTitles = (wrappers.find?.('[data-role="site-title"]') ||
-      []) as Component[];
-    explicitTitles.forEach((m: Component) => {
-      if (title) setBlockText(m, title);
-    });
-    const explicitSubtitles = (wrappers.find?.('[data-role="site-subtitle"]') ||
-      []) as Component[];
-    explicitSubtitles.forEach((m: Component) => {
-      if (subtitle) setBlockText(m, subtitle);
-    });
-    const headers = (wrappers.find?.('[data-role="header"]') ||
-      []) as Component[];
-    headers.forEach((h: Component) => {
-      const logos = (h.find?.('[data-role="logo"]') || []) as Component[];
-      if (logos.length > 0) {
-        logos.forEach((l: Component) => {
-          if (logo) l.addAttributes({ src: logo, alt: title || "Logo" });
-        });
-      } else if (logo) {
-        try {
-          const coll = h.components?.();
-          if (coll && coll.add) {
-            coll.add(
-              {
-                type: "image",
-                attributes: {
-                  "data-role": "logo",
-                  src: logo,
-                  alt: title || "Logo",
-                  style: "height:24px;width:auto;margin-right:var(--space-3)",
-                },
-              },
-              { at: 0 },
-            );
-          } else {
-            h.append?.({
-              type: "image",
-              attributes: {
-                "data-role": "logo",
-                src: logo,
-                alt: title || "Logo",
-                style: "height:24px;width:auto;margin-right:var(--space-3)",
-              },
-            });
-          }
-        } catch {}
-      }
-    });
-  } catch {}
+    const findComponents = (selector: string) =>
+      (wrappers.find?.(selector) || []) as Component[];
+    let titles = findComponents('[data-role="site-title"]');
+    if (!titles.length) titles = findComponents("h1").slice(0, 1);
+    titles.forEach((component) => setBlockText(component, title));
+
+    let subtitles = findComponents('[data-role="site-subtitle"]');
+    if (!subtitles.length) subtitles = findComponents("h1 + p").slice(0, 1);
+    subtitles.forEach((component) => setBlockText(component, subtitle));
+
+    const headers = [
+      ...findComponents('[data-role="header"]'),
+      ...findComponents("header"),
+      ...findComponents(".wb-header-container"),
+    ].filter((component, index, all) => all.indexOf(component) === index);
+
+    if (logo) {
+      headers.forEach((header) => {
+        let logos = (header.find?.('[data-role="logo"]') || []) as Component[];
+        if (!logos.length) logos = (header.find?.("img") || []) as Component[];
+        if (logos.length) {
+          logos.forEach((image) => image.addAttributes({ src: logo, alt: title || "Logo" }));
+          return;
+        }
+
+        const attributes = {
+          "data-role": "logo",
+          src: logo,
+          alt: title || "Logo",
+          style: "height:24px;width:auto;object-fit:contain",
+        };
+        const collection = header.components?.();
+        if (collection?.add) collection.add({ type: "image", attributes }, { at: 0 });
+        else header.append?.({ type: "image", attributes });
+      });
+    }
+
+    toast.success("Đã áp dụng tiêu đề, phụ đề và logo vào trang. Nhấn “Lưu & Xuất bản” để lưu thay đổi.");
+  } catch (error) {
+    console.error("applyGlobalSiteSettings failed:", error);
+    toast.error("Không thể áp dụng cấu hình chung. Vui lòng kiểm tra template và thử lại.");
+  }
 }
 
 function applyPageMeta() {
   const doc = editor?.Canvas.getDocument();
-  if (!doc) return;
-  const t = String(seoMeta.value.title || "").trim();
-  const d = String(seoMeta.value.description || "").trim();
-  const ot = String(seoMeta.value.ogTitle || "").trim();
-  const oi = String(seoMeta.value.ogImage || "").trim();
-  const can = String(pageCanonical.value || "").trim();
-  const fav = String(pageFaviconUrl.value || "").trim();
-  const lang = String(pageLang.value || "").trim();
+  if (!doc?.head) {
+    toast.error("Trình chỉnh sửa chưa sẵn sàng để cập nhật SEO.");
+    return;
+  }
+
+  const values = {
+    title: String(seoMeta.value.title || "").trim(),
+    description: String(seoMeta.value.description || "").trim(),
+    ogTitle: String(seoMeta.value.ogTitle || "").trim(),
+    ogImage: String(seoMeta.value.ogImage || "").trim(),
+    canonical: String(pageCanonical.value || "").trim(),
+    favicon: String(pageFaviconUrl.value || "").trim(),
+    lang: String(pageLang.value || "").trim(),
+  };
+
   try {
-    if (t) doc.title = t;
-    const head = doc.head;
-    const upsertMeta = (attr: string, key: string, content: string) => {
-      if (!content) return;
-      const sel = `meta[${attr}="${key}"]`;
-      let el = head.querySelector(sel) as HTMLMetaElement | null;
-      if (!el) {
-        el = doc.createElement("meta");
-        el.setAttribute(attr, key);
-        head.appendChild(el);
+    doc.title = values.title;
+
+    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+      const selector = `meta[${attr}="${key}"]`;
+      let element = doc.head.querySelector<HTMLMetaElement>(selector);
+      if (!content) {
+        element?.remove();
+        return;
       }
-      el.setAttribute("content", content);
-    };
-    const upsertLink = (rel: string, href: string) => {
-      if (!href) return;
-      const sel = `link[rel="${rel}"]`;
-      let el = head.querySelector(sel) as HTMLLinkElement | null;
-      if (!el) {
-        el = doc.createElement("link");
-        el.setAttribute("rel", rel);
-        head.appendChild(el);
+      if (!element) {
+        element = doc.createElement("meta");
+        element.setAttribute(attr, key);
+        doc.head.appendChild(element);
       }
-      el.setAttribute("href", href);
+      element.setAttribute("content", content);
     };
-    if (d) upsertMeta("name", "description", d);
-    if (ot) upsertMeta("property", "og:title", ot);
-    if (oi) upsertMeta("property", "og:image", oi);
-    if (can) upsertLink("canonical", can);
-    if (fav) upsertLink("icon", fav);
-    if (lang) doc.documentElement.setAttribute("lang", lang);
-  } catch {}
+    const upsertLink = (rel: "canonical" | "icon", href: string) => {
+      let element = doc.head.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`);
+      if (!href) {
+        element?.remove();
+        return;
+      }
+      if (!element) {
+        element = doc.createElement("link");
+        element.setAttribute("rel", rel);
+        doc.head.appendChild(element);
+      }
+      element.setAttribute("href", href);
+    };
+
+    upsertMeta("name", "title", values.title);
+    upsertMeta("name", "description", values.description);
+    upsertMeta("property", "og:title", values.ogTitle);
+    upsertMeta("property", "og:image", values.ogImage);
+    upsertLink("canonical", values.canonical);
+    upsertLink("icon", values.favicon);
+    if (values.lang) doc.documentElement.setAttribute("lang", values.lang);
+    else doc.documentElement.removeAttribute("lang");
+
+    toast.success("Đã cập nhật SEO Meta. Nhấn “Lưu & Xuất bản” để lưu thay đổi.");
+  } catch (error) {
+    console.error("applyPageMeta failed:", error);
+    toast.error("Không thể cập nhật SEO Meta. Vui lòng thử lại.");
+  }
 }
 
 function applyAccordionSettings() {
