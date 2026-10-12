@@ -244,3 +244,5 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Mỗi key hiển thị phạm vi sử dụng, mô tả, ví dụ và nút sao chép riêng.
 - [x] Bổ sung trạng thái không có kết quả, số lượng key và bố cục responsive cho màn hình nhỏ.
 - [ ] Kiểm thử tương tác trực tiếp trong ứng dụng host; repository này chưa được xác nhận có thể chạy độc lập.
+
+- [x] Đưa nút **Key sự kiện** lên topbar chính, có icon key và nhãn rõ ràng; mở đúng hộp thoại key động khi nhấn.
