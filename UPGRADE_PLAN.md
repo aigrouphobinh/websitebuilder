@@ -65,6 +65,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Làm rõ thứ bậc thị giác của tiêu đề, trạng thái phần tử được chọn, ô tìm kiếm và ba tab.
 - [x] Giảm cảm giác rối bằng nhóm cài đặt dạng card nhẹ, khoảng cách đồng nhất, trường nhập dễ đọc và trạng thái focus dễ nhận biết.
 - [x] Làm rõ vùng thao tác định dạng văn bản và giữ bố cục phù hợp màn hình hẹp.
+- [x] Tinh gọn chiều cao header, ô tìm kiếm, tab, nhóm và trường nhập; giữ nguyên tất cả trường/handler để ưu tiên thông tin chính mà không mất chức năng.
 - [ ] Kiểm tra trực tiếp desktop/tablet/mobile, xác minh không có CSS khác ghi đè và mọi trường vẫn thao tác được.
 - [ ] Dựa trên phản hồi sử dụng thực tế để quyết định có ẩn/bỏ các trường nâng cao ít dùng; chưa xóa chức năng nghiệp vụ chỉ dựa trên giả định.
 
