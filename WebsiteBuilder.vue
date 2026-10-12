@@ -9411,10 +9411,19 @@ const effectEventsOpen = ref(false);
 const sidebarSearch = ref("");
 const inspectorCompact = ref(false);
 
+function normalizeInspectorSearch(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[đĐ]/g, (char) => (char === "Đ" ? "D" : "d"))
+    .toLocaleLowerCase("vi")
+    .trim();
+}
+
 function matchesSearch(...terms: string[]) {
-  if (!sidebarSearch.value) return true;
-  const k = sidebarSearch.value.toLowerCase();
-  return terms.some((t) => t.toLowerCase().includes(k));
+  const query = normalizeInspectorSearch(sidebarSearch.value);
+  if (!query) return true;
+  return terms.some((term) => normalizeInspectorSearch(term).includes(query));
 }
 
 const _gridSteps = [4, 8, 10, 12, 16];
@@ -22015,6 +22024,15 @@ function enableResizable(model: ResizableComponent | null) {
 }
 
  
+/* Inspector search accepts Vietnamese keywords with or without diacritics. */
+.website-builder .inspector__search input {
+  min-width: 0;
+  width: 100%;
+}
+.website-builder .inspector__search input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
 /* Right inspector UX: clearer hierarchy, readable controls and comfortable touch targets. */
 .website-builder .inspector-tabs {
   gap: 4px;
