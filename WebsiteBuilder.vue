@@ -19158,30 +19158,44 @@ onMounted(async () => {
         }
 
         try {
+          // A queued parent template must replace the previous canvas state,
+          // including assets that are absent from the incoming template.
+          clearImportedHeadAssets();
+          installedHeadScripts.value = Array.isArray(tpl.headScripts)
+            ? [...tpl.headScripts]
+            : [];
+          installedBodyScripts.value = Array.isArray(tpl.bodyScripts)
+            ? [...tpl.bodyScripts]
+            : [];
+
           if (tpl.projectData) {
             loadProjectData(tpl.projectData);
-          } else if (tpl.html) {
-            setEditorHtml(tpl.html);
+          } else {
+            // Empty HTML is valid and must clear the previously displayed page.
+            setEditorHtml(tpl.html || "");
           }
-          if (tpl.css) {
-            setCanvasImportCss(tpl.css);
-          }
+
+          // Empty CSS is meaningful: don't retain imported CSS from the old page.
+          setCanvasImportCss(tpl.css || "");
           if (tpl.headCss) {
             injectSavedHeadCss(tpl.headCss);
           }
-          if (tpl.headLinks && tpl.headLinks.length > 0) {
+          if (Array.isArray(tpl.headLinks) && tpl.headLinks.length > 0) {
             injectSavedHeadLinks(tpl.headLinks);
           }
           if (tpl.runtimeCode) {
             injectSavedRuntime(tpl.runtimeCode);
           }
-          if (tpl.headScripts && tpl.headScripts.length > 0) {
-            installSavedScripts(tpl.headScripts, "head");
+          if (installedHeadScripts.value.length > 0) {
+            installSavedScripts(installedHeadScripts.value, "head");
           }
-          if (tpl.bodyScripts && tpl.bodyScripts.length > 0) {
-            installSavedScripts(tpl.bodyScripts, "body");
+          if (installedBodyScripts.value.length > 0) {
+            installSavedScripts(installedBodyScripts.value, "body");
           }
-        } catch {}
+        } catch (error) {
+          console.error("[WebsiteBuilder] Không thể áp dụng template đang chờ:", error);
+          showFeedback("Không thể nạp đầy đủ template. Vui lòng thử tải lại.", "error");
+        }
         pendingTemplate.value = null;
       }
 
