@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { normalizeElementSearch } from "../utils/element-search";
+import {
+  matchesElementSearch,
+  normalizeElementSearch,
+} from "../utils/element-search";
 
 describe("normalizeElementSearch", () => {
   it("matches Vietnamese words when the query omits diacritics", () => {
@@ -25,5 +28,23 @@ describe("normalizeElementSearch", () => {
 
   it("returns an empty string for whitespace-only input", () => {
     expect(normalizeElementSearch("   ")).toBe("");
+  });
+});
+describe("matchesElementSearch", () => {
+  it("matches Vietnamese setting labels without diacritics", () => {
+    expect(matchesElementSearch("khoang cach", "Khoảng cách (px)")).toBe(true);
+    expect(matchesElementSearch("dia diem", "Địa điểm")).toBe(true);
+  });
+
+  it("normalizes repeated whitespace in queries and labels", () => {
+    expect(matchesElementSearch("  URL   anh  ", "URL ảnh")).toBe(true);
+  });
+
+  it("returns false when no label matches", () => {
+    expect(matchesElementSearch("javascript", "Khoảng cách", "Kích thước")).toBe(false);
+  });
+
+  it("keeps all settings visible for an empty query", () => {
+    expect(matchesElementSearch("   ", "Khoảng cách")).toBe(true);
   });
 });
