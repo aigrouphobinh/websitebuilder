@@ -1447,7 +1447,7 @@
             <div class="inspector__heading">
               <h2 class="inspector__title">{{ propertiesTitle }}</h2>
               <p class="inspector__hint">
-                {{ isTextSelection ? "Đang chỉnh sửa văn bản" : "Chọn một khối trên trang để chỉnh sửa" }}
+                {{ isTextSelection ? "Đang chỉnh sửa văn bản" : selectedComponentLabel ? "Đang chọn: " + selectedComponentLabel : "Chọn một khối trên trang để chỉnh sửa" }}
               </p>
             </div>
             <button
@@ -8002,6 +8002,17 @@ const activePanelType = ref<"header" | "block">("header");
 const propertiesTitle = computed(() =>
   activePanelType.value === "header" ? "Đầu trang" : "Khối",
 );
+const selectedComponentLabel = computed(() => {
+  const component = selectedComponent.value;
+  if (!component) return "";
+  try {
+    const name = typeof component.getName === "function" ? component.getName() : "";
+    const tag = typeof component.get === "function" ? component.get("tagName") : "";
+    return String(name || tag || "Thành phần đã chọn");
+  } catch {
+    return "Thành phần đã chọn";
+  }
+});
 const selectedTextName = ref("");
 const lastSelectedTextName = ref("");
 const multiSelectedCount = ref(0);
@@ -9398,7 +9409,7 @@ const effectFilterOpen = ref(false);
 const effectBackdropOpen = ref(false);
 const effectEventsOpen = ref(false);
 const sidebarSearch = ref("");
-const inspectorCompact = ref(true);
+const inspectorCompact = ref(false);
 
 function matchesSearch(...terms: string[]) {
   if (!sidebarSearch.value) return true;
