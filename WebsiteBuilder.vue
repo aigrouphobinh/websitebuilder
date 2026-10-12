@@ -2,7 +2,7 @@
   <div
     ref="rootEl"
     class="website-builder"
-    :class="{ 'in-layout': isSuperAdminPerm && !isEmbed }"
+    :class="{ 'in-layout': isSuperAdminPerm && !isEmbed, 'has-event-id': !!eventIdParam }"
   >
     <div class="topbar topbar--figma">
       <div class="tb-left">
@@ -22150,6 +22150,11 @@ function enableResizable(model: ResizableComponent | null) {
   background: #eef2ff;
   border-color: #c7d2fe;
   color: #4f46e5;
+}
+
+/* Leave room for the host-provided close control when editing a specific event. */
+.website-builder.has-event-id .tb-right .tb-link.primary-action {
+  margin-right: 48px;
 }
 
 .website-builder .tb-link.primary-action {
