@@ -1574,6 +1574,12 @@
             </div>
           </div>
           <div v-if="rightTab === 'style'" class="settings-section">
+            <p
+              v-if="sidebarSearch && !hasStyleSearchMatches()"
+              class="inspector__hint"
+            >
+              Không tìm thấy cài đặt phù hợp trong tab Kiểu dáng. Thử từ khóa khác hoặc xóa tìm kiếm.
+            </p>
             <div
               v-if="isTextSelection && matchesSearch('Kiểu chữ', 'Typography', 'Nội dung', 'Cỡ chữ', 'Font', 'Khoảng dòng', 'Line Height', 'Độ đậm', 'Weight', 'Khoảng chữ', 'Letter Spacing', 'Màu chữ', 'Text Color')"
               class="setting-group"
@@ -1676,7 +1682,7 @@
                 </div>
               </div>
             </div>
-            <div class="setting-group">
+            <div v-if="hasStyleSearchMatches()" class="setting-group">
               <div
                 v-if="matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'Gap', 'Khoảng cách')"
                 class="group-header"
@@ -9609,6 +9615,22 @@ function matchesSearch(...terms: string[]) {
   const query = normalizeElementSearch(sidebarSearch.value);
   if (!query) return true;
   return terms.some((term) => normalizeElementSearch(term).includes(query));
+}
+
+function hasStyleSearchMatches() {
+  return (
+    (isTextSelection.value &&
+      matchesSearch('Kiểu chữ', 'Typography', 'Nội dung', 'Cỡ chữ', 'Font', 'Khoảng dòng', 'Line Height', 'Độ đậm', 'Weight', 'Khoảng chữ', 'Letter Spacing', 'Màu chữ', 'Text Color')) ||
+    matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'Gap', 'Khoảng cách') ||
+    matchesSearch('Khoảng cách', 'Spacing', 'Margin', 'Lề ngoài', 'Padding', 'Lề trong') ||
+    matchesSearch('Kích thước', 'Sizing', 'Width', 'Height', 'Rộng', 'Cao', 'Min W', 'Min H', 'Max W', 'Max H', 'Tỷ lệ', 'Đơn vị', 'Aspect', 'Auto', 'Khóa') ||
+    (isGenericGridComponent(selectedComponent.value) &&
+      matchesSearch('Lưới', 'Grid', 'Cột', 'Columns', 'Khoảng cách', 'Gap')) ||
+    matchesSearch('Nền', 'Background', 'Màu nền', 'Ảnh nền', 'Lặp lại', 'Vị trí', 'Kích thước', 'Attachment', 'Cố định') ||
+    matchesSearch('Viền', 'Border', 'Kiểu viền', 'Độ dày', 'Màu viền', 'Bo góc', 'Radius') ||
+    matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity') ||
+    matchesSearch('Hiệu ứng', 'Effects', 'Đổ bóng', 'Shadow', 'Hover', 'Chuyển đổi', 'Transition', 'Biến đổi', 'Transform', 'Xoay', 'Rotate', 'Scale', 'Skew', 'Bộ lọc', 'Filter', 'Làm mờ', 'Blur', 'Độ sáng', 'Brightness', 'Nền mờ', 'Backdrop', 'Thời gian', 'Easing')
+  );
 }
 
 const _gridSteps = [4, 8, 10, 12, 16];
