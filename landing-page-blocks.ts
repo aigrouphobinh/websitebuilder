@@ -40,8 +40,8 @@ import {
 // Shared responsive hardening for all landing/event blocks. Individual block styles
 // remain intact; these scoped rules only prevent overflow and adapt layouts on small screens.
 const LANDING_RESPONSIVE_STYLES = `
-  .landing-header, .landing-hero, .landing-features, .landing-content-left,
-  .landing-content-right, .landing-footer, .landing-testimonials, .landing-faq,
+  .landing-header, .landing-hero, .landing-features, .landing-content,
+  .landing-content, .landing-footer, .landing-testimonials, .landing-faq,
   .landing-team, .landing-contact, .landing-partners, .landing-speakers,
   .landing-sponsors, .landing-benefits, .landing-audience, .landing-topics,
   .landing-stats, .landing-gallery, .event-hero, .event-agenda, .event-pricing,
@@ -52,8 +52,8 @@ const LANDING_RESPONSIVE_STYLES = `
     max-width: 100%;
     min-width: 0;
   }
-  .landing-header *, .landing-hero *, .landing-features *, .landing-content-left *,
-  .landing-content-right *, .landing-footer *, .landing-testimonials *, .landing-faq *,
+  .landing-header *, .landing-hero *, .landing-features *, .landing-content *,
+  .landing-content *, .landing-footer *, .landing-testimonials *, .landing-faq *,
   .landing-team *, .landing-contact *, .landing-partners *, .landing-speakers *,
   .landing-sponsors *, .landing-benefits *, .landing-audience *, .landing-topics *,
   .landing-stats *, .landing-gallery *, .event-hero *, .event-agenda *, .event-pricing *,
@@ -64,7 +64,7 @@ const LANDING_RESPONSIVE_STYLES = `
     overflow-wrap: anywhere;
   }
   .landing-header img, .landing-hero img, .landing-features img,
-  .landing-content-left img, .landing-content-right img, .landing-footer img,
+  .landing-content img, .landing-content img, .landing-footer img,
   .landing-testimonials img, .landing-faq img, .landing-team img,
   .landing-contact img, .landing-partners img, .landing-speakers img,
   .landing-sponsors img, .landing-benefits img, .landing-audience img,
@@ -76,8 +76,8 @@ const LANDING_RESPONSIVE_STYLES = `
     height: auto;
   }
   @media (max-width: 768px) {
-    .landing-header, .landing-hero, .landing-features, .landing-content-left,
-    .landing-content-right, .landing-footer, .landing-testimonials, .landing-faq,
+    .landing-header, .landing-hero, .landing-features, .landing-content,
+    .landing-content, .landing-footer, .landing-testimonials, .landing-faq,
     .landing-team, .landing-contact, .landing-partners, .landing-speakers,
     .landing-sponsors, .landing-benefits, .landing-audience, .landing-topics,
     .landing-stats, .landing-gallery, .event-hero, .event-agenda, .event-pricing,
@@ -89,8 +89,8 @@ const LANDING_RESPONSIVE_STYLES = `
     .landing-header [style*="grid-template-columns"],
     .landing-hero [style*="grid-template-columns"],
     .landing-features [style*="grid-template-columns"],
-    .landing-content-left [style*="grid-template-columns"],
-    .landing-content-right [style*="grid-template-columns"],
+    .landing-content [style*="grid-template-columns"],
+    .landing-content [style*="grid-template-columns"],
     .landing-footer [style*="grid-template-columns"],
     .landing-testimonials [style*="grid-template-columns"],
     .landing-faq [style*="grid-template-columns"],
@@ -121,8 +121,8 @@ const LANDING_RESPONSIVE_STYLES = `
     .landing-header :is([style*="display: flex"], [style*="display:flex"]),
     .landing-hero :is([style*="display: flex"], [style*="display:flex"]),
     .landing-features :is([style*="display: flex"], [style*="display:flex"]),
-    .landing-content-left :is([style*="display: flex"], [style*="display:flex"]),
-    .landing-content-right :is([style*="display: flex"], [style*="display:flex"]),
+    .landing-content :is([style*="display: flex"], [style*="display:flex"]),
+    .landing-content :is([style*="display: flex"], [style*="display:flex"]),
     .landing-footer :is([style*="display: flex"], [style*="display:flex"]),
     .landing-testimonials :is([style*="display: flex"], [style*="display:flex"]),
     .landing-faq :is([style*="display: flex"], [style*="display:flex"]),
@@ -168,8 +168,8 @@ const LANDING_RESPONSIVE_STYLES = `
     .landing-header .landing-nav a { font-size: 12px !important; padding: 6px 8px !important; }
   }
   @media (max-width: 480px) {
-    .landing-header, .landing-hero, .landing-features, .landing-content-left,
-    .landing-content-right, .landing-footer, .landing-testimonials, .landing-faq,
+    .landing-header, .landing-hero, .landing-features, .landing-content,
+    .landing-content, .landing-footer, .landing-testimonials, .landing-faq,
     .landing-team, .landing-contact, .landing-partners, .landing-speakers,
     .landing-sponsors, .landing-benefits, .landing-audience, .landing-topics,
     .landing-stats, .landing-gallery, .event-hero, .event-agenda, .event-pricing,
