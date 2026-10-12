@@ -113,15 +113,17 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 ### P0 — Chốt hiện trạng và tiêu chí nghiệm thu
 - [x] Đối chiếu kế hoạch cũ với registry: 31 block (5 core + 13 landing + 13 event-specific).
 - [x] Ghi nhận nhánh UI hiện tại ux/right-inspector-redesign; PR #2 là nơi tổng hợp thay đổi tìm kiếm và sidebar.
-- [ ] Kiểm tra PR/nhánh và thay đổi so với main; bảo đảm không vô tình ghi đè công việc khác.
-- [ ] Xác định chính xác manifest, scripts, phiên bản runtime và lệnh test/build đang có trong repository.
+- [x] So sánh nhánh với main: nhánh đi trước 8 commit, không đi sau; PR #2 vẫn là draft và chưa merge.
+- [x] Kiểm tra cây repository đệ quy: có source, utils và tests nhưng không có package.json, lockfile, cấu hình Vitest hoặc workflow CI trong repository này.
+- [ ] Xác định môi trường host đang tích hợp component để chạy test/build đúng dependency; không tự tạo manifest giả định cho một repository source-only.
 - **Nghiệm thu:** có danh sách file/điểm vào/lệnh kiểm tra xác minh từ repository, không suy đoán cấu hình.
 
 ### P1 — Chạy baseline và ổn định kiểm thử
 - [x] Có unit test cho chuẩn hóa tìm kiếm, quyết định đồng bộ HTML, placeholder, ghép HTML/CSS, escaping thuộc tính và một số hành vi export/restore.
-- [ ] Chạy toàn bộ test hiện có và ghi kết quả thực tế.
-- [ ] Chạy type-check/build/lint nếu repository có script tương ứng.
-- [ ] Sửa lỗi baseline trước khi thêm thay đổi chức năng mới.
+- [ ] Chạy toàn bộ test hiện có và ghi kết quả thực tế; hiện chưa thể chạy trực tiếp từ repository do thiếu package manifest và cấu hình test.
+- [ ] Chạy type-check/build/lint trong host project tích hợp component.
+- [x] Sửa lỗi chuẩn hóa tìm kiếm tiếng Việt: chữ đ/Đ không tự phân rã qua Unicode NFD nên đã bổ sung chuẩn hóa về d/D và test hồi quy.
+- [ ] Sửa các lỗi baseline còn lại trước khi thêm thay đổi chức năng mới.
 - **Nghiệm thu:** ghi rõ lệnh nào chạy, số test pass/fail và lỗi còn lại; không đánh dấu pass nếu chưa chạy.
 
 ### P2 — Đồng bộ dữ liệu editor và v-model
@@ -203,3 +205,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 5. P9 → P11: kiểm thử tích hợp, rà soát chất lượng, tài liệu và phát hành.
 
 Không chuyển P tiếp theo khi P hiện tại còn lỗi blocker; có thể cập nhật nhiều commit nhỏ trong cùng một P.
+
+
+### Nhật ký thực hiện tuần tự
+- 2026-10-12 — P0: đã đối chiếu cây repository, PR #2 và trạng thái so sánh với main. Phát hiện repo không chứa package.json/lockfile/test runner/CI workflow; cần chạy kiểm tra trong host project đang sử dụng component.
+- 2026-10-12 — P1: rà soát tĩnh test/helper, phát hiện tìm kiếm component không chuẩn hóa ký tự đ/Đ. Đã sửa utils/element-search.ts và thêm test cho “Đăng ký”/“địa điểm”. Chưa chạy test vì repo không có môi trường thực thi được khai báo.
