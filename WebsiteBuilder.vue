@@ -13439,25 +13439,25 @@ function applyGlobalSiteSettings() {
     if (logo) {
       // Prefer explicit logo elements anywhere in the page; some templates do not
       // use semantic <header> markup or the .wb-header-container class.
-      let logoImages = findComponents('[data-role="logo"]');
-      // A template may assign data-role="logo" to a wrapper or link rather than
-      // an actual image. Updating src on those elements does not render a logo.
-      logoImages = logoImages.filter((image) => {
+      const explicitLogoComponents = findComponents('[data-role="logo"]');
+      const isLogoImage = (image: Component) => {
         const tag = String(
           image.get?.("tagName") || image.getEl?.()?.tagName || "",
         ).toLowerCase();
         const type = String(image.get?.("type") || "").toLowerCase();
         return type === "image" || tag === "img";
-      });
+      };
+      // A template may assign data-role="logo" to a wrapper or link rather than
+      // an actual image. Search inside that wrapper before creating a new logo.
+      let logoImages = explicitLogoComponents.filter(isLogoImage);
+      if (!logoImages.length) {
+        logoImages = explicitLogoComponents.flatMap((container) =>
+          ((container.find?.("img") || []) as Component[]).filter(isLogoImage),
+        );
+      }
       if (!logoImages.length) {
         logoImages = headers.flatMap((header) =>
-          ((header.find?.("img") || []) as Component[]).filter((image) => {
-            const tag = String(
-              image.get?.("tagName") || image.getEl?.()?.tagName || "",
-            ).toLowerCase();
-            const type = String(image.get?.("type") || "").toLowerCase();
-            return type === "image" || tag === "img";
-          }),
+          ((header.find?.("img") || []) as Component[]).filter(isLogoImage),
         );
       }
 
