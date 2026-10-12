@@ -22686,6 +22686,13 @@ function enableResizable(model: ResizableComponent | null) {
   border: 1px solid #e2e8f0;
   border-radius: 9px;
 }
+.website-builder .inspector__search-clear {
+  flex: 0 0 32px;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
 .website-builder .inspector button:focus-visible,
 .website-builder .inspector input:focus-visible,
 .website-builder .inspector select:focus-visible {
