@@ -2686,6 +2686,12 @@
             </div>
           </div>
           <div v-if="rightTab === 'settings'" class="settings-section">
+            <p
+              v-if="sidebarSearch && !hasSettingsSearchMatches()"
+              class="inspector__hint"
+            >
+              Không tìm thấy cài đặt phù hợp cho phần tử này. Thử từ khóa khác hoặc kiểm tra loại phần tử đang chọn.
+            </p>
             <div
               v-if="isSuperAdminPerm && matchesSearch('Advanced', 'Nâng cao', 'ID Element', 'CSS Classes', 'Breakpoint', 'Điểm ngắt')"
               class="setting-group"
@@ -3686,6 +3692,12 @@
             v-if="rightTab === 'interactions'"
             class="settings-section"
           >
+            <p
+              v-if="sidebarSearch && !hasInteractionSearchMatches()"
+              class="inspector__hint"
+            >
+              Không tìm thấy tương tác phù hợp. Thử tìm “sự kiện”, “JavaScript” hoặc chọn một nút/liên kết.
+            </p>
             <div
               v-if="matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript')"
               class="setting-group"
@@ -9630,6 +9642,45 @@ function hasStyleSearchMatches() {
     matchesSearch('Viền', 'Border', 'Kiểu viền', 'Độ dày', 'Màu viền', 'Bo góc', 'Radius') ||
     matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity') ||
     matchesSearch('Hiệu ứng', 'Effects', 'Đổ bóng', 'Shadow', 'Hover', 'Chuyển đổi', 'Transition', 'Biến đổi', 'Transform', 'Xoay', 'Rotate', 'Scale', 'Skew', 'Bộ lọc', 'Filter', 'Làm mờ', 'Blur', 'Độ sáng', 'Brightness', 'Nền mờ', 'Backdrop', 'Thời gian', 'Easing')
+  );
+}
+
+function hasSettingsSearchMatches() {
+  const component = selectedComponent.value;
+  return (
+    (isSuperAdminPerm.value &&
+      matchesSearch('Advanced', 'Nâng cao', 'ID Element', 'CSS Classes', 'Breakpoint', 'Điểm ngắt')) ||
+    (isImageComponent(component) &&
+      matchesSearch('Image', 'Hình ảnh', 'Src', 'URL ảnh', 'Alt Text', 'Fit', 'Vừa khung', 'Position', 'Vị trí')) ||
+    (isVideoComponent(component) &&
+      matchesSearch('Video', 'Src', 'URL video', 'Controls', 'Điều khiển', 'Autoplay', 'Tự động phát', 'Loop', 'Lặp lại', 'Muted', 'Tắt tiếng', 'Poster', 'Ảnh bìa', 'Preload', 'Tải trước')) ||
+    ((isButtonComponent(component) || hasLinkInSelection(component)) &&
+      matchesSearch('Button', 'Link', 'Nút', 'Liên kết', 'Href', 'URL', 'Rel', 'Tiêu đề', 'Nhãn Aria', 'Tải xuống', 'Popup Mua Vé', 'Biến thể', 'Kích thước', 'Nội dung')) ||
+    ((isHtmlComponent(component) || isIframeComponent(component)) &&
+      matchesSearch('HTML', 'Code', 'Nội dung HTML')) ||
+    (isNavbarComponent(component) &&
+      matchesSearch('Navbar', 'Thanh điều hướng', 'Căn chỉnh', 'Justify', 'Dính', 'Sticky', 'Khoảng cách', 'Đệm', 'Bán kính', 'Nền', 'Màu nền')) ||
+    (isHeroComponent(component) &&
+      matchesSearch('Hero', 'Phần đầu trang', 'Tiêu đề', 'Phụ đề', 'URL ảnh nền', 'Màu chữ', 'Màu lớp phủ', 'Độ mờ lớp phủ')) ||
+    (isBackgroundImageComponent(component) &&
+      matchesSearch('Ảnh nền', 'Background', 'URL ảnh', 'Kích thước', 'Vị trí', 'Màu lớp phủ', 'Độ mờ lớp phủ', 'Zoom video')) ||
+    (isSliderComponent(component) &&
+      matchesSearch('Slider', 'Thanh trượt', 'Role', 'Mũi tên', 'Dấu chấm', 'Tự động phát', 'Khoảng thời gian', 'Dừng khi di chuột', 'Chuyển cảnh', 'Số slide', 'Easing', 'Tốc độ')) ||
+    (isGalleryComponent(component) &&
+      matchesSearch('Gallery', 'Thư viện ảnh', 'Cột', 'Khoảng cách')) ||
+    (isAccordionComponent(component) &&
+      matchesSearch('Accordion', 'Cho phép mở nhiều', 'Hiệu ứng động', 'Thời gian')) ||
+    (isFormComponent(component) &&
+      matchesSearch('Form', 'Trường nhập liệu', 'Văn bản', 'Số', 'Lựa chọn', 'Chấp nhận', 'Radio', 'Xác thực'))
+  );
+}
+
+function hasInteractionSearchMatches() {
+  const component = selectedComponent.value;
+  return (
+    matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript') ||
+    ((isButtonComponent(component) || hasLinkInSelection(component)) &&
+      matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL'))
   );
 }
 
