@@ -168,6 +168,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Thêm nội dung tab Tương tác với điều khiển sự kiện và hành động JavaScript, dùng lại state/handler hiện có `eventType`, `eventAction`, `applyEvents`; không thêm API mới.
 - [x] Loại bỏ nhóm sự kiện bị lặp khỏi tab Kiểu dáng sau khi chuyển sang tab Tương tác; bỏ state chỉ phục vụ nhóm lặp.
 - [x] Chỉ hiển thị lối tắt “Mở cài đặt liên kết” khi phần tử được chọn thực sự là nút/liên kết, giúp người dùng chuyển thẳng đến thuộc tính URL đang có.
+- [x] Mở rộng tìm kiếm có dấu/không dấu cho các nhóm thuộc tính Cài đặt: nâng cao, ảnh, video, nút/liên kết, HTML, navbar, hero, ảnh nền, slider, gallery, accordion và form; bổ sung từ đồng nghĩa dựa trên nhãn trường có thật.
+- [ ] Kiểm tra tìm kiếm thực tế trên từng tab và xác minh không có nhóm thuộc tính bị lọc mất ngoài ý muốn.
 - [ ] Kiểm tra mọi nhóm thuộc tính trong ba tab và xác minh không bị CSS cắt/che.
 - [ ] Ưu tiên thao tác thường dùng; gom nhóm nâng cao dưới nhóm có tên rõ ràng.
 - [ ] Chỉ ẩn nhóm không liên quan theo loại phần tử đang chọn khi đã xác minh điều kiện; không bỏ handler/API.
@@ -205,6 +207,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — P7: rà soát tĩnh phát hiện nhóm thuộc tính nội dung bị gắn nhầm điều kiện tab Kiểu dáng, khiến tab Cài đặt không có panel riêng; đã chuyển nhóm đó sang tab Cài đặt và thêm panel Tương tác dùng lại state/handler sự kiện hiện có. Chưa xác minh bằng trình duyệt và chưa chạy build/test do repository thiếu manifest/cấu hình chạy.
 
 - 2026-10-12 — P7: vòng rà soát tiếp theo xác nhận nhóm sự kiện còn bị lặp giữa Kiểu dáng và Tương tác sau thay đổi trước; đã bỏ bản lặp khỏi Kiểu dáng, gỡ state không còn caller và thêm nút chuyển tới Cài đặt liên kết chỉ khi chọn đúng loại phần tử. Chỉ kiểm tra tĩnh; build/test/trình duyệt vẫn chưa chạy.
+
+- 2026-10-12 — P7: mở rộng bộ từ khóa tìm kiếm cho 12 nhóm Cài đặt để truy vấn như “alt”, “URL ảnh”, “tốc độ”, “khoảng cách”, “hero” có thể lọc đúng nhóm tương ứng. Đã xác minh tĩnh cấu trúc HTML/Vue có 2.519 tag trong template, không còn thẻ lệch; test/build/trình duyệt vẫn chưa chạy.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
