@@ -88,6 +88,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Bổ sung nhãn truy cập và trạng thái ARIA cho nút mở thanh thành phần, trình đơn, kích thước xem trước và bảng thuộc tính.
 - [x] Tạo trạng thái focus rõ ràng và vùng tương tác thân thiện với thiết bị cảm ứng trong giao diện builder.
 - [x] Bổ sung `aria-label` và `aria-busy` cho nút lưu/xuất bản để trạng thái đang lưu được công nghệ hỗ trợ nhận diện; thêm nhãn rõ ràng cho thao tác khôi phục trang chủ và lưu mẫu hệ thống.
+- [x] Đặt bảng thuộc tính bên phải ở chế độ dễ đọc mặc định thay vì thu gọn các trường điều khiển; hiển thị tên thành phần đang chọn ngay trên đầu bảng để người dùng biết mình đang chỉnh sửa phần nào.
 - [x] Làm rõ phản hồi khi xác minh dữ liệu sau lưu không khớp: hiển thị cảnh báo cụ thể và không hiện thêm thông báo thành công gây hiểu nhầm.
 - [x] Phân biệt trường hợp API đọc lại sau lưu bị lỗi: cảnh báo chưa xác minh được dữ liệu thay vì âm thầm hiển thị thông báo lưu thành công.
 - [x] Làm gọn phần đầu cột thuộc tính: tiêu đề và hướng dẫn theo ngữ cảnh, ô tìm kiếm toàn chiều rộng, nút xóa tìm kiếm và trạng thái focus dễ nhận biết.
