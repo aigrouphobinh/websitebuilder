@@ -188,6 +188,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Thay thẻ `label` bao quanh ô tìm kiếm và nút xóa bằng `div` có semantics phù hợp; input giữ `aria-label` độc lập để tránh lồng nhiều điều khiển trong label.
 - [x] Khi xóa từ khóa tìm kiếm, đưa focus trở lại ô nhập sau khi nút xóa biến mất để bàn phím có thể tiếp tục nhập ngay.
 - [x] Đánh dấu trạng thái không có kết quả bằng `role="status"`/`aria-live="polite"` để thay đổi do tìm kiếm được trình đọc màn hình thông báo.
+- [x] Tăng vùng nhấn của nút xóa tìm kiếm từ 24px lên 32px, thuận tiện hơn khi thao tác cảm ứng mà vẫn vừa ô tìm kiếm.
 - [x] Hiển thị nút bật/tắt bảng thuộc tính trên cả desktop lẫn màn hình nhỏ, tránh trường hợp đóng panel trên desktop nhưng không có nút để mở lại.
 - [x] Khi mở panel bằng nút toolbar, đưa focus vào ô tìm kiếm; khi đóng bằng nút X hoặc Escape trong panel, đưa focus về nút bật/tắt.
 - [x] Khi panel tự thu gọn do viewport chuyển sang mobile, kiểm tra focus có nằm trong panel hay không; chỉ trả focus về toolbar toggle khi resize thực sự loại bỏ phần tử đang có focus, tránh cướp focus khỏi canvas/toolbar ở lần bố cục mobile đầu tiên.
@@ -243,6 +244,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — P8: sửa semantics ô tìm kiếm bảng thuộc tính, không dùng `label` bao cả input và nút xóa; giữ aria-label trực tiếp trên input. Kiểm tra cấu trúc tĩnh sau commit để xác minh cặp thẻ và các liên kết ARIA.
 
 - 2026-10-12 — P8: giữ focus trên ô tìm kiếm sau khi bấm xóa (vì nút xóa sẽ tự unmount), đồng thời bổ sung polite live status cho ba trạng thái tìm kiếm không có kết quả. Chưa xác minh qua screen reader thực tế.
+
+- 2026-10-12 — P8: tăng vùng nhấn nút xóa truy vấn tìm kiếm lên 32×32px; giữ nút trong ô tìm kiếm cao 40px và không làm đổi kích thước trường nhập hay logic lọc.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
