@@ -236,3 +236,11 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 
 - 2026-10-12 — Sửa khung popup Cài đặt & SEO trực tiếp trên main: chuyển dialog ra `body` bằng Vue `Teleport` để tránh bị cắt bởi vùng chứa/stacking context; bổ sung CSS scoped ngay trong `PageSeoDialog.vue` vì style ở component cha không định dạng đầy đủ các phần tử nội bộ của dialog con. Khung popup có chiều rộng tối đa 920px, cuộn nội dung độc lập và bố cục responsive.
 - 2026-10-12 — Mở rộng sidebar thuộc tính trên main: 400px desktop, 360px màn hình nhỏ, mobile overlay tối đa 360px theo viewport; không đổi API hay logic chỉnh sửa. Chưa chạy build/test/browser vì repository chưa có package.json/test runner độc lập.
+
+
+## P tiếp theo — Làm rõ trải nghiệm “Các key động cho sự kiện” (2026-10-12)
+- [x] Đưa hộp thoại key động ra khỏi stacking/overflow context bằng Vue Teleport.
+- [x] Tổ chức lại nội dung theo nhóm, có bộ lọc nhanh và tìm kiếm.
+- [x] Mỗi key hiển thị phạm vi sử dụng, mô tả, ví dụ và nút sao chép riêng.
+- [x] Bổ sung trạng thái không có kết quả, số lượng key và bố cục responsive cho màn hình nhỏ.
+- [ ] Kiểm thử tương tác trực tiếp trong ứng dụng host; repository này chưa được xác nhận có thể chạy độc lập.
