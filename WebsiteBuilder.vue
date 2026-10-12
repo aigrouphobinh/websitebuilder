@@ -1492,7 +1492,7 @@
             title="Chỉnh màu sắc, kiểu chữ, kích thước và khoảng cách"
             @click="rightTab = 'style'"
           >
-            <IconBrush size="14" aria-hidden="true" />
+            <IconLayout size="14" aria-hidden="true" />
             <span>Kiểu dáng</span>
           </button>
           <button
@@ -1516,7 +1516,7 @@
             title="Thiết lập liên kết và hành vi tương tác"
             @click="rightTab = 'interactions'"
           >
-            <IconMousePointerClick size="14" aria-hidden="true" />
+            <IconLink size="14" aria-hidden="true" />
             <span>Tương tác</span>
           </button>
         </nav>
