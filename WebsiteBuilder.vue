@@ -1481,7 +1481,7 @@
               type="button"
               aria-label="Xóa nội dung tìm kiếm"
               title="Xóa tìm kiếm"
-              @click="sidebarSearch = ''"
+              @click="clearInspectorSearch"
             >
               <IconX size="14" />
             </button>
@@ -1614,6 +1614,9 @@
             <p
               v-if="sidebarSearch && !hasStyleSearchMatches()"
               class="inspector__hint"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
             >
               Không tìm thấy cài đặt phù hợp trong tab Kiểu dáng. Thử từ khóa khác hoặc xóa tìm kiếm.
             </p>
@@ -2733,6 +2736,9 @@
             <p
               v-if="sidebarSearch && !hasSettingsSearchMatches()"
               class="inspector__hint"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
             >
               Không tìm thấy cài đặt phù hợp cho phần tử này. Thử từ khóa khác hoặc kiểm tra loại phần tử đang chọn.
             </p>
@@ -3743,6 +3749,9 @@
             <p
               v-if="sidebarSearch && !hasInteractionSearchMatches()"
               class="inspector__hint"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
             >
               Không tìm thấy tương tác phù hợp. Thử tìm “sự kiện”, “JavaScript” hoặc chọn một nút/liên kết.
             </p>
@@ -8772,6 +8781,11 @@ const headerProps = ref({
   menuLoad: "Lazy",
   showSeparator: true,
 });
+
+function clearInspectorSearch() {
+  sidebarSearch.value = "";
+  nextTick(() => inspectorSearchInput.value?.focus());
+}
 
 function toggleInspectorProperties() {
   if (showProperties.value) {
