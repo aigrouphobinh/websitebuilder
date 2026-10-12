@@ -6472,9 +6472,13 @@ function showFeedback(
   msg: string,
   color: "success" | "error" | "info" = "success",
 ) {
-  snackbarText.value = msg;
-  snackbarColor.value = color;
-  snackbarOpen.value = true;
+  if (color === "error") {
+    toast.error(msg);
+  } else if (color === "info") {
+    toast.info(msg);
+  } else {
+    toast.success(msg);
+  }
 }
 
 function addCompanyEventBlock() {
@@ -7424,7 +7428,7 @@ function openBannerTemplateDialog() {
     });
   } catch (e) {
     console.error("Error opening banner dialog:", e);
-    alert("Error opening banner dialog: " + (e as any).message);
+    toast.error("Không thể mở hộp thoại banner: " + (e as any).message);
   }
 }
 
