@@ -254,3 +254,11 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - 2026-10-12 — Responsive audit: added shared responsive CSS for the 31 Landing Page blocks in `landing-page-blocks.ts`, using editor-level styles so the CSS can be included in exported output. Follow-up static inspection of the actual block root classes found that both content blocks use the shared `.landing-content` class rather than `.landing-content-left/right`; corrected all responsive selectors to target the real class. Verified all 31 block registration calls remain present and the shared styles include 768px/480px breakpoints. Browser viewport checks (320, 375, 768, 1024, 1440px) and export-preview verification remain pending because this repository has no standalone `package.json` or runnable host app.
 
 - 2026-10-12 — Save/notification UX: switched `WebsiteBuilder.vue` to `import { useToast } from "vue-toastification"` and a single `const toast = useToast()` instance. Routed the shared `showFeedback` pathway through `toast.success/error/info`, replacing the browser alert used for banner-dialog errors. Added spinner, disabled state, `aria-busy`, and “Đang lưu…” labels to SuperAdmin save/edit modal buttons; added an “Đang áp dụng & lưu…” spinner state to the apply-and-save template action. Existing topbar save buttons retain their loading indicator. Static source checks only; browser/build validation remains pending because this repository does not include a standalone app manifest/host.
+
+
+## Cài đặt & SEO — sửa luồng thao tác (2026-10-12)
+- [x] Khi mở hộp thoại, đọc giá trị hiện có từ canvas: tiêu đề/phụ đề, logo, meta description, Open Graph, canonical, favicon và ngôn ngữ.
+- [x] Mở rộng áp dụng cấu hình chung để nhận diện header theo nhiều cấu trúc template và tìm logo/tiêu đề theo selector dự phòng.
+- [x] Cập nhật SEO Meta vào document head đang dùng cho preview/export; cho phép xóa giá trị meta/link bằng cách để trống trường.
+- [x] Dùng useToast() để thông báo thành công/lỗi và hướng dẫn nhấn **Lưu & Xuất bản** sau khi áp dụng.
+- [ ] Chưa chạy build hoặc kiểm thử tương tác trong trình duyệt; repository chỉ chứa source component, không có manifest chạy độc lập.
