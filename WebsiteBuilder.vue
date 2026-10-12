@@ -2702,7 +2702,7 @@
               </div>
             </div>
           </div>
-          <div v-if="rightTab === 'style'" class="settings-section">
+          <div v-if="rightTab === 'settings'" class="settings-section">
             <div v-if="isSuperAdminPerm" class="setting-group">
               <div class="group-header">
                 <span>Nâng cao (Advanced)</span>
@@ -3684,6 +3684,63 @@
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="rightTab === 'interactions'"
+            class="settings-section"
+          >
+            <div
+              v-if="matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript')"
+              class="setting-group"
+            >
+              <div class="group-header">
+                <span>Sự kiện tương tác</span>
+              </div>
+              <div class="group-body">
+                <p class="inspector__hint">
+                  Thiết lập hành vi khi người dùng tương tác với phần tử đang chọn.
+                </p>
+                <div class="field">
+                  <div class="field-label">Sự kiện kích hoạt</div>
+                  <select
+                    v-model="eventType"
+                    class="chip-select"
+                    @change="applyEvents"
+                  >
+                    <option value="none">Không</option>
+                    <option value="click">Nhấp chuột</option>
+                    <option value="mouseenter">Di chuột vào</option>
+                    <option value="mouseleave">Di chuột ra</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <div class="field-label">Hành động JavaScript</div>
+                  <input
+                    v-model="eventAction"
+                    class="chip-input"
+                    type="text"
+                    placeholder="alert('Hello')"
+                    @change="applyEvents"
+                  />
+                  <p class="inspector__hint">
+                    Chỉ nhập mã cho phần tử tin cậy; hãy kiểm tra hành vi trước khi xuất bản.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL')"
+              class="setting-group"
+            >
+              <div class="group-header">
+                <span>Liên kết và nút</span>
+              </div>
+              <div class="group-body">
+                <p class="inspector__hint">
+                  Chọn phần tử nút hoặc liên kết để chỉnh URL, mục tiêu và thuộc tính trong tab Cài đặt.
+                </p>
               </div>
             </div>
           </div>
