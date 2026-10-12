@@ -187,7 +187,8 @@
         </button>
       </div>
     </div>
-    </Teleport>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
