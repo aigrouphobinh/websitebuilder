@@ -71,6 +71,8 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [ ] Kiểm tra console, thao tác bàn phím và trạng thái chưa lưu.
 - [x] Khi nhận template mới từ cửa sổ cha, dọn tài nguyên template trước đó, đồng bộ danh sách script đã lưu và áp dụng CSS rỗng để tránh giữ style/script cũ.
 - [x] Khi template gửi vào không có `projectData` và HTML rỗng, vẫn áp dụng HTML rỗng để canvas không giữ nguyên trang trước.
+- [x] Khi tải template công ty, đồng bộ lại danh sách script head/body theo template hiện tại để tránh export nhầm script của template trước.
+- [x] Khi dọn tài nguyên canvas lúc đổi template, xóa cả script import theo chuỗi và script inline import để hạn chế tài nguyên cũ còn hoạt động.
 - [ ] Kiểm thử hồi quy template rỗng và chuyển template liên tiếp trong trình duyệt.
 - [ ] Kiểm tra tích hợp việc chuyển liên tiếp giữa template có/không có `headCss`, `headLinks`, runtime và scripts; xác nhận preview không còn tài nguyên bị sót.
 
