@@ -22725,6 +22725,13 @@ function enableResizable(model: ResizableComponent | null) {
 }
 
 @media (max-width: 768px) {
+  .website-builder .inspector__header .icon-button,
+  .website-builder .inspector__search-clear {
+    flex-basis: 40px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
   .website-builder .inspector.properties {
     min-width: 0;
   }
