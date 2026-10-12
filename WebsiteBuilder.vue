@@ -8519,7 +8519,7 @@ function toggleInspectorProperties() {
   nextTick(() => inspectorSearchInput.value?.focus());
 }
 
-function closeInspectorProperties(restoreFocus = true) {
+function closeInspectorProperties(restoreFocus: boolean | Event = true) {
   showProperties.value = false;
   if (!restoreFocus) return;
   nextTick(() => inspectorToggleButton.value?.focus());
@@ -14982,12 +14982,14 @@ async function loadHomepageTemplate(): Promise<boolean> {
 
     // Prefer the GrapesJS snapshot, but recover from saved HTML/CSS if it
     // was produced by an incompatible editor version or cannot be restored.
+    const activeEditor = editor;
+    if (!activeEditor) return false;
     const restored = restoreTemplateContent({
       projectData: gjs.projectData,
       html,
       css,
-      loadProjectData: (data) => editor.loadProjectData(data),
-      setHtml: (value) => editor.setComponents(value),
+      loadProjectData: (data) => activeEditor.loadProjectData(data),
+      setHtml: (value) => activeEditor.setComponents(value),
       setCss: (value) => setCanvasImportCss(value),
     });
     if (!restored) return false;
@@ -15902,7 +15904,7 @@ const syncHtmlDebounced = debounce(syncHtml, 300, {
 function getHtmlWithCss() {
   if (!editor) return "";
   try {
-    const css = collectCanvasStyles(true);
+    const css = collectCanvasStyles(true) || "";
     let html = editor.getHtml();
     html = cleanBuilderAttrs(html);
 
@@ -15912,6 +15914,8 @@ function getHtmlWithCss() {
       .join("\n");
 
     const genScript = composeExportScriptTag;
+    const scOpen = "<scr" + "ipt";
+    const scClose = "</scr" + "ipt>";
 
     const headScripts = installedHeadScripts.value.map(genScript).join("\n");
     const bodyScripts = installedBodyScripts.value.map(genScript).join("\n");
@@ -18071,13 +18075,15 @@ async function loadCompanyTemplate() {
 
       // Prefer the GrapesJS snapshot, but recover from saved HTML/CSS if
       // the snapshot is malformed or incompatible with this editor version.
+      const activeEditor = editor;
+      if (!activeEditor) return false;
       const restored = restoreTemplateContent({
         projectData: gjs.projectData,
         html: gjs.html,
         css: gjs.css,
-        loadProjectData: (data) => editor.loadProjectData(data),
-        setHtml: (value) => editor.setComponents(value),
-        setCss: (value) => editor.setStyle(value),
+        loadProjectData: (data) => activeEditor.loadProjectData(data),
+        setHtml: (value) => activeEditor.setComponents(value),
+        setCss: (value) => activeEditor.setStyle(value),
       });
       if (!restored) return false;
 
