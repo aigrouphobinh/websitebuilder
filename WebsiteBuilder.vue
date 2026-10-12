@@ -6036,7 +6036,10 @@
 
 <script setup lang="ts">
 import HelpDialog from "./dialogs/HelpDialog.vue";
-import { normalizeElementSearch } from "./utils/element-search";
+import {
+  matchesElementSearch,
+  normalizeElementSearch,
+} from "./utils/element-search";
 import { getIncomingHtmlAction } from "./utils/model-html-sync";
 import { composeHtmlWithCss } from "./utils/html-with-css";
 import { escapeHtmlAttribute } from "./utils/escape-html-attribute";
@@ -9624,9 +9627,7 @@ const sidebarSearch = ref("");
 const inspectorCompact = ref(false);
 
 function matchesSearch(...terms: string[]) {
-  const query = normalizeElementSearch(sidebarSearch.value);
-  if (!query) return true;
-  return terms.some((term) => normalizeElementSearch(term).includes(query));
+  return matchesElementSearch(sidebarSearch.value, ...terms);
 }
 
 function hasStyleSearchMatches() {
