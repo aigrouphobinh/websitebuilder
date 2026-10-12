@@ -14599,6 +14599,7 @@ async function saveCompanyTemplate() {
     }
 
     let saveVerificationMismatch = false;
+    let saveVerificationUnavailable = false;
     try {
       const fetched = await websiteTemplateService.getCompanyTemplate();
       const fj = fetched?.gjs || {};
@@ -14626,8 +14627,20 @@ async function saveCompanyTemplate() {
           okLinks,
         });
       }
-    } catch {}
-    if (!saveVerificationMismatch) {
+    } catch (verificationError) {
+      saveVerificationUnavailable = true;
+      console.warn("WB Save verification unavailable:", verificationError);
+    }
+
+    if (saveVerificationMismatch) {
+      // The mismatch warning above is the only notification for this outcome.
+    } else if (saveVerificationUnavailable) {
+      try {
+        toast.warning(
+          "Đã gửi yêu cầu lưu website nhưng chưa xác minh được dữ liệu đọc lại. Vui lòng tải lại trang để kiểm tra.",
+        );
+      } catch {}
+    } else {
       try {
         toast.success("Đã lưu website");
       } catch {}
