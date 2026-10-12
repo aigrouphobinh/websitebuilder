@@ -9,7 +9,7 @@ describe("normalizeElementSearch", () => {
 
   it("normalizes case and surrounding whitespace", () => {
     expect(normalizeElementSearch("  NÚT Mua Vé  ")).toBe("nut mua ve");
-    expect(normalizeElementSearch("nut   mua\\n  ve")).toBe("nut mua ve");
+    expect(normalizeElementSearch("nut   mua\n  ve")).toBe("nut mua ve");
   });
 
   it("normalizes Vietnamese d-stroke characters", () => {
