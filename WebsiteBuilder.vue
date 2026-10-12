@@ -9605,19 +9605,10 @@ const effectBackdropOpen = ref(false);
 const sidebarSearch = ref("");
 const inspectorCompact = ref(false);
 
-function normalizeInspectorSearch(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[đĐ]/g, (char) => (char === "Đ" ? "D" : "d"))
-    .toLocaleLowerCase("vi")
-    .trim();
-}
-
 function matchesSearch(...terms: string[]) {
-  const query = normalizeInspectorSearch(sidebarSearch.value);
+  const query = normalizeElementSearch(sidebarSearch.value);
   if (!query) return true;
-  return terms.some((term) => normalizeInspectorSearch(term).includes(query));
+  return terms.some((term) => normalizeElementSearch(term).includes(query));
 }
 
 const _gridSteps = [4, 8, 10, 12, 16];
