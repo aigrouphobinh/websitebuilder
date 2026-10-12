@@ -40,7 +40,6 @@ import {
 // Shared responsive hardening for all landing/event blocks. Individual block styles
 // remain intact; these scoped rules only prevent overflow and adapt layouts on small screens.
 const LANDING_RESPONSIVE_STYLES = `
-<style>
   .landing-header, .landing-hero, .landing-features, .landing-content-left,
   .landing-content-right, .landing-footer, .landing-testimonials, .landing-faq,
   .landing-team, .landing-contact, .landing-partners, .landing-speakers,
@@ -184,17 +183,11 @@ const LANDING_RESPONSIVE_STYLES = `
     .landing-header .landing-nav { justify-content: flex-start !important; width: 100%; }
     .event-pricing [style*="transform:translateY"] { transform: none !important; }
   }
-</style>`;
+`;
 
 export const landingPagePlugin = (editor: Editor) => {
-  const originalBlockManager = editor.BlockManager;
-  const bm = {
-    add: (id: string, config: any) =>
-      originalBlockManager.add(id, {
-        ...config,
-        content: `${config.content || ""}${LANDING_RESPONSIVE_STYLES}`,
-      }),
-  } as typeof editor.BlockManager;
+  const bm = editor.BlockManager;
+  editor.addStyle(LANDING_RESPONSIVE_STYLES);
 
   // Register all 18 event blocks
   registerHeaderBlock(bm);
