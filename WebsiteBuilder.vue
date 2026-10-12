@@ -2654,51 +2654,7 @@
                   </div>
                 </div>
 
-                <!-- Events -->
-                <div class="sub-group">
-                  <div
-                    class="flex items-center justify-between cursor-pointer py-1"
-                    @click="effectEventsOpen = !effectEventsOpen"
-                  >
-                    <span class="text-xs font-medium text-gray-600"
-                      >Sự kiện (Events)</span
-                    >
-                    <component
-                      :is="
-                        effectEventsOpen ? IconChevronDown : IconChevronRight
-                      "
-                      size="14"
-                    />
-                  </div>
-                  <div
-                    v-show="effectEventsOpen"
-                    class="mt-2 pl-2 border-l-2 border-gray-100"
-                  >
-                    <div class="field">
-                      <div class="field-label">Loại</div>
-                      <select
-                        v-model="eventType"
-                        class="chip-select"
-                        @change="applyEvents"
-                      >
-                        <option value="none">Không</option>
-                        <option value="click">Nhấp chuột</option>
-                        <option value="mouseenter">Di chuột vào</option>
-                        <option value="mouseleave">Di chuột ra</option>
-                      </select>
-                    </div>
-                    <div class="field mt-2">
-                      <div class="field-label">Hành động (JS)</div>
-                      <input
-                        v-model="eventAction"
-                        class="chip-input"
-                        type="text"
-                        placeholder="alert('Hello')"
-                        @change="applyEvents"
-                      />
-                    </div>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
@@ -3731,7 +3687,11 @@
               </div>
             </div>
             <div
-              v-if="matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL')"
+              v-if="
+                (isButtonComponent(selectedComponent) ||
+                  hasLinkInSelection(selectedComponent)) &&
+                matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL')
+              "
               class="setting-group"
             >
               <div class="group-header">
@@ -3739,8 +3699,15 @@
               </div>
               <div class="group-body">
                 <p class="inspector__hint">
-                  Chọn phần tử nút hoặc liên kết để chỉnh URL, mục tiêu và thuộc tính trong tab Cài đặt.
+                  URL, mục tiêu và thuộc tính liên kết được quản lý trong tab Cài đặt.
                 </p>
+                <button
+                  class="chip"
+                  type="button"
+                  @click="rightTab = 'settings'"
+                >
+                  Mở cài đặt liên kết
+                </button>
               </div>
             </div>
           </div>
@@ -9602,7 +9569,6 @@ const effectTransitionOpen = ref(false);
 const effectTransformOpen = ref(false);
 const effectFilterOpen = ref(false);
 const effectBackdropOpen = ref(false);
-const effectEventsOpen = ref(false);
 const sidebarSearch = ref("");
 const inspectorCompact = ref(false);
 
