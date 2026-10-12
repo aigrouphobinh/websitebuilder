@@ -230,6 +230,7 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 
 - 2026-10-12 — P8: sửa luồng mở/đóng panel: nút toolbar giờ có mặt trên mọi kích thước màn hình để người dùng desktop mở lại panel sau khi đóng; mở panel focus ô tìm kiếm, đóng qua X/Escape trả focus về nút toggle. Giữ nguyên logic nội dung/API và thêm handler bàn phím cục bộ cho panel. Chưa chạy keyboard/browser test.
 - 2026-10-12 — P7: lối tắt liên kết ở tab Tương tác giờ nhận các từ khóa tìm thuộc tính thông dụng như href, target, rel, tải xuống, aria label và noopener/noreferrer/nofollow; chỉ hiện khi phần tử được chọn là nút/liên kết.
+- 2026-10-12 — P7: mở rộng tìm kiếm sự kiện trong tab Tương tác với click/nhấp chuột, mouseenter/mouseleave, di chuột, alert/script và nhãn kích hoạt để người dùng tìm theo giá trị họ thấy trong điều khiển.
 
 ### Thứ tự thực hiện hiện tại
 1. P0: xác minh repository và công cụ kiểm thử.
