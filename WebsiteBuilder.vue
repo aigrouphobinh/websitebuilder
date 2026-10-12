@@ -22152,9 +22152,10 @@ function enableResizable(model: ResizableComponent | null) {
   color: #4f46e5;
 }
 
-/* Leave room for the host-provided close control when editing a specific event. */
+/* Leave room for the host-provided close control when editing a specific event.
+   Use a responsive gutter so the publish action remains usable on narrow screens. */
 .website-builder.has-event-id .tb-right .tb-link.primary-action {
-  margin-right: 48px;
+  margin-right: clamp(24px, 4vw, 48px);
 }
 
 .website-builder .tb-link.primary-action {
