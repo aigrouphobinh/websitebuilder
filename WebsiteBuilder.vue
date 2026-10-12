@@ -276,13 +276,14 @@
       </div>
       <div class="tb-right">
         <button
-          v-if="isSmallScreen"
+          ref="inspectorToggleButton"
           class="tb-link"
           type="button"
           :class="{ active: showProperties }"
           :aria-label="showProperties ? 'Ẩn bảng thuộc tính' : 'Hiện bảng thuộc tính'"
           :aria-expanded="showProperties"
-          @click="showProperties = !showProperties"
+          :aria-controls="showProperties ? 'inspector-properties-panel' : undefined"
+          @click="toggleInspectorProperties"
         >
           <IconSettings size="20" />
         </button>
@@ -1440,12 +1441,15 @@
       </main>
       <aside
         v-if="showProperties"
+        id="inspector-properties-panel"
+        aria-labelledby="inspector-panel-title"
         :class="['inspector', 'properties', { compact: inspectorCompact }]"
+        @keydown.esc.stop.prevent="closeInspectorProperties"
       >
         <header class="inspector__header">
           <div class="inspector__topline">
             <div class="inspector__heading">
-              <h2 class="inspector__title">{{ propertiesTitle }}</h2>
+              <h2 id="inspector-panel-title" class="inspector__title">{{ propertiesTitle }}</h2>
               <p class="inspector__hint">
                 {{ isTextSelection ? "Đang chỉnh sửa văn bản" : selectedComponentLabel ? "Đang chọn: " + selectedComponentLabel : "Chọn một khối trên trang để chỉnh sửa" }}
               </p>
@@ -1454,20 +1458,23 @@
               class="icon-button"
               type="button"
               aria-label="Đóng bảng thuộc tính"
+              aria-controls="inspector-properties-panel"
               title="Đóng bảng thuộc tính"
-              @click="showProperties = false"
+              @click="closeInspectorProperties"
             >
               <IconX size="18" />
             </button>
           </div>
-          <label class="inspector__search">
+          <div class="inspector__search">
             <IconSearch size="16" aria-hidden="true" />
             <input
+              ref="inspectorSearchInput"
               v-model="sidebarSearch"
               type="search"
               placeholder="Tìm nhanh cài đặt..."
               aria-label="Tìm nhanh cài đặt trong bảng thuộc tính"
               class="input-focus"
+              @keydown.esc.stop.prevent="handleInspectorSearchEscape"
             />
             <button
               v-if="sidebarSearch"
@@ -1475,46 +1482,70 @@
               type="button"
               aria-label="Xóa nội dung tìm kiếm"
               title="Xóa tìm kiếm"
-              @click="sidebarSearch = ''"
+              @click="clearInspectorSearch"
             >
               <IconX size="14" />
             </button>
-          </label>
+          </div>
         </header>
 
         <nav class="inspector-tabs" role="tablist" aria-label="Nhóm thuộc tính phần tử">
           <button
+            id="inspector-tab-style"
+            ref="inspectorStyleTab"
             class="inspector-tab"
             :class="{ 'is-active': rightTab === 'style' }"
             :aria-selected="rightTab === 'style'"
+            :aria-controls="'inspector-panel-style'"
+            :tabindex="rightTab === 'style' ? 0 : -1"
             role="tab"
             type="button"
             title="Chỉnh màu sắc, kiểu chữ, kích thước và khoảng cách"
             @click="rightTab = 'style'"
+            @keydown.left.prevent="moveInspectorTab(-1)"
+            @keydown.right.prevent="moveInspectorTab(1)"
+            @keydown.home.prevent="focusInspectorTab('style')"
+            @keydown.end.prevent="focusInspectorTab('interactions')"
           >
             <IconLayout size="14" aria-hidden="true" />
             <span>Kiểu dáng</span>
           </button>
           <button
+            id="inspector-tab-settings"
+            ref="inspectorSettingsTab"
             class="inspector-tab"
             :class="{ 'is-active': rightTab === 'settings' }"
             :aria-selected="rightTab === 'settings'"
+            :aria-controls="'inspector-panel-settings'"
+            :tabindex="rightTab === 'settings' ? 0 : -1"
             role="tab"
             type="button"
             title="Cài đặt nội dung và thuộc tính phần tử"
             @click="rightTab = 'settings'"
+            @keydown.left.prevent="moveInspectorTab(-1)"
+            @keydown.right.prevent="moveInspectorTab(1)"
+            @keydown.home.prevent="focusInspectorTab('style')"
+            @keydown.end.prevent="focusInspectorTab('interactions')"
           >
             <IconSettings size="14" aria-hidden="true" />
             <span>Cài đặt</span>
           </button>
           <button
+            id="inspector-tab-interactions"
+            ref="inspectorInteractionsTab"
             class="inspector-tab"
             :class="{ 'is-active': rightTab === 'interactions' }"
             :aria-selected="rightTab === 'interactions'"
+            :aria-controls="'inspector-panel-interactions'"
+            :tabindex="rightTab === 'interactions' ? 0 : -1"
             role="tab"
             type="button"
             title="Thiết lập liên kết và hành vi tương tác"
             @click="rightTab = 'interactions'"
+            @keydown.left.prevent="moveInspectorTab(-1)"
+            @keydown.right.prevent="moveInspectorTab(1)"
+            @keydown.home.prevent="focusInspectorTab('style')"
+            @keydown.end.prevent="focusInspectorTab('interactions')"
           >
             <IconLink size="14" aria-hidden="true" />
             <span>Tương tác</span>
@@ -1573,8 +1604,27 @@
               </button>
             </div>
           </div>
-          <div v-if="rightTab === 'style'" class="settings-section">
-            <div v-if="isTextSelection" class="setting-group">
+          <div
+            v-if="rightTab === 'style'"
+            id="inspector-panel-style"
+            role="tabpanel"
+            aria-labelledby="inspector-tab-style"
+            tabindex="0"
+            class="settings-section"
+          >
+            <p
+              v-if="sidebarSearch && !hasStyleSearchMatches()"
+              class="inspector__hint"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              Không tìm thấy cài đặt phù hợp trong tab Kiểu dáng. Thử từ khóa khác hoặc xóa tìm kiếm.
+            </p>
+            <div
+              v-if="isTextSelection && matchesSearch('Kiểu chữ', 'Typography', 'Nội dung', 'Cỡ chữ', 'Font', 'Khoảng dòng', 'Line Height', 'Độ đậm', 'Weight', 'Khoảng chữ', 'Letter Spacing', 'Màu chữ', 'Text Color')"
+              class="setting-group"
+            >
               <div
                 class="group-header"
                 @click="typographyOpen = !typographyOpen"
@@ -1585,7 +1635,7 @@
                   class="chev"
                 />
               </div>
-              <div v-show="typographyOpen" class="group-body">
+              <div v-show="typographyOpen || !!sidebarSearch" class="group-body">
                 <div class="field mb-3">
                   <div class="field-label">Nội dung</div>
                   <input
@@ -1673,8 +1723,9 @@
                 </div>
               </div>
             </div>
-            <div class="setting-group">
+            <div v-if="hasStyleSearchMatches()" class="setting-group">
               <div
+                v-if="matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'nowrap', 'no wrap', 'row', 'column', 'row-reverse', 'column-reverse', 'Gap', 'Khoảng cách')"
                 class="group-header"
                 @click="displayLayoutOpen = !displayLayoutOpen"
               >
@@ -1684,7 +1735,7 @@
                   class="chev"
                 />
               </div>
-              <div v-show="displayLayoutOpen" class="group-body">
+              <div v-if="matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'nowrap', 'no wrap', 'row', 'column', 'row-reverse', 'column-reverse', 'Gap', 'Khoảng cách')" v-show="displayLayoutOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Hiển thị (Display)</div>
                   <div class="grid-2">
@@ -1841,14 +1892,14 @@
               </div>
             </div>
             <div class="setting-group">
-              <div class="group-header" @click="spacingOpen = !spacingOpen">
+              <div v-if="matchesSearch('Khoảng cách', 'Spacing', 'Margin', 'Lề ngoài', 'Padding', 'Lề trong')" class="group-header" @click="spacingOpen = !spacingOpen">
                 <span>Khoảng cách</span>
                 <component
                   :is="spacingOpen ? IconChevronDown : IconChevronRight"
                   class="chev"
                 />
               </div>
-              <div v-show="spacingOpen" class="group-body">
+              <div v-if="matchesSearch('Khoảng cách', 'Spacing', 'Margin', 'Lề ngoài', 'Padding', 'Lề trong')" v-show="spacingOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Margin (Lề ngoài)</div>
                   <div class="grid-4">
@@ -1940,14 +1991,14 @@
                   </div>
                 </div>
               </div>
-              <div class="group-header" @click="sizingOpen = !sizingOpen">
+              <div v-if="matchesSearch('Kích thước', 'Sizing', 'Width', 'Height', 'Rộng', 'Cao', 'Min W', 'Min H', 'Max W', 'Max H', 'Tỷ lệ', 'Đơn vị', 'Aspect', 'Auto', 'Khóa')" class="group-header" @click="sizingOpen = !sizingOpen">
                 <span>Kích thước</span>
                 <component
                   :is="sizingOpen ? IconChevronDown : IconChevronRight"
                   class="chev"
                 />
               </div>
-              <div v-show="sizingOpen" class="group-body">
+              <div v-if="matchesSearch('Kích thước', 'Sizing', 'Width', 'Height', 'Rộng', 'Cao', 'Min W', 'Min H', 'Max W', 'Max H', 'Tỷ lệ', 'Đơn vị', 'Aspect', 'Auto', 'Khóa')" v-show="sizingOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-header-row">
                     <div class="field-label">Đơn vị & Tỷ lệ</div>
@@ -2095,7 +2146,7 @@
                 </div>
               </div>
               <div
-                v-if="isGenericGridComponent(selectedComponent)"
+                v-if="isGenericGridComponent(selectedComponent) && matchesSearch('Lưới', 'Grid', 'Cột', 'Columns', 'Khoảng cách', 'Gap')"
                 class="group-header"
                 @click="gridOpen = !gridOpen"
               >
@@ -2107,7 +2158,7 @@
               </div>
               <div
                 v-if="isGenericGridComponent(selectedComponent)"
-                v-show="gridOpen"
+                v-show="gridOpen || !!sidebarSearch"
                 class="group-body"
               >
                 <div class="field">
@@ -2133,6 +2184,7 @@
                 </div>
               </div>
               <div
+                v-if="matchesSearch('Nền', 'Background', 'Màu nền', 'Ảnh nền', 'Lặp lại', 'Vị trí', 'Kích thước', 'Attachment', 'Cố định')"
                 class="group-header"
                 @click="backgroundOpen = !backgroundOpen"
               >
@@ -2142,7 +2194,7 @@
                   class="chev"
                 />
               </div>
-              <div v-show="backgroundOpen" class="group-body">
+              <div v-if="matchesSearch('Nền', 'Background', 'Màu nền', 'Ảnh nền', 'Lặp lại', 'Vị trí', 'Kích thước', 'Attachment', 'Cố định')" v-show="backgroundOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Màu nền</div>
                   <div class="input-with-prefix">
@@ -2241,14 +2293,14 @@
                   </select>
                 </div>
               </div>
-              <div class="group-header" @click="borderOpen = !borderOpen">
+              <div v-if="matchesSearch('Viền', 'Border', 'Kiểu viền', 'Độ dày', 'Màu viền', 'Bo góc', 'Radius')" class="group-header" @click="borderOpen = !borderOpen">
                 <span>Viền (Border)</span>
                 <component
                   :is="borderOpen ? IconChevronDown : IconChevronRight"
                   class="chev"
                 />
               </div>
-              <div v-show="borderOpen" class="group-body">
+              <div v-if="matchesSearch('Viền', 'Border', 'Kiểu viền', 'Độ dày', 'Màu viền', 'Bo góc', 'Radius')" v-show="borderOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Kiểu viền</div>
                   <select
@@ -2307,6 +2359,7 @@
               </div>
 
               <div
+                v-if="matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Static', 'Relative', 'Absolute', 'Fixed', 'Sticky', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity')"
                 class="group-header"
                 @click="positioningOpen = !positioningOpen"
               >
@@ -2316,7 +2369,7 @@
                   class="chev"
                 />
               </div>
-              <div v-show="positioningOpen" class="group-body">
+              <div v-if="matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Static', 'Relative', 'Absolute', 'Fixed', 'Sticky', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity')" v-show="positioningOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Kiểu</div>
                   <select
@@ -2421,16 +2474,19 @@
                   </div>
                 </div>
               </div>
-              <div class="group-header" @click="effectsOpen = !effectsOpen">
+              <div v-if="matchesSearch('Hiệu ứng', 'Effects', 'Đổ bóng', 'Shadow', 'Hover', 'Chuyển đổi', 'Transition', 'Biến đổi', 'Transform', 'Xoay', 'Rotate', 'Scale', 'Skew', 'Bộ lọc', 'Filter', 'Làm mờ', 'Blur', 'Độ sáng', 'Brightness', 'Nền mờ', 'Backdrop', 'Thời gian', 'Easing')" class="group-header" @click="effectsOpen = !effectsOpen">
                 <span>Hiệu ứng</span>
                 <component
                   :is="effectsOpen ? IconChevronDown : IconChevronRight"
                   class="chev"
                 />
               </div>
-              <div v-show="effectsOpen" class="group-body">
+              <div v-show="effectsOpen || !!sidebarSearch" class="group-body">
                 <!-- Shadows -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Đổ bóng', 'Shadows', 'Shadow', 'Hover', 'Bật đổ bóng')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectShadowOpen = !effectShadowOpen"
@@ -2446,7 +2502,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectShadowOpen"
+                    v-show="effectShadowOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="field-checkbox">
@@ -2462,7 +2518,10 @@
                 </div>
 
                 <!-- Transitions -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Chuyển đổi', 'Transition', 'Easing', 'Thời gian', 'Kiểu')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectTransitionOpen = !effectTransitionOpen"
@@ -2480,7 +2539,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectTransitionOpen"
+                    v-show="effectTransitionOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="grid-2">
@@ -2515,7 +2574,10 @@
                 </div>
 
                 <!-- Transform -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Biến đổi', 'Transform', 'Xoay', 'Rotate', 'Scale', 'Skew')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectTransformOpen = !effectTransformOpen"
@@ -2531,7 +2593,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectTransformOpen"
+                    v-show="effectTransformOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="grid-2">
@@ -2577,7 +2639,10 @@
                 </div>
 
                 <!-- Filter -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Bộ lọc', 'Filter', 'Làm mờ', 'Blur', 'Độ sáng', 'Brightness')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectFilterOpen = !effectFilterOpen"
@@ -2593,7 +2658,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectFilterOpen"
+                    v-show="effectFilterOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="grid-2">
@@ -2622,7 +2687,10 @@
                 </div>
 
                 <!-- Backdrop -->
-                <div class="sub-group border-b border-gray-100 pb-2 mb-2">
+                <div
+                  v-if="matchesSearch('Nền mờ', 'Backdrop', 'Blur', 'Làm mờ')"
+                  class="sub-group border-b border-gray-100 pb-2 mb-2"
+                >
                   <div
                     class="flex items-center justify-between cursor-pointer py-1 sub-group-header"
                     @click="effectBackdropOpen = !effectBackdropOpen"
@@ -2638,7 +2706,7 @@
                     />
                   </div>
                   <div
-                    v-show="effectBackdropOpen"
+                    v-show="effectBackdropOpen || !!sidebarSearch"
                     class="mt-2 pl-2 border-l-2 border-gray-100 sub-group-body"
                   >
                     <div class="field">
@@ -2654,102 +2722,33 @@
                   </div>
                 </div>
 
-                <!-- Events -->
-                <div class="sub-group">
-                  <div
-                    class="flex items-center justify-between cursor-pointer py-1"
-                    @click="effectEventsOpen = !effectEventsOpen"
-                  >
-                    <span class="text-xs font-medium text-gray-600"
-                      >Sự kiện (Events)</span
-                    >
-                    <component
-                      :is="
-                        effectEventsOpen ? IconChevronDown : IconChevronRight
-                      "
-                      size="14"
-                    />
-                  </div>
-                  <div
-                    v-show="effectEventsOpen"
-                    class="mt-2 pl-2 border-l-2 border-gray-100"
-                  >
-                    <div class="field">
-                      <div class="field-label">Loại</div>
-                      <select
-                        v-model="eventType"
-                        class="chip-select"
-                        @change="applyEvents"
-                      >
-                        <option value="none">Không</option>
-                        <option value="click">Nhấp chuột</option>
-                        <option value="mouseenter">Di chuột vào</option>
-                        <option value="mouseleave">Di chuột ra</option>
-                      </select>
-                    </div>
-                    <div class="field mt-2">
-                      <div class="field-label">Hành động (JS)</div>
-                      <input
-                        v-model="eventAction"
-                        class="chip-input"
-                        type="text"
-                        placeholder="alert('Hello')"
-                        @change="applyEvents"
-                      />
-                    </div>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
-          <div v-if="rightTab === 'style'" class="settings-section">
-            <div v-if="isSuperAdminPerm" class="setting-group">
-              <div class="group-header">
-                <span>Nâng cao (Advanced)</span>
-              </div>
-              <div class="group-body">
-                <div class="field">
-                  <div class="field-label">ID Element</div>
-                  <input
-                    v-model="advancedId"
-                    class="chip-input"
-                    type="text"
-                    @change="applyAdvancedId"
-                  />
-                </div>
-                <div class="field">
-                  <div class="field-label">CSS Classes</div>
-                  <input
-                    v-model="advancedClass"
-                    class="chip-input"
-                    type="text"
-                    @change="applyAdvancedClass"
-                  />
-                </div>
-                <div class="field">
-                  <div class="field-label">Điểm ngắt (Breakpoint)</div>
-                  <div class="input-with-button">
-                    <select v-model="responsiveDevice" class="chip-select">
-                      <option
-                        v-for="dev in responsiveDevices"
-                        :key="dev"
-                        :value="dev"
-                      >
-                        {{ dev }}
-                      </option>
-                    </select>
-                    <button class="chip" type="button" @click="applyResponsive">
-                      Áp dụng
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div
+            v-if="rightTab === 'settings'"
+            id="inspector-panel-settings"
+            role="tabpanel"
+            aria-labelledby="inspector-tab-settings"
+            tabindex="0"
+            class="settings-section"
+          >
+            <p
+              v-if="sidebarSearch && !hasSettingsSearchMatches()"
+              class="inspector__hint"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              Không tìm thấy cài đặt phù hợp cho phần tử này. Thử từ khóa khác hoặc kiểm tra loại phần tử đang chọn.
+            </p>
             <!-- Page/Site settings moved to header dialog -->
 
             <div
               v-if="
-                isImageComponent(selectedComponent) && matchesSearch('Image')
+                isImageComponent(selectedComponent) &&
+                matchesSearch('Image', 'Hình ảnh', 'Src', 'URL ảnh', 'Alt Text', 'Fit', 'Vừa khung', 'Cover', 'Contain', 'Fill', 'Scale Down', 'Scale-down', 'Position', 'Vị trí')
               "
               class="setting-group"
             >
@@ -2826,7 +2825,8 @@
             </div>
             <div
               v-if="
-                isVideoComponent(selectedComponent) && matchesSearch('Video')
+                isVideoComponent(selectedComponent) &&
+                matchesSearch('Video', 'Src', 'URL video', 'Controls', 'Điều khiển', 'Autoplay', 'Tự động phát', 'Loop', 'Lặp lại', 'Muted', 'Tắt tiếng', 'Poster', 'Ảnh bìa', 'Preload', 'Tải trước')
               "
               class="setting-group"
             >
@@ -2938,7 +2938,7 @@
               v-if="
                 (isButtonComponent(selectedComponent) ||
                   hasLinkInSelection(selectedComponent)) &&
-                matchesSearch('Button', 'Link')
+                matchesSearch('Button', 'Link', 'Nút', 'Liên kết', 'Href', 'URL', 'Mục tiêu', 'Target', 'Rel', 'noopener', 'noreferrer', 'nofollow', 'download', 'Tải xuống', 'aria', 'Nhãn Aria', 'Tiêu đề', 'Popup Mua Vé', 'ID Sự kiện', 'Event ID', 'Biến thể', 'Kích thước', 'Nội dung')
               "
               class="setting-group"
             >
@@ -3091,7 +3091,7 @@
               v-if="
                 (isHtmlComponent(selectedComponent) ||
                   isIframeComponent(selectedComponent)) &&
-                matchesSearch('HTML', 'Code')
+                matchesSearch('HTML', 'Code', 'Nội dung HTML')
               "
               class="setting-group"
             >
@@ -3111,7 +3111,8 @@
               </div>
             </div>
             <div
-              v-if="isNavbarComponent(selectedComponent)"
+              v-if="isNavbarComponent(selectedComponent) &&
+                matchesSearch('Navbar', 'Thanh điều hướng', 'Căn chỉnh', 'Justify', 'Dính', 'Sticky', 'Khoảng cách', 'Đệm', 'Bán kính', 'Nền', 'Màu nền')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3196,7 +3197,8 @@
             </div>
             
             <div
-              v-if="isHeroComponent(selectedComponent)"
+              v-if="isHeroComponent(selectedComponent) &&
+                matchesSearch('Hero', 'Phần đầu trang', 'Tiêu đề', 'Phụ đề', 'URL ảnh nền', 'Màu chữ', 'Màu lớp phủ', 'Độ mờ lớp phủ')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3301,7 +3303,8 @@
               </div>
             </div>
             <div
-              v-if="isBackgroundImageComponent(selectedComponent)"
+              v-if="isBackgroundImageComponent(selectedComponent) &&
+                matchesSearch('Ảnh nền', 'Background', 'URL ảnh', 'Kích thước', 'Vị trí', 'Màu lớp phủ', 'Độ mờ lớp phủ', 'Zoom video')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3409,7 +3412,8 @@
               </div>
             </div>
             <div
-              v-if="isSliderComponent(selectedComponent)"
+              v-if="isSliderComponent(selectedComponent) &&
+                matchesSearch('Slider', 'Thanh trượt', 'Role', 'Mũi tên', 'Dấu chấm', 'Tự động phát', 'Khoảng thời gian', 'Dừng khi di chuột', 'Chuyển cảnh', 'Số slide', 'Easing', 'Tốc độ')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3534,7 +3538,8 @@
               </div>
             </div>
             <div
-              v-if="isGalleryComponent(selectedComponent)"
+              v-if="isGalleryComponent(selectedComponent) &&
+                matchesSearch('Gallery', 'Thư viện ảnh', 'Cột', 'Khoảng cách')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3567,7 +3572,8 @@
               </div>
             </div>
             <div
-              v-if="isAccordionComponent(selectedComponent)"
+              v-if="isAccordionComponent(selectedComponent) &&
+                matchesSearch('Accordion', 'Cho phép mở nhiều', 'Hiệu ứng động', 'Thời gian')"
               class="setting-group"
             >
               <div class="group-header">
@@ -3610,7 +3616,8 @@
               </div>
             </div>
             <div
-              v-if="isFormComponent(selectedComponent) && matchesSearch('Form')"
+              v-if="isFormComponent(selectedComponent) &&
+                matchesSearch('Form', 'Trường nhập liệu', 'Văn bản', 'Số', 'Lựa chọn', 'Chấp nhận', 'Radio', 'Xác thực')"
               class="setting-group ui-form"
             >
               <div class="group-header">
@@ -3684,6 +3691,133 @@
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+
+            <div
+              v-if="isSuperAdminPerm && matchesSearch('Advanced', 'Nâng cao', 'ID Element', 'CSS Classes', 'Breakpoint', 'Điểm ngắt')"
+              class="setting-group"
+            >
+              <div class="group-header">
+                <span>Nâng cao (Advanced)</span>
+              </div>
+              <div class="group-body">
+                <div class="field">
+                  <div class="field-label">ID Element</div>
+                  <input
+                    v-model="advancedId"
+                    class="chip-input"
+                    type="text"
+                    @change="applyAdvancedId"
+                  />
+                </div>
+                <div class="field">
+                  <div class="field-label">CSS Classes</div>
+                  <input
+                    v-model="advancedClass"
+                    class="chip-input"
+                    type="text"
+                    @change="applyAdvancedClass"
+                  />
+                </div>
+                <div class="field">
+                  <div class="field-label">Điểm ngắt (Breakpoint)</div>
+                  <div class="input-with-button">
+                    <select v-model="responsiveDevice" class="chip-select">
+                      <option
+                        v-for="dev in responsiveDevices"
+                        :key="dev"
+                        :value="dev"
+                      >
+                        {{ dev }}
+                      </option>
+                    </select>
+                    <button class="chip" type="button" @click="applyResponsive">
+                      Áp dụng
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="rightTab === 'interactions'"
+            id="inspector-panel-interactions"
+            role="tabpanel"
+            aria-labelledby="inspector-tab-interactions"
+            tabindex="0"
+            class="settings-section"
+          >
+            <p
+              v-if="sidebarSearch && !hasInteractionSearchMatches()"
+              class="inspector__hint"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              Không tìm thấy tương tác phù hợp. Thử tìm “sự kiện”, “JavaScript” hoặc chọn một nút/liên kết.
+            </p>
+            <div
+              v-if="matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript', 'Click', 'Nhấp chuột', 'Mouseenter', 'Mouseleave', 'Di chuột', 'Kích hoạt', 'Event Type', 'Alert', 'Script', 'Mã')"
+              class="setting-group"
+            >
+              <div class="group-header">
+                <span>Sự kiện tương tác</span>
+              </div>
+              <div class="group-body">
+                <p class="inspector__hint">
+                  Thiết lập hành vi khi người dùng tương tác với phần tử đang chọn.
+                </p>
+                <div class="field">
+                  <div class="field-label">Sự kiện kích hoạt</div>
+                  <select
+                    v-model="eventType"
+                    class="chip-select"
+                    @change="applyEvents"
+                  >
+                    <option value="none">Không</option>
+                    <option value="click">Nhấp chuột</option>
+                    <option value="mouseenter">Di chuột vào</option>
+                    <option value="mouseleave">Di chuột ra</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <div class="field-label">Hành động JavaScript</div>
+                  <input
+                    v-model="eventAction"
+                    class="chip-input"
+                    type="text"
+                    placeholder="alert('Hello')"
+                    @change="applyEvents"
+                  />
+                  <p class="inspector__hint">
+                    Chỉ nhập mã cho phần tử tin cậy; hãy kiểm tra hành vi trước khi xuất bản.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="
+                (isButtonComponent(selectedComponent) ||
+                  hasLinkInSelection(selectedComponent)) &&
+                matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL', 'Href', 'Mục tiêu', 'Target', 'Rel', 'Tải xuống', 'Nhãn Aria', 'Tiêu đề', 'Popup Mua Vé', 'noopener', 'noreferrer', 'nofollow')
+              "
+              class="setting-group"
+            >
+              <div class="group-header">
+                <span>Liên kết và nút</span>
+              </div>
+              <div class="group-body">
+                <p class="inspector__hint">
+                  URL, mục tiêu và thuộc tính liên kết được quản lý trong tab Cài đặt.
+                </p>
+                <button
+                  class="chip"
+                  type="button"
+                  @click="rightTab = 'settings'"
+                >
+                  Mở cài đặt liên kết
+                </button>
               </div>
             </div>
           </div>
@@ -5961,7 +6095,10 @@
 
 <script setup lang="ts">
 import HelpDialog from "./dialogs/HelpDialog.vue";
-import { normalizeElementSearch } from "./utils/element-search";
+import {
+  matchesElementSearch,
+  normalizeElementSearch,
+} from "./utils/element-search";
 import { getIncomingHtmlAction } from "./utils/model-html-sync";
 import { composeHtmlWithCss } from "./utils/html-with-css";
 import { escapeHtmlAttribute } from "./utils/escape-html-attribute";
@@ -5996,11 +6133,20 @@ import "grapesjs/dist/css/grapes.min.css";
 // and a small in-app panel. It is focused on the exact failure mode:
 // "Canvas looks correct for ~1s, then CSS disappears".
 //
-// Disable later with: window.__WB_DEBUG_DISABLE__ = true
-// Clear panel with:   window.__WB_DEBUG_CLEAR__?.()
-// Export logs with:   window.__WB_DEBUG_EXPORT__?.()
-// ============================================================================
-const WB_DEBUG_ENABLED = true;
+// Opt in only while diagnosing canvas/CSS issues by adding ?wb_debug=1.
+// Debug instrumentation is disabled by default to avoid production console noise
+// and repeated iframe snapshots / mutation-observer work.
+const WB_DEBUG_ENABLED = (() => {
+  try {
+    return (
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("wb_debug") === "1" &&
+      !(window as any).__WB_DEBUG_DISABLE__
+    );
+  } catch {
+    return false;
+  }
+})();
 let wbDebugSeq = 0;
 let wbDebugPanel: HTMLDivElement | null = null;
 let wbDebugBody: HTMLDivElement | null = null;
@@ -6135,15 +6281,18 @@ function wbDebug(...args: any[]) {
 }
 
 function wbDebugWarn(...args: any[]) {
+  if (!WB_DEBUG_ENABLED) return;
   wbDebug("WARN", ...args);
   try { console.warn("[WB-DEBUG]", ...args); } catch {}
 }
 function wbDebugError(...args: any[]) {
+  if (!WB_DEBUG_ENABLED) return;
   wbDebug("ERROR", ...args);
   try { console.error("[WB-DEBUG]", ...args); } catch {}
 }
 
 function wbCanvasSnapshot(stage: string) {
+  if (!WB_DEBUG_ENABLED) return;
   try {
     if (!editor) return wbDebug(stage, "editor=null");
     const d = editor?.Canvas.getDocument();
@@ -6200,6 +6349,7 @@ function wbCanvasSnapshot(stage: string) {
 }
 
 function wbDebugAttachFrameLifecycle() {
+  if (!WB_DEBUG_ENABLED) return;
   try {
     if (!editor) return;
     wbDebug("ATTACH frame lifecycle listeners");
@@ -6789,7 +6939,145 @@ function createCompanyEventBlockHtml(
         width: 100% !important;
         box-sizing: border-box !important;
       }
-    </style>
+    
+/* Compact inspector pass: prioritize hierarchy and reduce vertical noise. */
+.website-builder .inspector__header {
+  gap: 9px;
+  padding: 12px 12px 10px;
+}
+.website-builder .inspector__topline {
+  align-items: flex-start;
+  gap: 8px;
+}
+.website-builder .inspector__title {
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+.website-builder .inspector__hint {
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.website-builder .inspector__search {
+  min-height: 36px;
+  padding: 0 9px;
+  gap: 7px;
+}
+.website-builder .inspector-tabs {
+  margin: 8px 10px 6px;
+  padding: 3px;
+  gap: 3px;
+}
+.website-builder .inspector-tab {
+  min-height: 33px;
+  padding: 5px 3px;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.website-builder .floating-panel-content {
+  padding: 2px 9px 16px;
+}
+.website-builder .floating-panel-content .settings-section {
+  padding: 2px 0 8px;
+}
+.website-builder .floating-panel-content .setting-group {
+  margin-bottom: 6px;
+  border-radius: 9px;
+}
+.website-builder .floating-panel-content .group-header {
+  min-height: 38px;
+  padding: 9px 11px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.website-builder .floating-panel-content .group-body {
+  padding: 10px;
+  gap: 8px;
+}
+.website-builder .floating-panel-content .field {
+  margin-bottom: 7px;
+}
+.website-builder .floating-panel-content .field-label {
+  margin-bottom: 4px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+.website-builder .floating-panel-content .chip-input,
+.website-builder .floating-panel-content .chip-select {
+  min-height: 34px;
+  height: 34px;
+  padding-left: 9px;
+  padding-right: 9px;
+  font-size: 12px;
+}
+.website-builder .floating-panel-content .selected-text-info {
+  margin-bottom: 8px;
+  padding: 10px;
+}
+.website-builder .floating-panel-content .text-actions {
+  gap: 5px;
+}
+.website-builder .floating-panel-content .text-actions .action {
+  min-height: 30px;
+  padding: 5px 8px;
+  font-size: 11px;
+}
+@media (max-width: 768px) {
+  .website-builder .inspector__header {
+    padding: 10px 10px 8px;
+  }
+  .website-builder .inspector-tab {
+    min-height: 36px;
+    font-size: 10px;
+  }
+  .website-builder .floating-panel-content {
+    padding-right: 7px;
+    padding-left: 7px;
+  }
+}
+
+
+/* Final hierarchy polish: avoid a stack of heavy cards and keep controls unclipped. */
+.website-builder .floating-panel-content .setting-group {
+  overflow: visible;
+  border-color: #edf1f6;
+  box-shadow: 0 1px 1px rgba(15, 23, 42, .015);
+}
+.website-builder .floating-panel-content .group-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.website-builder .floating-panel-content .group-header:hover {
+  background: #f8fafc;
+}
+.website-builder .floating-panel-content .group-header .chev {
+  flex: 0 0 auto;
+  color: #94a3b8;
+}
+.website-builder .floating-panel-content .group-body {
+  background: #fff;
+}
+.website-builder .floating-panel-content .field-label {
+  display: block;
+}
+.website-builder .floating-panel-content .grid-2,
+.website-builder .floating-panel-content .grid-3 {
+  min-width: 0;
+  gap: 8px;
+}
+.website-builder .floating-panel-content .chip-input,
+.website-builder .floating-panel-content .chip-select {
+  max-width: 100%;
+}
+
+</style>
   `;
 
   // 1. HORIZONTAL (Image Left, Content Right)
@@ -8287,10 +8575,18 @@ onMounted(() => {
           }
         }
 
-        // Auto collapse on mobile to ensure canvas is visible
+        // Auto collapse on mobile to ensure canvas is visible.
         if (isMobile.value) {
           if (sidebarOpen.value) sidebarOpen.value = false;
-          if (showProperties.value) showProperties.value = false;
+          if (showProperties.value) {
+            const inspectorPanel =
+              rootEl.value?.querySelector(".inspector.properties") ?? null;
+            const shouldRestoreInspectorFocus =
+              !!inspectorPanel?.contains(document.activeElement);
+            // Restore focus only when resize removes the element that held it.
+            // Do not steal focus from the canvas/toolbar on initial mobile layout.
+            closeInspectorProperties(shouldRestoreInspectorFocus);
+          }
         } else if (w < 1024 && sidebarOpen.value && showProperties.value) {
           // On tablet, maybe close one?
           // Don't auto-close properties if user manually opened it or if we want to allow it
@@ -8501,9 +8797,73 @@ const headerProps = ref({
   showSeparator: true,
 });
 
+function clearInspectorSearch() {
+  sidebarSearch.value = "";
+  nextTick(() => inspectorSearchInput.value?.focus());
+}
+
+function handleInspectorSearchEscape() {
+  if (sidebarSearch.value) {
+    clearInspectorSearch();
+    return;
+  }
+  closeInspectorProperties();
+}
+
+function toggleInspectorProperties() {
+  if (showProperties.value) {
+    showProperties.value = false;
+    return;
+  }
+
+  showProperties.value = true;
+  nextTick(() => inspectorSearchInput.value?.focus());
+}
+
+function closeInspectorProperties(restoreFocus = true) {
+  showProperties.value = false;
+  if (!restoreFocus) return;
+  nextTick(() => inspectorToggleButton.value?.focus());
+}
+
+type InspectorVisibleTab = "style" | "settings" | "interactions";
+const visibleInspectorTabs: InspectorVisibleTab[] = [
+  "style",
+  "settings",
+  "interactions",
+];
+const inspectorToggleButton = ref<HTMLButtonElement | null>(null);
+const inspectorSearchInput = ref<HTMLInputElement | null>(null);
+const inspectorStyleTab = ref<HTMLButtonElement | null>(null);
+const inspectorSettingsTab = ref<HTMLButtonElement | null>(null);
+const inspectorInteractionsTab = ref<HTMLButtonElement | null>(null);
+
 const rightTab = ref<"style" | "interactions" | "layouts" | "settings">(
   "style",
 );
+
+function focusInspectorTab(tab: InspectorVisibleTab) {
+  rightTab.value = tab;
+  nextTick(() => {
+    const tabRefs = {
+      style: inspectorStyleTab,
+      settings: inspectorSettingsTab,
+      interactions: inspectorInteractionsTab,
+    };
+    tabRefs[tab].value?.focus();
+  });
+}
+
+function moveInspectorTab(direction: -1 | 1) {
+  const currentIndex = visibleInspectorTabs.indexOf(
+    rightTab.value as InspectorVisibleTab,
+  );
+  const safeIndex = currentIndex < 0 ? 0 : currentIndex;
+  const nextIndex =
+    (safeIndex + direction + visibleInspectorTabs.length) %
+    visibleInspectorTabs.length;
+  focusInspectorTab(visibleInspectorTabs[nextIndex]);
+}
 const spacingUnits = ["px", "rem"];
 const sizeUnits = ["px", "%", "rem"];
 const spacingUnit = ref("px");
@@ -9407,23 +9767,66 @@ const effectTransitionOpen = ref(false);
 const effectTransformOpen = ref(false);
 const effectFilterOpen = ref(false);
 const effectBackdropOpen = ref(false);
-const effectEventsOpen = ref(false);
 const sidebarSearch = ref("");
 const inspectorCompact = ref(false);
 
-function normalizeInspectorSearch(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[đĐ]/g, (char) => (char === "Đ" ? "D" : "d"))
-    .toLocaleLowerCase("vi")
-    .trim();
+function matchesSearch(...terms: string[]) {
+  return matchesElementSearch(sidebarSearch.value, ...terms);
 }
 
-function matchesSearch(...terms: string[]) {
-  const query = normalizeInspectorSearch(sidebarSearch.value);
-  if (!query) return true;
-  return terms.some((term) => normalizeInspectorSearch(term).includes(query));
+function hasStyleSearchMatches() {
+  return (
+    (isTextSelection.value &&
+      matchesSearch('Kiểu chữ', 'Typography', 'Nội dung', 'Cỡ chữ', 'Font', 'Khoảng dòng', 'Line Height', 'Độ đậm', 'Weight', 'Khoảng chữ', 'Letter Spacing', 'Màu chữ', 'Text Color')) ||
+    matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'nowrap', 'no wrap', 'row', 'column', 'row-reverse', 'column-reverse', 'Gap', 'Khoảng cách') ||
+    matchesSearch('Khoảng cách', 'Spacing', 'Margin', 'Lề ngoài', 'Padding', 'Lề trong') ||
+    matchesSearch('Kích thước', 'Sizing', 'Width', 'Height', 'Rộng', 'Cao', 'Min W', 'Min H', 'Max W', 'Max H', 'Tỷ lệ', 'Đơn vị', 'Aspect', 'Auto', 'Khóa') ||
+    (isGenericGridComponent(selectedComponent.value) &&
+      matchesSearch('Lưới', 'Grid', 'Cột', 'Columns', 'Khoảng cách', 'Gap')) ||
+    matchesSearch('Nền', 'Background', 'Màu nền', 'Ảnh nền', 'Lặp lại', 'Vị trí', 'Kích thước', 'Attachment', 'Cố định') ||
+    matchesSearch('Viền', 'Border', 'Kiểu viền', 'Độ dày', 'Màu viền', 'Bo góc', 'Radius') ||
+    matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Static', 'Relative', 'Absolute', 'Fixed', 'Sticky', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity') ||
+    matchesSearch('Hiệu ứng', 'Effects', 'Đổ bóng', 'Shadow', 'Hover', 'Chuyển đổi', 'Transition', 'Biến đổi', 'Transform', 'Xoay', 'Rotate', 'Scale', 'Skew', 'Bộ lọc', 'Filter', 'Làm mờ', 'Blur', 'Độ sáng', 'Brightness', 'Nền mờ', 'Backdrop', 'Thời gian', 'Easing')
+  );
+}
+
+function hasSettingsSearchMatches() {
+  const component = selectedComponent.value;
+  return (
+    (isSuperAdminPerm.value &&
+      matchesSearch('Advanced', 'Nâng cao', 'ID Element', 'CSS Classes', 'Breakpoint', 'Điểm ngắt')) ||
+    (isImageComponent(component) &&
+      matchesSearch('Image', 'Hình ảnh', 'Src', 'URL ảnh', 'Alt Text', 'Fit', 'Vừa khung', 'Cover', 'Contain', 'Fill', 'Scale Down', 'Scale-down', 'Position', 'Vị trí')) ||
+    (isVideoComponent(component) &&
+      matchesSearch('Video', 'Src', 'URL video', 'Controls', 'Điều khiển', 'Autoplay', 'Tự động phát', 'Loop', 'Lặp lại', 'Muted', 'Tắt tiếng', 'Poster', 'Ảnh bìa', 'Preload', 'Tải trước')) ||
+    ((isButtonComponent(component) || hasLinkInSelection(component)) &&
+      matchesSearch('Button', 'Link', 'Nút', 'Liên kết', 'Href', 'URL', 'Mục tiêu', 'Target', 'Rel', 'noopener', 'noreferrer', 'nofollow', 'download', 'Tải xuống', 'aria', 'Nhãn Aria', 'Tiêu đề', 'Popup Mua Vé', 'ID Sự kiện', 'Event ID', 'Biến thể', 'Kích thước', 'Nội dung')) ||
+    ((isHtmlComponent(component) || isIframeComponent(component)) &&
+      matchesSearch('HTML', 'Code', 'Nội dung HTML')) ||
+    (isNavbarComponent(component) &&
+      matchesSearch('Navbar', 'Thanh điều hướng', 'Căn chỉnh', 'Justify', 'Dính', 'Sticky', 'Khoảng cách', 'Đệm', 'Bán kính', 'Nền', 'Màu nền')) ||
+    (isHeroComponent(component) &&
+      matchesSearch('Hero', 'Phần đầu trang', 'Tiêu đề', 'Phụ đề', 'URL ảnh nền', 'Màu chữ', 'Màu lớp phủ', 'Độ mờ lớp phủ')) ||
+    (isBackgroundImageComponent(component) &&
+      matchesSearch('Ảnh nền', 'Background', 'URL ảnh', 'Kích thước', 'Vị trí', 'Màu lớp phủ', 'Độ mờ lớp phủ', 'Zoom video')) ||
+    (isSliderComponent(component) &&
+      matchesSearch('Slider', 'Thanh trượt', 'Role', 'Mũi tên', 'Dấu chấm', 'Tự động phát', 'Khoảng thời gian', 'Dừng khi di chuột', 'Chuyển cảnh', 'Số slide', 'Easing', 'Tốc độ')) ||
+    (isGalleryComponent(component) &&
+      matchesSearch('Gallery', 'Thư viện ảnh', 'Cột', 'Khoảng cách')) ||
+    (isAccordionComponent(component) &&
+      matchesSearch('Accordion', 'Cho phép mở nhiều', 'Hiệu ứng động', 'Thời gian')) ||
+    (isFormComponent(component) &&
+      matchesSearch('Form', 'Trường nhập liệu', 'Văn bản', 'Số', 'Lựa chọn', 'Chấp nhận', 'Radio', 'Xác thực'))
+  );
+}
+
+function hasInteractionSearchMatches() {
+  const component = selectedComponent.value;
+  return (
+    matchesSearch('Sự kiện', 'Events', 'Hành động', 'JavaScript', 'Click', 'Nhấp chuột', 'Mouseenter', 'Mouseleave', 'Di chuột', 'Kích hoạt', 'Event Type', 'Alert', 'Script', 'Mã') ||
+    ((isButtonComponent(component) || hasLinkInSelection(component)) &&
+      matchesSearch('Liên kết', 'Link', 'Nút', 'Button', 'URL', 'Href', 'Mục tiêu', 'Target', 'Rel', 'Tải xuống', 'Nhãn Aria', 'Tiêu đề', 'Popup Mua Vé', 'noopener', 'noreferrer', 'nofollow'))
+  );
 }
 
 const _gridSteps = [4, 8, 10, 12, 16];
@@ -22128,6 +22531,239 @@ function enableResizable(model: ResizableComponent | null) {
   .website-builder .floating-panel-content .group-body {
     padding-right: 12px;
     padding-left: 12px;
+  }
+}
+
+/* Right inspector redesign: calmer hierarchy, less visual noise, clearer controls. */
+.website-builder .inspector.properties {
+  min-width: 280px;
+  background: #fff;
+  border-left: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+.website-builder .inspector__header {
+  gap: 12px;
+  padding: 16px 14px 12px;
+  border-bottom: 1px solid #e8edf4;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, .025);
+}
+.website-builder .inspector__title {
+  font-size: 15px;
+  letter-spacing: -.025em;
+  color: #0f172a;
+}
+.website-builder .inspector__hint {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #64748b;
+}
+.website-builder .inspector__search {
+  min-height: 40px;
+  margin: 0;
+  padding: 0 11px;
+  border-color: #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+.website-builder .inspector__search input {
+  font-size: 13px;
+}
+.website-builder .inspector-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  margin: 10px 12px 8px;
+  padding: 4px;
+  border: 1px solid #e8edf4;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+.website-builder .inspector-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 36px;
+  padding: 7px 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.website-builder .inspector-tab:hover {
+  background: #eef2f7;
+  color: #334155;
+}
+.website-builder .inspector-tab.is-active {
+  border-color: #e2e8f0;
+  background: #fff;
+  color: #4338ca;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .06);
+}
+.website-builder .floating-panel-content {
+  padding: 4px 10px 22px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.website-builder .floating-panel-content .settings-section {
+  padding: 4px 0 12px;
+  border-bottom: 0;
+}
+.website-builder .floating-panel-content .setting-group {
+  margin: 0 0 8px;
+  overflow: clip;
+  border: 1px solid #e8edf4;
+  border-radius: 10px;
+  background: #fff;
+}
+.website-builder .floating-panel-content .group-header {
+  min-height: 44px;
+  padding: 11px 12px;
+  border-radius: 0;
+  color: #1e293b;
+  font-size: 12px;
+  font-weight: 650;
+}
+.website-builder .floating-panel-content .group-header:hover {
+  background: #f8fafc;
+}
+.website-builder .floating-panel-content .group-body {
+  gap: 10px;
+  padding: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+.website-builder .floating-panel-content .field {
+  min-width: 0;
+  margin-bottom: 8px;
+}
+.website-builder .floating-panel-content .field-label {
+  margin-bottom: 5px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+.website-builder .floating-panel-content .chip-input,
+.website-builder .floating-panel-content .chip-select {
+  min-width: 0;
+  min-height: 38px;
+  height: 38px;
+  border: 1px solid #dbe3ed;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #0f172a;
+  font-size: 13px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.website-builder .floating-panel-content .chip-input:focus,
+.website-builder .floating-panel-content .chip-select:focus {
+  border-color: #818cf8;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, .12);
+}
+.website-builder .floating-panel-content .chip,
+.website-builder .floating-panel-content .segment {
+  border-radius: 8px;
+}
+.website-builder .floating-panel-content .selected-text-info {
+  margin: 0 0 10px;
+  padding: 12px;
+  border: 1px solid #e0e7ff;
+  border-radius: 10px;
+  background: #f8faff;
+}
+.website-builder .floating-panel-content .selected-text-row .value {
+  color: #312e81;
+  font-weight: 600;
+}
+.website-builder .floating-panel-content .text-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.website-builder .floating-panel-content .text-actions .action {
+  min-height: 32px;
+  padding: 6px 9px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #475569;
+  font-size: 12px;
+}
+.website-builder .floating-panel-content .text-actions .action:hover {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #4338ca;
+}
+.website-builder .inspector__header .icon-button {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+}
+.website-builder .inspector__search-clear {
+  flex: 0 0 32px;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+.website-builder .inspector button:focus-visible,
+.website-builder .inspector input:focus-visible,
+.website-builder .inspector select:focus-visible {
+  outline: 2px solid #818cf8;
+  outline-offset: 2px;
+}
+@media (max-width: 360px) {
+  .website-builder .inspector-tab svg {
+    display: none;
+  }
+  .website-builder .inspector-tab {
+    gap: 0;
+    padding-right: 2px;
+    padding-left: 2px;
+    font-size: 10px;
+  }
+  .website-builder .inspector-tabs {
+    margin-right: 6px;
+    margin-left: 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .website-builder .inspector__header .icon-button,
+  .website-builder .inspector__search-clear {
+    flex-basis: 40px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+  }
+  .website-builder .inspector.properties {
+    min-width: 0;
+  }
+  .website-builder .inspector__header {
+    padding: 12px 10px 10px;
+  }
+  .website-builder .inspector-tabs {
+    gap: 2px;
+    margin: 8px 8px 6px;
+  }
+  .website-builder .inspector-tab {
+    gap: 3px;
+    min-height: 40px;
+    font-size: 11px;
+  }
+  .website-builder .floating-panel-content {
+    padding-right: 8px;
+    padding-left: 8px;
   }
 }
 
