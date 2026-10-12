@@ -2982,7 +2982,7 @@
               v-if="
                 (isButtonComponent(selectedComponent) ||
                   hasLinkInSelection(selectedComponent)) &&
-                matchesSearch('Button', 'Link', 'Nút', 'Liên kết', 'Href', 'URL', 'Rel', 'Tiêu đề', 'Nhãn Aria', 'Tải xuống', 'Popup Mua Vé', 'Biến thể', 'Kích thước', 'Nội dung')
+                matchesSearch('Button', 'Link', 'Nút', 'Liên kết', 'Href', 'URL', 'Mục tiêu', 'Target', 'Rel', 'noopener', 'noreferrer', 'nofollow', 'download', 'Tải xuống', 'aria', 'Nhãn Aria', 'Tiêu đề', 'Popup Mua Vé', 'ID Sự kiện', 'Event ID', 'Biến thể', 'Kích thước', 'Nội dung')
               "
               class="setting-group"
             >
@@ -9777,7 +9777,7 @@ function hasSettingsSearchMatches() {
     (isVideoComponent(component) &&
       matchesSearch('Video', 'Src', 'URL video', 'Controls', 'Điều khiển', 'Autoplay', 'Tự động phát', 'Loop', 'Lặp lại', 'Muted', 'Tắt tiếng', 'Poster', 'Ảnh bìa', 'Preload', 'Tải trước')) ||
     ((isButtonComponent(component) || hasLinkInSelection(component)) &&
-      matchesSearch('Button', 'Link', 'Nút', 'Liên kết', 'Href', 'URL', 'Rel', 'Tiêu đề', 'Nhãn Aria', 'Tải xuống', 'Popup Mua Vé', 'Biến thể', 'Kích thước', 'Nội dung')) ||
+      matchesSearch('Button', 'Link', 'Nút', 'Liên kết', 'Href', 'URL', 'Mục tiêu', 'Target', 'Rel', 'noopener', 'noreferrer', 'nofollow', 'download', 'Tải xuống', 'aria', 'Nhãn Aria', 'Tiêu đề', 'Popup Mua Vé', 'ID Sự kiện', 'Event ID', 'Biến thể', 'Kích thước', 'Nội dung')) ||
     ((isHtmlComponent(component) || isIframeComponent(component)) &&
       matchesSearch('HTML', 'Code', 'Nội dung HTML')) ||
     (isNavbarComponent(component) &&
