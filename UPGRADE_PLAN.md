@@ -91,4 +91,5 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Làm rõ phản hồi khi xác minh dữ liệu sau lưu không khớp: hiển thị cảnh báo cụ thể và không hiện thêm thông báo thành công gây hiểu nhầm.
 - [x] Phân biệt trường hợp API đọc lại sau lưu bị lỗi: cảnh báo chưa xác minh được dữ liệu thay vì âm thầm hiển thị thông báo lưu thành công.
 - [x] Làm gọn phần đầu cột thuộc tính: tiêu đề và hướng dẫn theo ngữ cảnh, ô tìm kiếm toàn chiều rộng, nút xóa tìm kiếm và trạng thái focus dễ nhận biết.
+- [x] Cải thiện bảng thuộc tính bên phải: nhóm tab rõ ràng hơn, biểu tượng và trạng thái tab được chọn cho trình đọc màn hình, trường nhập dễ đọc và vùng chạm thoải mái hơn.
 - [ ] Kiểm tra thao tác bàn phím, độ tương phản, bố cục trên màn hình nhỏ và kiểm thử người dùng thực tế; chưa chạy build/test trong môi trường dự án.
