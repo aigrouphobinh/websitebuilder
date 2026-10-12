@@ -1724,7 +1724,7 @@
             </div>
             <div v-if="hasStyleSearchMatches()" class="setting-group">
               <div
-                v-if="matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'Gap', 'Khoảng cách')"
+                v-if="matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'nowrap', 'no wrap', 'row', 'column', 'row-reverse', 'column-reverse', 'Gap', 'Khoảng cách')"
                 class="group-header"
                 @click="displayLayoutOpen = !displayLayoutOpen"
               >
@@ -1734,7 +1734,7 @@
                   class="chev"
                 />
               </div>
-              <div v-if="matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'Gap', 'Khoảng cách')" v-show="displayLayoutOpen || !!sidebarSearch" class="group-body">
+              <div v-if="matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'nowrap', 'no wrap', 'row', 'column', 'row-reverse', 'column-reverse', 'Gap', 'Khoảng cách')" v-show="displayLayoutOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Hiển thị (Display)</div>
                   <div class="grid-2">
@@ -2358,7 +2358,7 @@
               </div>
 
               <div
-                v-if="matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity')"
+                v-if="matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Static', 'Relative', 'Absolute', 'Fixed', 'Sticky', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity')"
                 class="group-header"
                 @click="positioningOpen = !positioningOpen"
               >
@@ -2368,7 +2368,7 @@
                   class="chev"
                 />
               </div>
-              <div v-if="matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity')" v-show="positioningOpen || !!sidebarSearch" class="group-body">
+              <div v-if="matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Static', 'Relative', 'Absolute', 'Fixed', 'Sticky', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity')" v-show="positioningOpen || !!sidebarSearch" class="group-body">
                 <div class="field">
                   <div class="field-label">Kiểu</div>
                   <select
@@ -2792,7 +2792,7 @@
             <div
               v-if="
                 isImageComponent(selectedComponent) &&
-                matchesSearch('Image', 'Hình ảnh', 'Src', 'URL ảnh', 'Alt Text', 'Fit', 'Vừa khung', 'Position', 'Vị trí')
+                matchesSearch('Image', 'Hình ảnh', 'Src', 'URL ảnh', 'Alt Text', 'Fit', 'Vừa khung', 'Cover', 'Contain', 'Fill', 'Scale Down', 'Scale-down', 'Position', 'Vị trí')
               "
               class="setting-group"
             >
@@ -9755,14 +9755,14 @@ function hasStyleSearchMatches() {
   return (
     (isTextSelection.value &&
       matchesSearch('Kiểu chữ', 'Typography', 'Nội dung', 'Cỡ chữ', 'Font', 'Khoảng dòng', 'Line Height', 'Độ đậm', 'Weight', 'Khoảng chữ', 'Letter Spacing', 'Màu chữ', 'Text Color')) ||
-    matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'Gap', 'Khoảng cách') ||
+    matchesSearch('Bố cục', 'Layout', 'Hiển thị', 'Display', 'Block', 'Flex', 'Inline', 'Ẩn', 'Hướng', 'Direction', 'Justify', 'Align', 'Wrap', 'nowrap', 'no wrap', 'row', 'column', 'row-reverse', 'column-reverse', 'Gap', 'Khoảng cách') ||
     matchesSearch('Khoảng cách', 'Spacing', 'Margin', 'Lề ngoài', 'Padding', 'Lề trong') ||
     matchesSearch('Kích thước', 'Sizing', 'Width', 'Height', 'Rộng', 'Cao', 'Min W', 'Min H', 'Max W', 'Max H', 'Tỷ lệ', 'Đơn vị', 'Aspect', 'Auto', 'Khóa') ||
     (isGenericGridComponent(selectedComponent.value) &&
       matchesSearch('Lưới', 'Grid', 'Cột', 'Columns', 'Khoảng cách', 'Gap')) ||
     matchesSearch('Nền', 'Background', 'Màu nền', 'Ảnh nền', 'Lặp lại', 'Vị trí', 'Kích thước', 'Attachment', 'Cố định') ||
     matchesSearch('Viền', 'Border', 'Kiểu viền', 'Độ dày', 'Màu viền', 'Bo góc', 'Radius') ||
-    matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity') ||
+    matchesSearch('Định vị', 'Positioning', 'Position', 'Kiểu', 'Static', 'Relative', 'Absolute', 'Fixed', 'Sticky', 'Trên', 'Dưới', 'Trái', 'Phải', 'Z-Index', 'Opacity') ||
     matchesSearch('Hiệu ứng', 'Effects', 'Đổ bóng', 'Shadow', 'Hover', 'Chuyển đổi', 'Transition', 'Biến đổi', 'Transform', 'Xoay', 'Rotate', 'Scale', 'Skew', 'Bộ lọc', 'Filter', 'Làm mờ', 'Blur', 'Độ sáng', 'Brightness', 'Nền mờ', 'Backdrop', 'Thời gian', 'Easing')
   );
 }
@@ -9773,7 +9773,7 @@ function hasSettingsSearchMatches() {
     (isSuperAdminPerm.value &&
       matchesSearch('Advanced', 'Nâng cao', 'ID Element', 'CSS Classes', 'Breakpoint', 'Điểm ngắt')) ||
     (isImageComponent(component) &&
-      matchesSearch('Image', 'Hình ảnh', 'Src', 'URL ảnh', 'Alt Text', 'Fit', 'Vừa khung', 'Position', 'Vị trí')) ||
+      matchesSearch('Image', 'Hình ảnh', 'Src', 'URL ảnh', 'Alt Text', 'Fit', 'Vừa khung', 'Cover', 'Contain', 'Fill', 'Scale Down', 'Scale-down', 'Position', 'Vị trí')) ||
     (isVideoComponent(component) &&
       matchesSearch('Video', 'Src', 'URL video', 'Controls', 'Điều khiển', 'Autoplay', 'Tự động phát', 'Loop', 'Lặp lại', 'Muted', 'Tắt tiếng', 'Poster', 'Ảnh bìa', 'Preload', 'Tải trước')) ||
     ((isButtonComponent(component) || hasLinkInSelection(component)) &&
