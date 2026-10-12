@@ -20360,9 +20360,9 @@ function enableResizable(model: ResizableComponent | null) {
 .sb-group {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 0 16px 24px;
-  border-bottom: 1px solid #f9fafb;
+  gap: 8px;
+  padding: 0 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
 }
 .sb-group:last-child {
   border-bottom: none;
@@ -20371,7 +20371,7 @@ function enableResizable(model: ResizableComponent | null) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 8px;
+  margin-top: 5px;
 }
 .sb-group-title {
   font-size: 11px;
@@ -20397,30 +20397,40 @@ function enableResizable(model: ResizableComponent | null) {
 }
 .sb-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  padding: 0 4px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 0;
 }
 .sb-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 16px 8px;
+  justify-content: flex-start;
+  gap: 7px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 7px 8px;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 7px;
   background: #ffffff;
   color: #4b5563;
   cursor: grab;
-  transition: all 0.2s;
-  text-align: center;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  text-align: left;
+  box-shadow: none;
+}
+.sb-item > svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
 }
 .sb-item span {
-  font-size: 12px;
-  line-height: 1.3;
+  min-width: 0;
+  font-size: 11px;
+  line-height: 1.25;
   font-weight: 500;
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 .sb-item:hover {
   background: #f8fafc;
@@ -22312,8 +22322,16 @@ function enableResizable(model: ResizableComponent | null) {
   }
 
   .website-builder .sb-item {
-    min-height: 82px;
-    padding: 12px 6px;
+    min-height: 38px;
+    padding: 7px 6px;
+  }
+  .website-builder .sb-item > svg {
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
+  }
+  .website-builder .sb-item span {
+    font-size: 11px;
   }
 
   .website-builder .editor-container {
