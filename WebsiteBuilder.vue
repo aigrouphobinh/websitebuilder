@@ -14722,15 +14722,38 @@ async function saveCompanyTemplate() {
         }
 
         const projectData = getProjectData();
+
+        // postMessage uses the structured-clone algorithm, which cannot clone
+        // Vue reactive proxies, functions, BigInt values, or circular references.
+        // Convert editor state to plain message-safe data before notifying the parent.
+        const toPostMessageSafe = (value: unknown) => {
+          const seen = new WeakSet<object>();
+          const json = JSON.stringify(value, (_key, item) => {
+            if (
+              typeof item === "function" ||
+              typeof item === "symbol" ||
+              typeof item === "bigint"
+            ) {
+              return undefined;
+            }
+            if (item && typeof item === "object") {
+              if (seen.has(item)) return undefined;
+              seen.add(item);
+            }
+            return item;
+          });
+          return json === undefined ? null : JSON.parse(json);
+        };
+
         window.parent.postMessage(
           {
             source: "websitebuilder",
             type: "wb-save",
             payload: {
               html: embedHtml,
-              projectData,
+              projectData: toPostMessageSafe(projectData),
               thumbnail, // Send the generated thumbnail to parent
-              gjs,
+              gjs: toPostMessageSafe(gjs),
             },
           },
           "*",
