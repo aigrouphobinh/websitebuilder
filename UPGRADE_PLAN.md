@@ -104,3 +104,102 @@ File: [WebsiteBuilder.vue](https://github.com/aigrouphobinh/websitebuilder/blob/
 - [x] Tìm cài đặt trong cột phải không phân biệt dấu tiếng Việt (ví dụ `khoang cach` tìm được `Khoảng cách`); giữ nguyên cơ chế lọc thuộc tính hiện có.
 - [ ] Xác minh thủ công tìm kiếm có dấu/không dấu trên từng tab và kiểm tra không có nhóm cài đặt bị ẩn ngoài ý muốn.
 - [ ] Kiểm tra thao tác bàn phím, độ tương phản, bố cục trên màn hình nhỏ và kiểm thử người dùng thực tế; chưa chạy build/test trong môi trường dự án.
+
+
+## 5. Roadmap tổng thể — thực hiện tuần tự từ đầu đến cuối
+
+> Quy tắc làm việc: mỗi P có tiêu chí hoàn thành, commit riêng và kiểm tra trước khi chuyển P tiếp theo. Giữ nguyên API, v-model, placeholder động, cấu trúc HTML/CSS và logic nghiệp vụ; không xóa tính năng khi chưa chứng minh là trùng hoặc không còn caller. Trạng thái [x] là đã có thay đổi trong mã/kế hoạch, không đồng nghĩa đã test thành công.
+
+### P0 — Chốt hiện trạng và tiêu chí nghiệm thu
+- [x] Đối chiếu kế hoạch cũ với registry: 31 block (5 core + 13 landing + 13 event-specific).
+- [x] Ghi nhận nhánh UI hiện tại ux/right-inspector-redesign; PR #2 là nơi tổng hợp thay đổi tìm kiếm và sidebar.
+- [ ] Kiểm tra PR/nhánh và thay đổi so với main; bảo đảm không vô tình ghi đè công việc khác.
+- [ ] Xác định chính xác manifest, scripts, phiên bản runtime và lệnh test/build đang có trong repository.
+- **Nghiệm thu:** có danh sách file/điểm vào/lệnh kiểm tra xác minh từ repository, không suy đoán cấu hình.
+
+### P1 — Chạy baseline và ổn định kiểm thử
+- [x] Có unit test cho chuẩn hóa tìm kiếm, quyết định đồng bộ HTML, placeholder, ghép HTML/CSS, escaping thuộc tính và một số hành vi export/restore.
+- [ ] Chạy toàn bộ test hiện có và ghi kết quả thực tế.
+- [ ] Chạy type-check/build/lint nếu repository có script tương ứng.
+- [ ] Sửa lỗi baseline trước khi thêm thay đổi chức năng mới.
+- **Nghiệm thu:** ghi rõ lệnh nào chạy, số test pass/fail và lỗi còn lại; không đánh dấu pass nếu chưa chạy.
+
+### P2 — Đồng bộ dữ liệu editor và v-model
+- [x] Có helper quyết định đồng bộ HTML đầu vào; xử lý HTML rỗng, echo từ parent, HTML trùng và HTML mới.
+- [ ] Kiểm thử tích hợp parent → canvas → update:modelValue → save → reload.
+- [ ] Kiểm tra nội dung HTML rỗng, thay đổi liên tiếp từ parent và nội dung có CSS.
+- **Nghiệm thu:** không mất nội dung, không reset canvas không cần thiết, không lặp watcher/emit.
+
+### P3 — Registry block và tương thích cấu hình
+- [x] Registry hiện có 31 block và test kiểm tra số lượng/ID/label/content/markup cơ bản.
+- [ ] Xác minh các block xuất hiện đúng trong UI, kéo-thả và chèn bằng click.
+- [ ] Đối chiếu key event:* với ID landing-event-* tại nơi tiêu thụ; chỉ thêm alias nếu có caller thực tế.
+- [ ] Kiểm tra không trùng ID, block thiếu metadata hoặc block đăng ký nhưng không dùng được.
+- **Nghiệm thu:** đủ 31 block, ID ổn định, không phá cấu hình template đã lưu.
+
+### P4 — Placeholder và event context
+- [x] Có test helper cho token đã biết/chưa biết, dữ liệu lồng nhau, ký tự JSON đặc biệt và ngăn thay thế dây chuyền.
+- [ ] Kiểm tra end-to-end [ev_name], [ev_location], [ev_description], [ev_order_url], [company_name].
+- [ ] Xác minh token được giữ nguyên khi lưu và chỉ thay ở bước render có event context thật.
+- **Nghiệm thu:** không tạo dữ liệu giả, không thay token chưa biết, không làm hỏng giá trị có ký tự đặc biệt.
+
+### P5 — Save/load, HTML/CSS và export
+- [x] Có helper ghép HTML/CSS và test giữ class, id, data-* cùng placeholder.
+- [x] Có xử lý restore ưu tiên projectData, fallback HTML/CSS và đồng bộ tài nguyên khi đổi template.
+- [x] Có xử lý escape thuộc tính HTML và helper tạo script tag; includeScripts: false được thiết kế để bỏ script tương tác nội bộ khỏi body.
+- [ ] Chạy unit tests của các helper.
+- [ ] Kiểm tra tích hợp save/load/preview/export, headCss, headLinks, runtime, scripts, async/defer và CSS rỗng.
+- **Nghiệm thu:** HTML export hợp lệ, không rò tài nguyên template trước, không mất script cần thiết hoặc chạy script ngoài ý muốn.
+
+### P6 — UX canvas và thư viện thành phần
+- [x] Có phản hồi tìm kiếm thành phần, số kết quả và trạng thái không tìm thấy.
+- [ ] Kiểm thử kéo-thả, chọn, di chuyển, duplicate, xóa và chèn block bằng click.
+- [ ] Làm rõ trạng thái chọn/hover/drag, empty state và hướng dẫn thao tác đầu tiên.
+- [ ] Đảm bảo tìm kiếm không dấu và có dấu hoạt động ổn định.
+- **Nghiệm thu:** người mới có thể tìm/chèn/chỉnh sửa block mà không cần đoán thao tác.
+
+### P7 — Sidebar phải: gọn, có thứ bậc, theo ngữ cảnh
+- [x] Đã thêm thiết kế tiêu đề, ô tìm kiếm, ba tab và trường nhập nhất quán trên nhánh UI.
+- [x] Đã tinh gọn khoảng cách và giảm độ nặng của card bằng CSS.
+- [ ] Kiểm tra mọi nhóm thuộc tính trong ba tab và xác minh không bị CSS cắt/che.
+- [ ] Ưu tiên thao tác thường dùng; gom nhóm nâng cao dưới nhóm có tên rõ ràng.
+- [ ] Chỉ ẩn nhóm không liên quan theo loại phần tử đang chọn khi đã xác minh điều kiện; không bỏ handler/API.
+- [ ] Chỉ xóa điều khiển trùng sau khi truy vết nguồn dữ liệu, event handler và caller.
+- **Nghiệm thu:** người dùng nhìn thấy đúng nhóm phù hợp, tìm được cài đặt, các giá trị cũ vẫn hoạt động.
+
+### P8 — Responsive, accessibility và thao tác bàn phím
+- [x] Đã bổ sung focus-visible, một số ARIA label/state và quy tắc responsive.
+- [ ] Kiểm tra desktop, tablet và mobile; sidebar không che mất nút quan trọng hoặc cắt nội dung.
+- [ ] Kiểm tra keyboard navigation, focus khi mở/đóng panel, nhãn screen reader và tương phản.
+- [ ] Kiểm tra reduced-motion và kích thước vùng chạm.
+- **Nghiệm thu:** các thao tác chính dùng được bằng chuột, bàn phím và màn hình nhỏ.
+
+### P9 — Kiểm thử tích hợp toàn bộ builder
+- [ ] Chạy test registry 31 block và toàn bộ unit tests.
+- [ ] Kiểm thử nhóm block có form, accordion, slider/carousel, gallery và tương tác.
+- [ ] Kiểm thử chuyển template liên tiếp, template rỗng, save/reload và preview/export.
+- [ ] Kiểm tra console/browser errors và các trạng thái loading/error/unsaved.
+- **Nghiệm thu:** không có lỗi hồi quy đã biết; lỗi còn lại được ghi rõ và phân mức độ.
+
+### P10 — Rà soát chất lượng, bảo mật và hiệu năng
+- [ ] Rà soát xử lý HTML/script/URL, tránh đưa nội dung không tin cậy vào ngữ cảnh thực thi.
+- [ ] Kiểm tra tài nguyên/listener được dọn khi đổi template và khi component unmount.
+- [ ] Kiểm tra hiệu năng với trang lớn và nhiều block; tránh watcher/render không cần thiết.
+- [ ] Chỉ tối ưu sau khi có bằng chứng đo hoặc lỗi tái hiện.
+- **Nghiệm thu:** không có rủi ro nghiêm trọng chưa xử lý; không đánh đổi tương thích để lấy tối ưu nhỏ.
+
+### P11 — Hoàn thiện tài liệu và phát hành
+- [ ] Cập nhật hướng dẫn sử dụng builder, placeholder, save/load/export và các giới hạn đã biết.
+- [ ] Chạy lại bộ kiểm tra sau commit cuối.
+- [ ] Rà soát diff, commit, PR description, checklist và kết quả CI.
+- [ ] Chỉ merge khi kiểm tra đạt và PR không chứa thay đổi ngoài phạm vi.
+- **Nghiệm thu cuối:** roadmap phản ánh đúng trạng thái, kiểm tra có bằng chứng, không còn blocker nghiêm trọng.
+
+### Thứ tự thực hiện hiện tại
+1. P0: xác minh repository và công cụ kiểm thử.
+2. P1: chạy baseline, sửa lỗi đang tồn tại.
+3. P2 → P5: ổn định dữ liệu, registry, placeholder, save/load/export.
+4. P6 → P8: hoàn thiện UX canvas, sidebar và responsive/accessibility.
+5. P9 → P11: kiểm thử tích hợp, rà soát chất lượng, tài liệu và phát hành.
+
+Không chuyển P tiếp theo khi P hiện tại còn lỗi blocker; có thể cập nhật nhiều commit nhỏ trong cùng một P.
