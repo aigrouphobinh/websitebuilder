@@ -164,6 +164,15 @@ const LANDING_RESPONSIVE_STYLES = `
       line-height: 1.2 !important;
     }
     .landing-hero, .event-hero { min-height: 0 !important; padding-top: 64px !important; padding-bottom: 64px !important; }
+    /* Keep the two-column content blocks side-by-side on tablet/desktop.
+       The generic flex-wrap rule above must not collapse these two-column layouts. */
+    .landing-content > .content-wrapper,
+    .landing-content > .container {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+      align-items: center !important;
+      gap: clamp(16px, 3vw, 40px) !important;
+    }
     .landing-header .landing-nav { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; justify-content: flex-end; }
     .landing-header .landing-nav a { font-size: 12px !important; padding: 6px 8px !important; }
   }
@@ -179,6 +188,11 @@ const LANDING_RESPONSIVE_STYLES = `
       padding-right: 12px !important;
     }
     .landing-hero h1, .event-hero h1 { font-size: clamp(25px, 8vw, 32px) !important; }
+    .landing-content > .content-wrapper,
+    .landing-content > .container {
+      grid-template-columns: minmax(0, 1fr) !important;
+      gap: 24px !important;
+    }
     .landing-header { align-items: flex-start !important; gap: 10px !important; flex-wrap: wrap !important; }
     .landing-header .landing-nav { justify-content: flex-start !important; width: 100%; }
     .event-pricing [style*="transform:translateY"] { transform: none !important; }
