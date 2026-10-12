@@ -1482,30 +1482,42 @@
           </label>
         </header>
 
-        <nav class="inspector-tabs" role="tablist">
+        <nav class="inspector-tabs" role="tablist" aria-label="Nhóm thuộc tính phần tử">
           <button
             class="inspector-tab"
             :class="{ 'is-active': rightTab === 'style' }"
+            :aria-selected="rightTab === 'style'"
+            role="tab"
             type="button"
+            title="Chỉnh màu sắc, kiểu chữ, kích thước và khoảng cách"
             @click="rightTab = 'style'"
           >
-            Kiểu dáng
+            <IconBrush size="14" aria-hidden="true" />
+            <span>Kiểu dáng</span>
           </button>
           <button
             class="inspector-tab"
             :class="{ 'is-active': rightTab === 'settings' }"
+            :aria-selected="rightTab === 'settings'"
+            role="tab"
             type="button"
+            title="Cài đặt nội dung và thuộc tính phần tử"
             @click="rightTab = 'settings'"
           >
-            Cài đặt
+            <IconSettings size="14" aria-hidden="true" />
+            <span>Cài đặt</span>
           </button>
           <button
             class="inspector-tab"
             :class="{ 'is-active': rightTab === 'interactions' }"
+            :aria-selected="rightTab === 'interactions'"
+            role="tab"
             type="button"
+            title="Thiết lập liên kết và hành vi tương tác"
             @click="rightTab = 'interactions'"
           >
-            Tương tác
+            <IconMousePointerClick size="14" aria-hidden="true" />
+            <span>Tương tác</span>
           </button>
         </nav>
 
@@ -21988,6 +22000,105 @@ function enableResizable(model: ResizableComponent | null) {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+ 
+/* Right inspector UX: clearer hierarchy, readable controls and comfortable touch targets. */
+.website-builder .inspector-tabs {
+  gap: 4px;
+  margin: 10px 12px 12px;
+  padding: 5px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+.website-builder .inspector-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 38px;
+  padding: 7px 5px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.website-builder .inspector-tab.is-active {
+  color: #4338ca;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .12);
+}
+.website-builder .inspector-tab:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+.website-builder .inspector__search {
+  min-height: 40px;
+  margin: 0 12px;
+  border-radius: 10px;
+}
+.website-builder .floating-panel-content {
+  padding: 0 2px 16px;
+  scrollbar-gutter: stable;
+}
+.website-builder .floating-panel-content .group-header {
+  min-height: 42px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 650;
+  color: #334155;
+  border-radius: 8px;
+}
+.website-builder .floating-panel-content .group-header:hover {
+  background: #f8fafc;
+}
+.website-builder .floating-panel-content .group-body {
+  padding: 12px 14px 14px;
+  gap: 10px;
+}
+.website-builder .floating-panel-content .field {
+  margin-bottom: 10px;
+}
+.website-builder .floating-panel-content .field-label {
+  margin-bottom: 5px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #475569;
+}
+.website-builder .floating-panel-content .chip-input,
+.website-builder .floating-panel-content .chip-select {
+  min-width: 0;
+  min-height: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.website-builder .floating-panel-content .mini-toggle,
+.website-builder .floating-panel-content .segment {
+  min-height: 32px;
+  font-size: 12px;
+}
+.website-builder .floating-panel-content .segmented {
+  gap: 3px;
+  padding: 3px;
+  border-radius: 9px;
+}
+@media (max-width: 768px) {
+  .website-builder .inspector-tabs {
+    margin: 8px 10px 10px;
+  }
+  .website-builder .inspector-tab {
+    gap: 4px;
+    min-height: 42px;
+    font-size: 11px;
+  }
+  .website-builder .floating-panel-content .group-body {
+    padding-right: 12px;
+    padding-left: 12px;
   }
 }
 
