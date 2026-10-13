@@ -9969,7 +9969,7 @@ function ensureCanvasBlocksStyles() {
 .wb-grid{display:grid;gap:var(--wb-space-3);margin:var(--wb-space-3) 0}
 .wb-grid--cols-2{grid-template-columns:1fr 1fr}
 .wb-grid--cols-3{grid-template-columns:1fr 1fr 1fr}
-@media(max-width:768px){.wb-grid--cols-2,.wb-grid--cols-3{grid-template-columns:1fr}}
+@media(max-width:480px){.wb-grid--cols-2,.wb-grid--cols-3{grid-template-columns:minmax(0,1fr)}}
 .wb-menu{padding:0;margin:var(--wb-space-3) 0;list-style:disc inside}
 .wb-box{min-height:80px;padding:var(--wb-space-3);border:1px solid var(--wb-border-color);border-radius:var(--wb-radius-8);background:#fff}
 .wb-flex{display:flex;gap:var(--wb-space-3);align-items:center;margin:var(--wb-space-3) 0;flex-wrap:wrap}
