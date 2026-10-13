@@ -909,14 +909,6 @@
             <transition name="sb-slide">
               <div v-show="!collapseHtmlBlocks" class="sb-grid">
                 <button
-                  v-show="matchElement('Khối chứa Container')"
-                  class="sb-item"
-                  type="button"
-                  @click="addSpecBlock('container')"
-                >
-                  <IconBox size="24" /><span>Khối chứa</span>
-                </button>
-                <button
                   v-show="matchElement('Lưới 2 cột Grid')"
                   class="sb-item"
                   type="button"
@@ -7975,7 +7967,6 @@ const searchableElementNames = [
   "Thư viện ảnh",
   "Video",
   "Mã HTML",
-  "Khối chứa Container",
   "Lưới 2 cột Grid",
   "Lưới 3 cột Grid",
   "Phần đầu trang Hero",
