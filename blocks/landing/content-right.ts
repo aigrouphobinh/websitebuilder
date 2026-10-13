@@ -5,8 +5,8 @@ export const registerContentRightBlock = (bm: any) => {
     media: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="12" y="8" width="6" height="8"></rect><line x1="6" y1="8" x2="9" y2="8"></line><line x1="6" y1="12" x2="9" y2="12"></line></svg>`,
     content: `
       <section class="landing-content" style="padding: 80px 20px; background: #fff;">
-        <div class="container" style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 60px; flex-wrap: wrap;">
-          <div class="content-text" style="flex: 1; min-width: 300px;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 40px;">
+          <div class="content-text" style="min-width: 0;">
             <h2 style="font-size: 32px; font-weight: 700; color: #0f172a; margin-bottom: 24px; line-height: 1.2;">Nội dung hấp dẫn người xem</h2>
             <p style="font-size: 18px; color: #64748b; margin-bottom: 32px; line-height: 1.6;">
               Mô tả chi tiết về sản phẩm hoặc dịch vụ của bạn tại đây. Sử dụng hình ảnh minh họa bên phải để làm nổi bật nội dung.
@@ -23,10 +23,15 @@ export const registerContentRightBlock = (bm: any) => {
               </li>
             </ul>
           </div>
-          <div class="content-media" style="flex: 1; min-width: 300px;">
+          <div class="content-media" style="min-width: 0;">
             <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=800&q=80" alt="Content" style="width: 100%; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
           </div>
         </div>
+        <style>
+          @media (max-width: 600px) {
+            .landing-content .container { grid-template-columns: minmax(0, 1fr) !important; gap: 24px !important; }
+          }
+        </style>
       </section>
     `,
   });
