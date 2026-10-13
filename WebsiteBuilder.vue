@@ -10553,7 +10553,8 @@ function addSpecBlock(
       type: "text",
       tagName: "div",
       attributes: {
-        class: "wb-grid--cols-2",
+        // Base class provides display:grid, gap and margins; the modifier only sets columns.
+        class: "wb-grid wb-grid--cols-2",
         style: toStyle(styleObj),
       },
       components: [
