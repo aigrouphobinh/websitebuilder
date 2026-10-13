@@ -5,7 +5,7 @@ export const registerContentLeftBlock = (bm: any) => {
     media: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>`,
     content: `
       <section class="landing-content" style="padding: 60px 20px; background: #fff;">
-        <div class="content-wrapper" style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 40px;">
+        <div class="content-wrapper" style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 40px;">
           
           <div class="content-image" style="flex: 1; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
             <div style="width: 100%; padding-top: 75%; background: #e5e7eb; position: relative;">
@@ -37,8 +37,8 @@ export const registerContentLeftBlock = (bm: any) => {
 
         </div>
         <style>
-          @media (max-width: 768px) {
-            .landing-content .content-wrapper { flex-direction: column !important; }
+          @media (max-width: 600px) {
+            .landing-content .content-wrapper { grid-template-columns: minmax(0, 1fr) !important; gap: 24px !important; }
             .landing-content .content-text { order: -1; }
             .landing-content { padding: 40px 16px !important; }
           }
