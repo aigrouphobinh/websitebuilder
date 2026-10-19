@@ -39,6 +39,29 @@ export function useEventPlaceholders() {
     const middleEvent = (evt as any).event || evt;
     const start = toDate((middleEvent as any).startDate);
 
+    const basicInfo = middleEvent.basicInfo || middleEvent.settings?.basicInfo || {};
+    const logoValue =
+      middleEvent.logoUrl ||
+      middleEvent.logo_url ||
+      middleEvent.logo ||
+      basicInfo.logoUrl ||
+      basicInfo.logo ||
+      middleEvent.branding?.logoUrl ||
+      "";
+    // [ev_logo] is used as an image source in templates. Prefer the event's
+    // explicit logo; if none exists, fall back to the event image already
+    // available so the rendered <img> still has a usable src.
+    const eventLogo =
+      typeof logoValue === "string"
+        ? logoValue
+        : logoValue?.url || logoValue?.src || "";
+    const fallbackImage =
+      middleEvent.bannerUrl ||
+      middleEvent.thumbnailUrl ||
+      middleEvent.imageUrl ||
+      middleEvent.image ||
+      "";
+
     const replacements: Record<string, string> = {
       "[ev_name]": middleEvent.name || "",
       "[ev_location]": middleEvent.location || "",
@@ -51,6 +74,7 @@ export function useEventPlaceholders() {
       "[ev_url]": (middleEvent as any).slug
         ? `/events/${(middleEvent as any).slug}`
         : `/events/${middleEvent.id}`,
+      "[ev_logo]": eventLogo || fallbackImage || "",
       "[id_event]": middleEvent.id || "",
     };
 
