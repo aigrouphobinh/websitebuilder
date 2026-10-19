@@ -23,6 +23,30 @@ describe("useEventPlaceholders", () => {
     expect(replacements["[company_logo]"]).toBe("/logo.png");
   });
 
+  it("uses the event logo for [ev_logo] and falls back to the event image when no logo exists", () => {
+    expect(
+      buildEventPlaceholderReplacements({
+        id: "evt-logo",
+        logoUrl: "/uploads/event-logo.png",
+        bannerUrl: "/uploads/banner.png",
+      })["[ev_logo]"],
+    ).toBe("/uploads/event-logo.png");
+
+    expect(
+      buildEventPlaceholderReplacements({
+        id: "evt-no-logo",
+        bannerUrl: "/uploads/banner.png",
+      })["[ev_logo]"],
+    ).toBe("/uploads/banner.png");
+
+    expect(
+      replaceEventPlaceholders('<img src="[ev_logo]" alt="Event">', {
+        id: "evt-no-logo",
+        thumbnailUrl: "/uploads/thumbnail.png",
+      }),
+    ).toBe('<img src="/uploads/thumbnail.png" alt="Event">');
+  });
+
   it("replaces known tokens and leaves unknown dynamic tokens untouched", () => {
     const result = replaceEventPlaceholders(
       '<h1>[ev_name]</h1><a href="[ev_order_url]">Đăng ký</a><p>[ev_custom]</p>',
