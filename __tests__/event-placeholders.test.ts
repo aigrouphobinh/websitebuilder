@@ -18,9 +18,36 @@ describe("useEventPlaceholders", () => {
 
     expect(replacements["[ev_name]"]).toBe("Tech Day");
     expect(replacements["[ev_location]"]).toBe("Hà Nội");
+    expect(replacements["[ev_timezone]"]).toBe("Asia/Ho_Chi_Minh");
     expect(replacements["[ev_order_url]"]).toBe("/events/tech-day/order");
     expect(replacements["[company_name]"]).toBe("Aigroup");
     expect(replacements["[company_logo]"]).toBe("/logo.png");
+  });
+
+  it("builds min/max ticket prices and uses the event domain when provided", () => {
+    const replacements = buildEventPlaceholderReplacements({
+      id: "evt-prices",
+      domain: "https://events.example.com/",
+      tickets: [
+        { price: "1000.00", currency: "VND", status: "available" },
+        { price: "2500.00", currency: "VND", status: "available" },
+        { price: "9999.00", currency: "VND", status: "sold_out" },
+      ],
+    });
+
+    expect(replacements["[ev_min_ticket_price]"]).toBe("1000");
+    expect(replacements["[ev_max_ticket_price]"]).toBe("2500");
+    expect(replacements["[ev_domain]"]).toBe("events.example.com");
+  });
+
+  it("returns empty ticket prices when no valid ticket prices are supplied", () => {
+    const replacements = buildEventPlaceholderReplacements({
+      id: "evt-no-prices",
+      tickets: [],
+    });
+
+    expect(replacements["[ev_min_ticket_price]"]).toBe("");
+    expect(replacements["[ev_max_ticket_price]"]).toBe("");
   });
 
   it("uses the event logo for [ev_logo] and falls back to the event image when no logo exists", () => {

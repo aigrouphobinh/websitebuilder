@@ -40,6 +40,43 @@ export function useEventPlaceholders() {
     const start = toDate((middleEvent as any).startDate);
 
     const basicInfo = middleEvent.basicInfo || middleEvent.settings?.basicInfo || {};
+    const tickets = Array.isArray(evt.tickets)
+      ? evt.tickets
+      : Array.isArray(middleEvent.tickets)
+        ? middleEvent.tickets
+        : [];
+    const validTicketPrices = tickets
+      .filter((ticket: any) => !ticket.status || ticket.status === "available")
+      .map((ticket: any) => Number(ticket.price))
+      .filter((price: number) => Number.isFinite(price) && price >= 0);
+    const minTicketPrice = validTicketPrices.length ? Math.min(...validTicketPrices) : "";
+    const maxTicketPrice = validTicketPrices.length ? Math.max(...validTicketPrices) : "";
+
+    // Prefer an event-owned domain/URL. If the API omits it, use the current
+    // website origin when running in a browser; avoid referencing window during SSR.
+    const eventDomainValue =
+      middleEvent.domain ||
+      middleEvent.customDomain ||
+      middleEvent.websiteUrl ||
+      middleEvent.url ||
+      basicInfo.domain ||
+      basicInfo.websiteUrl ||
+      "";
+    let eventDomain = typeof eventDomainValue === "string" ? eventDomainValue : "";
+    if (!eventDomain && typeof window !== "undefined") {
+      eventDomain = window.location.origin;
+    }
+    if (eventDomain) {
+      try {
+        eventDomain = new URL(
+          eventDomain.startsWith("http://") || eventDomain.startsWith("https://")
+            ? eventDomain
+            : `https://${eventDomain}`,
+        ).host;
+      } catch {
+        eventDomain = eventDomain.replace(/^https?:\\/\\//i, "").replace(/\\/$/, "");
+      }
+    }
     const logoValue =
       middleEvent.logoUrl ||
       middleEvent.logo_url ||
@@ -68,6 +105,10 @@ export function useEventPlaceholders() {
       "[ev_description]": middleEvent.description || middleEvent.shortDescription || "",
       "[ev_date]": start ? formatDate(start) : "",
       "[ev_time]": start ? formatTime(start) : "",
+      "[ev_min_ticket_price]": String(minTicketPrice),
+      "[ev_max_ticket_price]": String(maxTicketPrice),
+      "[ev_timezone]": "Asia/Ho_Chi_Minh",
+      "[ev_domain]": eventDomain,
       "[ev_order_url]": (middleEvent as any).slug
         ? `/events/${(middleEvent as any).slug}/order`
         : `/events/${middleEvent.id}/order`,
