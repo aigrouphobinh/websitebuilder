@@ -54,12 +54,12 @@ export function useEventPlaceholders() {
 
     // Resolve the public check-in origin in this order:
     // 1. Explicit origin passed by the Vue caller.
-    // 2. VITE_CHECKIN_PUBLIC_URL environment variable.
+    // 2. VITE_DOMAIN environment variable.
     // 3. Event-provided public URL/domain.
     // 4. Current browser origin as a last resort.
     const configuredOrigin =
       publicOrigin ||
-      import.meta.env.VITE_CHECKIN_PUBLIC_URL ||
+      import.meta.env.VITE_DOMAIN ||
       middleEvent.publicUrl ||
       middleEvent.websiteUrl ||
       middleEvent.customDomain ||
