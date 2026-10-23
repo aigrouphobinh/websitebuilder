@@ -17022,7 +17022,12 @@ function installCanvasRuntime(baseUrl: string) {
         if (nestedTarget) {
           var targetParsed = new URL(nestedTarget, API_BASE || window.location.origin);
           if (/^\\/api\\/events\\/[^/]+\\/(?:public|tickets)(?:\\/|$)/i.test(targetParsed.pathname)) {
-            return targetParsed.toString();
+            // Keep the API path, but never reuse localhost or another stale
+            // host embedded in the old proxy URL.
+            var apiOrigin = API_BASE
+              ? new URL(API_BASE, window.location.origin).origin
+              : targetParsed.origin;
+            return apiOrigin + targetParsed.pathname + targetParsed.search + targetParsed.hash;
           }
         }
       } catch(_) {}
