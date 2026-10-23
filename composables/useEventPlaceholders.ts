@@ -52,9 +52,8 @@ export function useEventPlaceholders() {
     const minTicketPrice = validTicketPrices.length ? Math.min(...validTicketPrices) : "";
     const maxTicketPrice = validTicketPrices.length ? Math.max(...validTicketPrices) : "";
 
-    // Resolve the event's domain from event data only. Never use
-    // window.location or the builder's VITE_DOMAIN for [ev_domain], because
-    // those values describe the editor/current page, not the event itself.
+    // Prefer the event's own public domain. If it is not configured, use the
+    // configured ticketing domain (VITE_DOMAIN), then the dev ticketing host.
     const eventDomainSource =
       middleEvent.customDomain ||
       middleEvent.domain ||
