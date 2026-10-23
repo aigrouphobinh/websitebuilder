@@ -16168,7 +16168,7 @@ async function getExportHtml(
       eventForRuntime.publicUrl ||
       eventForRuntime.websiteUrl ||
       "",
-    ).trim().replace(/^https?:\\/\\//i, "").replace(/\\/$/, "");
+    ).trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
     const eventUrlForRuntime = String(
       eventForRuntime.websiteUrl ||
       eventForRuntime.publicUrl ||
