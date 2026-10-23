@@ -16993,11 +16993,23 @@ function installCanvasRuntime(baseUrl: string) {
     var s = String(u||'').trim();
     if (!s) return u;
 
-    // Do not proxy requests that are already using the proxy endpoint.
+    // Public event endpoints are already accessible directly. If an earlier
+    // import/runtime step wrapped one in the proxy URL, unwrap it before fetch.
     if (s.indexOf('/api/proxy/fetch') !== -1) {
-       if (/^https?:\\/\\//i.test(s)) return s;
-       if (s.charAt(0) === '/') return API_BASE + s;
-       return s;
+      try {
+        var proxyParsed = new URL(s, window.location.origin);
+        var nestedTarget = proxyParsed.searchParams.get('url') || '';
+        if (nestedTarget) {
+          var targetParsed = new URL(nestedTarget, API_BASE || window.location.origin);
+          if (/^\\/api\\/events\\/[^/]+\\/public(?:\\/|$)/i.test(targetParsed.pathname)) {
+            return targetParsed.toString();
+          }
+        }
+      } catch(_) {}
+      // Do not re-proxy other requests that already use the proxy endpoint.
+      if (/^https?:\\/\\//i.test(s)) return s;
+      if (s.charAt(0) === '/') return API_BASE + s;
+      return s;
     }
 
     // API calls must go directly to the configured API server. Proxying an
