@@ -16157,24 +16157,33 @@ async function getExportHtml(
     // API/static asset URLs remain on the configured API origin when one is provided.
     let exportHtml = String(html || "");
     exportHtml = replaceEventPlaceholders(exportHtml, eventContext.value);
+    // Never publish links pointing back to the builder's local Vite server.
     exportHtml = exportHtml
-      .replace(/https?:\\/\\/localhost:5173/gi, "")
-      .replace(/https?:\\/\\/127\\.0\\.0\\.1:5173/gi, "");
+      .split("http://localhost:5173").join("")
+      .split("https://localhost:5173").join("")
+      .split("http://127.0.0.1:5173").join("")
+      .split("https://127.0.0.1:5173").join("");
 
-    const configuredApiOrigin = (() => {
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL;
-        return apiUrl && /^https?:\\/\\//i.test(apiUrl)
-          ? new URL(apiUrl).origin
-          : "";
-      } catch {
-        return "";
+    // If a production API origin is configured, migrate stale local API URLs
+    // in imported templates without confusing the API origin with the page origin.
+    let configuredApiOrigin = "";
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (apiUrl && /^https?:\/\//i.test(apiUrl)) {
+        configuredApiOrigin = new URL(apiUrl).origin;
       }
-    })();
-    if (configuredApiOrigin && !/localhost|127\\.0\\.0\\.1/i.test(new URL(configuredApiOrigin).hostname)) {
-      exportHtml = exportHtml
-        .replace(/https?:\\/\\/localhost:3000/gi, configuredApiOrigin)
-        .replace(/https?:\\/\\/127\\.0\\.0\\.1:3000/gi, configuredApiOrigin);
+    } catch {
+      configuredApiOrigin = "";
+    }
+    if (configuredApiOrigin) {
+      const apiHost = new URL(configuredApiOrigin).hostname;
+      if (apiHost !== "localhost" && apiHost !== "127.0.0.1") {
+        exportHtml = exportHtml
+          .split("http://localhost:3000").join(configuredApiOrigin)
+          .split("https://localhost:3000").join(configuredApiOrigin)
+          .split("http://127.0.0.1:3000").join(configuredApiOrigin)
+          .split("https://127.0.0.1:3000").join(configuredApiOrigin);
+      }
     }
 
     return "<!doctype html><html lang=\"" + escapeHtmlAttribute(lang) + "\"><head>" + head + "</head><body>" + exportHtml + bodyScripts + eventPlaceholderScript + "</body></html>";
