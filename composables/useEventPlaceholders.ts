@@ -66,7 +66,8 @@ export function useEventPlaceholders() {
       middleEvent.publicUrl ||
       middleEvent.websiteUrl ||
       basicInfo.websiteUrl ||
-      "";
+      import.meta.env.VITE_DOMAIN ||
+      "https://checkin-dev.htechmedia.vn";
 
     const normalizeHost = (value: unknown): string => {
       if (typeof value !== "string" || !value.trim()) return "";
