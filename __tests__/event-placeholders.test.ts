@@ -37,7 +37,7 @@ describe("useEventPlaceholders", () => {
 
     expect(replacements["[ev_min_ticket_price]"]).toBe("1000");
     expect(replacements["[ev_max_ticket_price]"]).toBe("2500");
-    expect(replacements["[ev_domain]"]).toBe("[ev_domain]");
+    expect(replacements["[ev_domain]"]).toBe("events.example.com");
   });
 
   it("returns empty ticket prices when no valid ticket prices are supplied", () => {
