@@ -6545,6 +6545,16 @@ function createCompanyEventBlockHtml(
 
   const isTemplateMode = isSuperAdminPerm.value && !isCompanyAdmin.value;
 
+  // Ticket checkout lives on the configured public ticketing domain, not
+  // necessarily on the published landing-page domain.
+  let ticketingOrigin = String(
+    import.meta.env.VITE_DOMAIN || window.location.origin,
+  ).trim();
+  if (ticketingOrigin && !/^https?:\\/\\//i.test(ticketingOrigin)) {
+    ticketingOrigin = `https://${ticketingOrigin}`;
+  }
+  ticketingOrigin = ticketingOrigin.replace(/\\/+$/, "");
+
   const formatEventDateTime = () =>
     new Date(evt.startDate).toLocaleDateString("vi-VN", {
       weekday: "long",
@@ -6586,7 +6596,7 @@ function createCompanyEventBlockHtml(
   // Common Ticket Button Logic
   // We use a simple "Buy Ticket" button that triggers the popup via class delegation
   const buyButton = `
-    <a href="/order_wizard?event_id=${targetEventId}" 
+    <a href="${ticketingOrigin}/order_wizard?event_id=${targetEventId}&ticket_id=&popup=true" 
        data-event-id="${targetEventId}"
        class="event-buy-btn js-buy-ticket-btn"
        style="
@@ -11761,17 +11771,25 @@ function addTicketingButtonBlock() {
     eventId = "[id_event]"; // Placeholder for template mode
   }
 
+  // Use the configured ticketing domain because the landing page may be
+  // published on a different custom domain.
+  let ticketingOrigin = String(
+    import.meta.env.VITE_DOMAIN || window.location.origin,
+  ).trim();
+  if (ticketingOrigin && !/^https?:\\/\\//i.test(ticketingOrigin)) {
+    ticketingOrigin = `https://${ticketingOrigin}`;
+  }
+  ticketingOrigin = ticketingOrigin.replace(/\\/+$/, "");
+
   const target = getInsertTarget() as Component;
   const btn = target.append({
     type: "link",
     tagName: "a",
     content: "Mua Vé Ngay",
     attributes: {
-      href: `/order_wizard?event_id=${eventId}`,
+      href: `${ticketingOrigin}/order_wizard?event_id=${eventId}&ticket_id=&popup=true`,
       "data-event-id": eventId,
       target: "_self",
-      onclick:
-        "event.preventDefault(); window.openTicketingPopup ? window.openTicketingPopup() : (window.location.href=this.href)",
       style:
         "display:inline-block;padding:12px 24px;background-color:var(--color-primary, #2563eb);color:#ffffff;border-radius:8px;text-decoration:none;font-weight:600;text-align:center;border:none;cursor:pointer;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);transition:all 0.2s;",
       class: "wb-button wb-button--primary wb-ticket-btn js-buy-ticket-btn",
