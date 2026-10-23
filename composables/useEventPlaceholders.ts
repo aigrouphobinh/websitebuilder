@@ -52,24 +52,43 @@ export function useEventPlaceholders() {
     const minTicketPrice = validTicketPrices.length ? Math.min(...validTicketPrices) : "";
     const maxTicketPrice = validTicketPrices.length ? Math.max(...validTicketPrices) : "";
 
-    // Resolve the public check-in origin in this order:
-    // 1. Explicit origin passed by the Vue caller.
-    // 2. VITE_DOMAIN environment variable.
-    // 3. Event-provided public URL/domain.
-    // 4. Current browser origin as a last resort.
+    // Resolve the event's domain from event data only. Never use
+    // window.location or the builder's VITE_DOMAIN for [ev_domain], because
+    // those values describe the editor/current page, not the event itself.
+    const eventDomainSource =
+      middleEvent.customDomain ||
+      middleEvent.domain ||
+      middleEvent.publicDomain ||
+      middleEvent.websiteDomain ||
+      basicInfo.customDomain ||
+      basicInfo.domain ||
+      basicInfo.websiteDomain ||
+      middleEvent.publicUrl ||
+      middleEvent.websiteUrl ||
+      basicInfo.websiteUrl ||
+      "";
+
+    const normalizeHost = (value: unknown): string => {
+      if (typeof value !== "string" || !value.trim()) return "";
+      const raw = value.trim();
+      try {
+        return new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`).host;
+      } catch {
+        return raw.replace(/^https?:\/\//i, "").replace(/\/$/, "");
+      }
+    };
+
+    const eventDomain = normalizeHost(eventDomainSource);
+
+    // Order URLs may use an explicitly configured public origin, but this
+    // setting must never override the event-data value used by [ev_domain].
     const configuredOrigin =
       publicOrigin ||
       import.meta.env.VITE_DOMAIN ||
-      middleEvent.publicUrl ||
-      middleEvent.websiteUrl ||
-      middleEvent.customDomain ||
-      middleEvent.domain ||
-      basicInfo.websiteUrl ||
-      basicInfo.domain ||
-      (typeof window !== "undefined" ? window.location.origin : "");
+      eventDomainSource ||
+      "";
 
     let publicOriginValue = "";
-    let eventDomain = "";
     if (typeof configuredOrigin === "string" && configuredOrigin.trim()) {
       try {
         const normalizedUrl = new URL(
@@ -78,12 +97,9 @@ export function useEventPlaceholders() {
             : `https://${configuredOrigin.trim()}`,
         );
         publicOriginValue = normalizedUrl.origin;
-        eventDomain = normalizedUrl.host;
       } catch {
-        eventDomain = configuredOrigin
-          .replace(/^https?:\/\//i, "")
-          .replace(/\/$/, "");
-        publicOriginValue = eventDomain ? `https://${eventDomain}` : "";
+        const host = normalizeHost(configuredOrigin);
+        publicOriginValue = host ? `https://${host}` : "";
       }
     }
     const logoValue =
@@ -118,7 +134,7 @@ export function useEventPlaceholders() {
       "[ev_max_ticket_price]": String(maxTicketPrice),
       "[ev_timezone]": "Asia/Ho_Chi_Minh",
       // Resolve these against the final published page origin at runtime.
-      "[ev_domain]": "[ev_domain]",
+      "[ev_domain]": eventDomain,
       "[ev_order_url]": `${publicOriginValue}/order_wizard?${new URLSearchParams({
         event_id: String(middleEvent.id || ""),
         ticket_id: "",
