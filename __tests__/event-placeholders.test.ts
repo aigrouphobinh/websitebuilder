@@ -19,7 +19,7 @@ describe("useEventPlaceholders", () => {
     expect(replacements["[ev_name]"]).toBe("Tech Day");
     expect(replacements["[ev_location]"]).toBe("Hà Nội");
     expect(replacements["[ev_timezone]"]).toBe("Asia/Ho_Chi_Minh");
-    expect(replacements["[ev_order_url]"]).toBe("/events/tech-day/order");
+    expect(replacements["[ev_order_url]"]).toBe("/order_wizard?event_id=evt-1&ticket_id=&popup=true");
     expect(replacements["[company_name]"]).toBe("Aigroup");
     expect(replacements["[company_logo]"]).toBe("/logo.png");
   });
@@ -37,7 +37,7 @@ describe("useEventPlaceholders", () => {
 
     expect(replacements["[ev_min_ticket_price]"]).toBe("1000");
     expect(replacements["[ev_max_ticket_price]"]).toBe("2500");
-    expect(replacements["[ev_domain]"]).toBe("events.example.com");
+    expect(replacements["[ev_domain]"]).toBe("[ev_domain]");
   });
 
   it("returns empty ticket prices when no valid ticket prices are supplied", () => {
@@ -81,7 +81,7 @@ describe("useEventPlaceholders", () => {
     );
 
     expect(result).toBe(
-      '<h1>Demo Event</h1><a href="/events/demo/order">Đăng ký</a><p>[ev_custom]</p>',
+      '<h1>Demo Event</h1><a href="/order_wizard?event_id=evt-2&ticket_id=&popup=true">Đăng ký</a><p>[ev_custom]</p>',
     );
   });
 
