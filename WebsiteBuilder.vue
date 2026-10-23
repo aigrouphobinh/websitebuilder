@@ -16156,14 +16156,27 @@ async function getExportHtml(
     const doc = editor?.Canvas.getDocument();
     const lang = doc?.documentElement?.getAttribute("lang") || "en";
 
-    // Resolve only [ev_domain] and [ev_url] when the exported page is opened.
+    // Resolve [ev_domain] and [ev_url] from the event record, never from
+    // window.location (which points at the landing-page/editor domain).
     // [ev_order_url] intentionally keeps its separately configured origin.
     const eventForRuntime = eventContext.value?.event || eventContext.value || {};
-    const eventPath = "/events/" + encodeURIComponent(String(eventForRuntime.slug || eventForRuntime.id || ""));
+    const eventDomainForRuntime = String(
+      eventForRuntime.customDomain ||
+      eventForRuntime.domain ||
+      eventForRuntime.publicDomain ||
+      eventForRuntime.websiteDomain ||
+      eventForRuntime.publicUrl ||
+      eventForRuntime.websiteUrl ||
+      "",
+    ).trim().replace(/^https?:\\/\\//i, "").replace(/\\/$/, "");
+    const eventUrlForRuntime = String(
+      eventForRuntime.websiteUrl ||
+      eventForRuntime.publicUrl ||
+      (eventDomainForRuntime ? `https://${eventDomainForRuntime}` : ""),
+    ).trim();
     const eventPlaceholderScript = scOpen + ">" +
       "(function(){" +
-      "var origin=window.location.origin;" +
-      "var replacements={\"[ev_domain]\":window.location.host,\"[ev_url]\":origin+" + JSON.stringify(eventPath) + "};" +
+      "var replacements={\"[ev_domain]\":" + JSON.stringify(eventDomainForRuntime) + ",\"[ev_url]\":" + JSON.stringify(eventUrlForRuntime) + "};" +
       "var replace=function(value){return value.replace(/\\[ev_domain\\]|\\[ev_url\\]/g,function(token){return replacements[token]||token;});};" +
       "var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),node;" +
       "while((node=walker.nextNode()))node.nodeValue=replace(node.nodeValue||\"\");" +
