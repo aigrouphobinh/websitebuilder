@@ -6424,8 +6424,28 @@ async function fetchCompanyEvents() {
 async function fetchEventContext() {
   if (!eventIdParam.value || !isCompanyAdmin.value) return;
   try {
-    const data = await eventService.getEvent(eventIdParam.value);
-    eventContext.value = data?.event?.event || data?.event || data;
+    const [eventResult, ticketsResult] = await Promise.all([
+      eventService.getEvent(eventIdParam.value),
+      apiClient.get(`/events/${eventIdParam.value}/tickets`).catch((error: unknown) => {
+        console.error("Error fetching event tickets for placeholders:", error);
+        return null;
+      }),
+    ]);
+
+    const event = eventResult?.event?.event || eventResult?.event || eventResult;
+    const ticketPayload = ticketsResult?.data;
+    const tickets = Array.isArray(ticketPayload)
+      ? ticketPayload
+      : Array.isArray(ticketPayload?.data)
+        ? ticketPayload.data
+        : Array.isArray(ticketPayload?.tickets)
+          ? ticketPayload.tickets
+          : [];
+
+    eventContext.value = {
+      ...event,
+      tickets,
+    };
   } catch (e) {
     console.error("Error fetching event context for placeholders:", e);
   }
