@@ -17021,7 +17021,7 @@ function installCanvasRuntime(baseUrl: string) {
         var nestedTarget = proxyParsed.searchParams.get('url') || '';
         if (nestedTarget) {
           var targetParsed = new URL(nestedTarget, API_BASE || window.location.origin);
-          if (/^\\/api\\/events\\/[^/]+\\/public(?:\\/|$)/i.test(targetParsed.pathname)) {
+          if (/^\\/api\\/events\\/[^/]+\\/(?:public|tickets)(?:\\/|$)/i.test(targetParsed.pathname)) {
             return targetParsed.toString();
           }
         }
