@@ -16954,11 +16954,29 @@ function installCanvasRuntime(baseUrl: string) {
   
   function prox(u){
     var s = String(u||'').trim();
+    if (!s) return u;
+
+    // Do not proxy requests that are already using the proxy endpoint.
     if (s.indexOf('/api/proxy/fetch') !== -1) {
-       if (s.indexOf('http') === 0) return s;
-       if (s.indexOf('/') === 0) return API_BASE + s;
+       if (/^https?:\\/\\//i.test(s)) return s;
+       if (s.charAt(0) === '/') return API_BASE + s;
        return s;
     }
+
+    // API calls must go directly to the configured API server. Proxying an
+    // API request creates a broken nested URL such as /api/proxy/fetch?url=.../api/events/...
+    try {
+      var apiOrigin = API_BASE ? new URL(API_BASE, window.location.origin).origin : window.location.origin;
+      var resolved = new URL(s, WB_BASE || window.location.origin);
+      var isApiPath = /^\\/api\\/(?!proxy\\/fetch(?:[/?#]|$))/i.test(resolved.pathname);
+      var sameApiOrigin = resolved.origin === apiOrigin;
+      if (sameApiOrigin || isApiPath) {
+        if (resolved.origin === apiOrigin) return resolved.toString();
+        return apiOrigin + resolved.pathname + resolved.search + resolved.hash;
+      }
+    } catch(_) {}
+
+    // Keep proxying third-party URLs used by imported pages/assets.
     return API_BASE + '/api/proxy/fetch?url=' + encodeURIComponent(abs(u));
   }
   
