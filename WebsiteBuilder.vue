@@ -16152,7 +16152,32 @@ async function getExportHtml(
       "Array.prototype.forEach.call(document.body.querySelectorAll(\"*\"),function(el){Array.prototype.forEach.call(el.attributes,function(attr){var next=replace(attr.value);if(next!==attr.value)el.setAttribute(attr.name,next);});});" +
       "})();" + scClose;
 
-    return "<!doctype html><html lang=\"" + escapeHtmlAttribute(lang) + "\"><head>" + head + "</head><body>" + html + bodyScripts + eventPlaceholderScript + "</body></html>";
+    // Normalize URLs embedded in imported/rendered template HTML before export.
+    // Links to the builder's dev server must be same-origin on the published site;
+    // API/static asset URLs remain on the configured API origin when one is provided.
+    let exportHtml = String(html || "");
+    exportHtml = replaceEventPlaceholders(exportHtml, eventContext.value);
+    exportHtml = exportHtml
+      .replace(/https?:\\/\\/localhost:5173/gi, "")
+      .replace(/https?:\\/\\/127\\.0\\.0\\.1:5173/gi, "");
+
+    const configuredApiOrigin = (() => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL;
+        return apiUrl && /^https?:\\/\\//i.test(apiUrl)
+          ? new URL(apiUrl).origin
+          : "";
+      } catch {
+        return "";
+      }
+    })();
+    if (configuredApiOrigin && !/localhost|127\\.0\\.0\\.1/i.test(new URL(configuredApiOrigin).hostname)) {
+      exportHtml = exportHtml
+        .replace(/https?:\\/\\/localhost:3000/gi, configuredApiOrigin)
+        .replace(/https?:\\/\\/127\\.0\\.0\\.1:3000/gi, configuredApiOrigin);
+    }
+
+    return "<!doctype html><html lang=\"" + escapeHtmlAttribute(lang) + "\"><head>" + head + "</head><body>" + exportHtml + bodyScripts + eventPlaceholderScript + "</body></html>";
   } catch (e) {
     console.error("getExportHtml failed:", e);
     const fallbackHtml = editor ? editor.getHtml() : "";
