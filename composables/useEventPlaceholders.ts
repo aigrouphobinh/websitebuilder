@@ -117,13 +117,14 @@ export function useEventPlaceholders() {
       "[ev_min_ticket_price]": String(minTicketPrice),
       "[ev_max_ticket_price]": String(maxTicketPrice),
       "[ev_timezone]": "Asia/Ho_Chi_Minh",
-      "[ev_domain]": eventDomain,
+      // Resolve these against the final published page origin at runtime.
+      "[ev_domain]": "[ev_domain]",
       "[ev_order_url]": `${publicOriginValue}/order_wizard?${new URLSearchParams({
         event_id: String(middleEvent.id || ""),
         ticket_id: "",
         popup: "true",
       }).toString()}`,
-      "[ev_url]": `${publicOriginValue}/events/${encodeURIComponent(String((middleEvent as any).slug || middleEvent.id || ""))}`,
+      "[ev_url]": "[ev_url]",
       "[ev_logo]": eventLogo || fallbackImage || "",
       "[id_event]": middleEvent.id || "",
     };
