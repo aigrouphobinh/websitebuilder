@@ -16160,18 +16160,24 @@ async function getExportHtml(
     // window.location (which points at the landing-page/editor domain).
     // [ev_order_url] intentionally keeps its separately configured origin.
     const eventForRuntime = eventContext.value?.event || eventContext.value || {};
+    const eventBasicInfo = eventForRuntime.basicInfo || eventForRuntime.settings?.basicInfo || {};
     const eventDomainForRuntime = String(
       eventForRuntime.customDomain ||
       eventForRuntime.domain ||
       eventForRuntime.publicDomain ||
       eventForRuntime.websiteDomain ||
+      eventBasicInfo.customDomain ||
+      eventBasicInfo.domain ||
+      eventBasicInfo.websiteDomain ||
       eventForRuntime.publicUrl ||
       eventForRuntime.websiteUrl ||
+      eventBasicInfo.websiteUrl ||
       "",
     ).trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
     const eventUrlForRuntime = String(
       eventForRuntime.websiteUrl ||
       eventForRuntime.publicUrl ||
+      eventBasicInfo.websiteUrl ||
       (eventDomainForRuntime ? `https://${eventDomainForRuntime}` : ""),
     ).trim();
     const eventPlaceholderScript = scOpen + ">" +
