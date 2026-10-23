@@ -16138,7 +16138,21 @@ async function getExportHtml(
     const doc = editor?.Canvas.getDocument();
     const lang = doc?.documentElement?.getAttribute("lang") || "en";
 
-    return `<!doctype html><html lang="${escapeHtmlAttribute(lang)}"><head>${head}</head><body>${html}${bodyScripts}</body></html>`;
+    // Resolve only [ev_domain] and [ev_url] when the exported page is opened.
+    // [ev_order_url] intentionally keeps its separately configured origin.
+    const eventForRuntime = eventContext.value?.event || eventContext.value || {};
+    const eventPath = "/events/" + encodeURIComponent(String(eventForRuntime.slug || eventForRuntime.id || ""));
+    const eventPlaceholderScript = scOpen + ">" +
+      "(function(){" +
+      "var origin=window.location.origin;" +
+      "var replacements={\"[ev_domain]\":window.location.host,\"[ev_url]\":origin+" + JSON.stringify(eventPath) + "};" +
+      "var replace=function(value){return value.replace(/\\[ev_domain\\]|\\[ev_url\\]/g,function(token){return replacements[token]||token;});};" +
+      "var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),node;" +
+      "while((node=walker.nextNode()))node.nodeValue=replace(node.nodeValue||\"\");" +
+      "Array.prototype.forEach.call(document.body.querySelectorAll(\"*\"),function(el){Array.prototype.forEach.call(el.attributes,function(attr){var next=replace(attr.value);if(next!==attr.value)el.setAttribute(attr.name,next);});});" +
+      "})();" + scClose;
+
+    return "<!doctype html><html lang=\"" + escapeHtmlAttribute(lang) + "\"><head>" + head + "</head><body>" + html + bodyScripts + eventPlaceholderScript + "</body></html>";
   } catch (e) {
     console.error("getExportHtml failed:", e);
     const fallbackHtml = editor ? editor.getHtml() : "";
