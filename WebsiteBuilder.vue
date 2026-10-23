@@ -6550,10 +6550,10 @@ function createCompanyEventBlockHtml(
   let ticketingOrigin = String(
     import.meta.env.VITE_DOMAIN || window.location.origin,
   ).trim();
-  if (ticketingOrigin && !/^https?:\\/\\//i.test(ticketingOrigin)) {
+  if (ticketingOrigin && !/^https?:\/\//i.test(ticketingOrigin)) {
     ticketingOrigin = `https://${ticketingOrigin}`;
   }
-  ticketingOrigin = ticketingOrigin.replace(/\\/+$/, "");
+  ticketingOrigin = ticketingOrigin.replace(/\/+$/, "");
 
   const formatEventDateTime = () =>
     new Date(evt.startDate).toLocaleDateString("vi-VN", {
@@ -11776,10 +11776,10 @@ function addTicketingButtonBlock() {
   let ticketingOrigin = String(
     import.meta.env.VITE_DOMAIN || window.location.origin,
   ).trim();
-  if (ticketingOrigin && !/^https?:\\/\\//i.test(ticketingOrigin)) {
+  if (ticketingOrigin && !/^https?:\/\//i.test(ticketingOrigin)) {
     ticketingOrigin = `https://${ticketingOrigin}`;
   }
-  ticketingOrigin = ticketingOrigin.replace(/\\/+$/, "");
+  ticketingOrigin = ticketingOrigin.replace(/\/+$/, "");
 
   const target = getInsertTarget() as Component;
   const btn = target.append({
