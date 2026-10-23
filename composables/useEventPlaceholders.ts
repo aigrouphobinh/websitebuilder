@@ -34,7 +34,7 @@ export function useEventPlaceholders() {
     });
   };
 
-  const buildEventPlaceholderReplacements = (evt: any): Record<string, string> => {
+  const buildEventPlaceholderReplacements = (evt: any, publicOrigin?: string): Record<string, string> => {
     if (!evt) return {};
     const middleEvent = (evt as any).event || evt;
     const start = toDate((middleEvent as any).startDate);
@@ -52,29 +52,38 @@ export function useEventPlaceholders() {
     const minTicketPrice = validTicketPrices.length ? Math.min(...validTicketPrices) : "";
     const maxTicketPrice = validTicketPrices.length ? Math.max(...validTicketPrices) : "";
 
-    // Prefer an event-owned domain/URL. If the API omits it, use the current
-    // website origin when running in a browser; avoid referencing window during SSR.
-    const eventDomainValue =
-      middleEvent.domain ||
-      middleEvent.customDomain ||
+    // Resolve the public check-in origin in this order:
+    // 1. Explicit origin passed by the Vue caller.
+    // 2. VITE_CHECKIN_PUBLIC_URL environment variable.
+    // 3. Event-provided public URL/domain.
+    // 4. Current browser origin as a last resort.
+    const configuredOrigin =
+      publicOrigin ||
+      import.meta.env.VITE_CHECKIN_PUBLIC_URL ||
+      middleEvent.publicUrl ||
       middleEvent.websiteUrl ||
-      middleEvent.url ||
-      basicInfo.domain ||
+      middleEvent.customDomain ||
+      middleEvent.domain ||
       basicInfo.websiteUrl ||
-      "";
-    let eventDomain = typeof eventDomainValue === "string" ? eventDomainValue : "";
-    if (!eventDomain && typeof window !== "undefined") {
-      eventDomain = window.location.origin;
-    }
-    if (eventDomain) {
+      basicInfo.domain ||
+      (typeof window !== "undefined" ? window.location.origin : "");
+
+    let publicOriginValue = "";
+    let eventDomain = "";
+    if (typeof configuredOrigin === "string" && configuredOrigin.trim()) {
       try {
-        eventDomain = new URL(
-          eventDomain.startsWith("http://") || eventDomain.startsWith("https://")
-            ? eventDomain
-            : `https://${eventDomain}`,
-        ).host;
+        const normalizedUrl = new URL(
+          /^https?:\/\//i.test(configuredOrigin.trim())
+            ? configuredOrigin.trim()
+            : `https://${configuredOrigin.trim()}`,
+        );
+        publicOriginValue = normalizedUrl.origin;
+        eventDomain = normalizedUrl.host;
       } catch {
-        eventDomain = eventDomain.replace(/^https?:\\/\\//i, "").replace(/\\/$/, "");
+        eventDomain = configuredOrigin
+          .replace(/^https?:\/\//i, "")
+          .replace(/\/$/, "");
+        publicOriginValue = eventDomain ? `https://${eventDomain}` : "";
       }
     }
     const logoValue =
@@ -109,12 +118,12 @@ export function useEventPlaceholders() {
       "[ev_max_ticket_price]": String(maxTicketPrice),
       "[ev_timezone]": "Asia/Ho_Chi_Minh",
       "[ev_domain]": eventDomain,
-      "[ev_order_url]": (middleEvent as any).slug
-        ? `/events/${(middleEvent as any).slug}/order`
-        : `/events/${middleEvent.id}/order`,
-      "[ev_url]": (middleEvent as any).slug
-        ? `/events/${(middleEvent as any).slug}`
-        : `/events/${middleEvent.id}`,
+      "[ev_order_url]": `${publicOriginValue}${publicOriginValue ? "" : ""}/order_wizard?${new URLSearchParams({
+        event_id: String(middleEvent.id || ""),
+        ticket_id: "",
+        popup: "true",
+      }).toString()}`,
+      "[ev_url]": `${publicOriginValue}/events/${encodeURIComponent(String((middleEvent as any).slug || middleEvent.id || ""))}`,
       "[ev_logo]": eventLogo || fallbackImage || "",
       "[id_event]": middleEvent.id || "",
     };
@@ -127,10 +136,10 @@ export function useEventPlaceholders() {
     return replacements;
   };
 
-  const replaceEventPlaceholders = (content: any, evt: any): any => {
+  const replaceEventPlaceholders = (content: any, evt: any, publicOrigin?: string): any => {
     if (!content || !evt) return content;
 
-    const replacements = buildEventPlaceholderReplacements(evt);
+    const replacements = buildEventPlaceholderReplacements(evt, publicOrigin);
 
     // Match token-shaped text once. Inserted replacement values are not scanned
     // again, preventing accidental cascading substitutions.
