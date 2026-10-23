@@ -118,7 +118,7 @@ export function useEventPlaceholders() {
       "[ev_max_ticket_price]": String(maxTicketPrice),
       "[ev_timezone]": "Asia/Ho_Chi_Minh",
       "[ev_domain]": eventDomain,
-      "[ev_order_url]": `${publicOriginValue}${publicOriginValue ? "" : ""}/order_wizard?${new URLSearchParams({
+      "[ev_order_url]": `${publicOriginValue}/order_wizard?${new URLSearchParams({
         event_id: String(middleEvent.id || ""),
         ticket_id: "",
         popup: "true",
