@@ -1,9 +1,18 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useEventPlaceholders } from "../composables/useEventPlaceholders";
 
 describe("useEventPlaceholders", () => {
   const { buildEventPlaceholderReplacements, replaceEventPlaceholders, replaceEventIdPlaceholder } =
     useEventPlaceholders();
+
+  beforeEach(() => {
+    vi.stubEnv("VITE_DOMAIN", "");
+    vi.stubEnv("VITE_EVENT_BASE_DOMAIN", ".events.htechmedia.vn");
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
 
   it("builds replacements from event and company context", () => {
     const replacements = buildEventPlaceholderReplacements({
@@ -35,9 +44,40 @@ describe("useEventPlaceholders", () => {
       ],
     });
 
-    expect(replacements["[ev_min_ticket_price]"]).toBe("1000");
-    expect(replacements["[ev_max_ticket_price]"]).toBe("2500");
+    expect(replacements["[ev_min_ticket_price]"]).toBe("1.000 ₫");
+    expect(replacements["[ev_max_ticket_price]"]).toBe("2.500 ₫");
     expect(replacements["[ev_domain]"]).toBe("events.example.com");
+  });
+
+  it("computes the same min/max when every valid ticket costs 1000.00", () => {
+    const replacements = buildEventPlaceholderReplacements({
+      id: "evt-same-price",
+      tickets: [
+        { price: "1000.00", status: "available" },
+        { price: "1000.00", status: "available" },
+      ],
+    });
+
+    expect(replacements["[ev_min_ticket_price]"]).toBe("1.000 ₫");
+    expect(replacements["[ev_max_ticket_price]"]).toBe("1.000 ₫");
+  });
+
+  it("ignores null, empty, invalid and non-finite ticket prices", () => {
+    const replacements = buildEventPlaceholderReplacements({
+      id: "evt-invalid-prices",
+      tickets: [
+        { price: null, status: "available" },
+        { price: "", status: "available" },
+        { price: "abc", status: "available" },
+        { price: "Infinity", status: "available" },
+        { price: "-100", status: "available" },
+        { price: "2000.00", status: "sold_out" },
+        { price: "500.00", status: "available" },
+      ],
+    });
+
+    expect(replacements["[ev_min_ticket_price]"]).toBe("500 ₫");
+    expect(replacements["[ev_max_ticket_price]"]).toBe("500 ₫");
   });
 
   it("returns empty ticket prices when no valid ticket prices are supplied", () => {
@@ -48,6 +88,51 @@ describe("useEventPlaceholders", () => {
 
     expect(replacements["[ev_min_ticket_price]"]).toBe("");
     expect(replacements["[ev_max_ticket_price]"]).toBe("");
+  });
+
+  it("resolves repeated placeholders and event timezone/domain from event context", () => {
+    const html = [
+      "<p>[ev_min_ticket_price] - [ev_max_ticket_price]</p>",
+      "<p>[ev_min_ticket_price] - [ev_max_ticket_price]</p>",
+      "<a href=\"[ev_domain]\">[ev_domain]</a>",
+      "<span>[ev_timezone]</span>",
+    ].join("");
+
+    const result = replaceEventPlaceholders(html, {
+      id: "evt-repeat",
+      domainConfig: { domain: null, subdomain: "demo" },
+      basicInfo: { timezone: "Asia/Bangkok" },
+      tickets: [{ price: "1000.00", status: "available" }],
+    });
+
+    expect(result.match(/1\.000 ₫/g)).toHaveLength(4);
+    expect(result.match(/demo\.events\.htechmedia\.vn/g)).toHaveLength(2);
+    expect(result).toContain("Asia/Bangkok");
+    expect(result).not.toContain("[ev_min_ticket_price]");
+    expect(result).not.toContain("[ev_max_ticket_price]");
+    expect(result).not.toContain("[ev_domain]");
+    expect(result).not.toContain("[ev_timezone]");
+  });
+
+  it("falls back to Asia/Ho_Chi_Minh when timezone is missing", () => {
+    const replacements = buildEventPlaceholderReplacements({
+      id: "evt-no-timezone",
+      tickets: [],
+    });
+
+    expect(replacements["[ev_timezone]"]).toBe("Asia/Ho_Chi_Minh");
+  });
+
+  it("returns an empty domain when no event or configured domain exists", () => {
+    vi.stubEnv("VITE_EVENT_BASE_DOMAIN", "");
+    vi.stubEnv("VITE_DOMAIN", "");
+
+    const replacements = buildEventPlaceholderReplacements({
+      id: "evt-no-domain",
+      tickets: [],
+    });
+
+    expect(replacements["[ev_domain]"]).toBe("");
   });
 
   it("uses the event logo for [ev_logo] and falls back to the event image when no logo exists", () => {

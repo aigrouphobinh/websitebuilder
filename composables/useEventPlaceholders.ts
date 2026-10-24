@@ -34,6 +34,16 @@ export function useEventPlaceholders() {
     });
   };
 
+  const parsePrice = (value: unknown): number | null => {
+    if (value === null || value === undefined) return null;
+    if (typeof value === "string" && value.trim() === "") return null;
+    const price = Number(value);
+    return Number.isFinite(price) && price >= 0 ? price : null;
+  };
+
+  const formatPrice = (value: number): string =>
+    `${value.toLocaleString("vi-VN")} ₫`;
+
   const buildEventPlaceholderReplacements = (evt: any, publicOrigin?: string): Record<string, string> => {
     if (!evt) return {};
     const middleEvent = (evt as any).event || evt;
@@ -46,15 +56,28 @@ export function useEventPlaceholders() {
         ? middleEvent.tickets
         : [];
     const validTicketPrices = tickets
-      .filter((ticket: any) => !ticket.status || ticket.status === "available")
-      .map((ticket: any) => Number(ticket.price))
-      .filter((price: number) => Number.isFinite(price) && price >= 0);
-    const minTicketPrice = validTicketPrices.length ? Math.min(...validTicketPrices) : "";
-    const maxTicketPrice = validTicketPrices.length ? Math.max(...validTicketPrices) : "";
+      .filter((ticket: any) => !ticket?.status || ticket.status === "available")
+      .map((ticket: any) => parsePrice(ticket?.price))
+      .filter((price: number | null): price is number => price !== null);
+    const hasTicketPrices = validTicketPrices.length > 0;
+    const minTicketPrice = hasTicketPrices ? Math.min(...validTicketPrices) : null;
+    const maxTicketPrice = hasTicketPrices ? Math.max(...validTicketPrices) : null;
 
-    // Prefer the event's own public domain. If it is not configured, use the
-    // configured ticketing domain (VITE_DOMAIN), then the dev ticketing host.
+    // The public event API exposes the event website domain in domainConfig.
+    // Prefer an explicit custom domain, otherwise compose the configured
+    // subdomain with VITE_EVENT_BASE_DOMAIN.
+    const domainConfig = middleEvent.domainConfig || {};
+    const configuredDomain =
+      typeof domainConfig.domain === "string" ? domainConfig.domain.trim() : "";
+    const configuredSubdomain =
+      typeof domainConfig.subdomain === "string" ? domainConfig.subdomain.trim() : "";
+    const baseDomainRaw = String(import.meta.env.VITE_EVENT_BASE_DOMAIN || "").trim();
+    const baseDomain = baseDomainRaw.replace(/^\.+/, "").replace(/\/+$/, "");
     const eventDomainSource =
+      configuredDomain ||
+      (configuredSubdomain
+        ? `${configuredSubdomain}${baseDomain ? `.${baseDomain}` : ""}`
+        : "") ||
       middleEvent.customDomain ||
       middleEvent.domain ||
       middleEvent.publicDomain ||
@@ -66,7 +89,15 @@ export function useEventPlaceholders() {
       middleEvent.websiteUrl ||
       basicInfo.websiteUrl ||
       import.meta.env.VITE_DOMAIN ||
-      "https://checkin-dev.htechmedia.vn";
+      "";
+
+    const timezone = String(
+      middleEvent.timezone ||
+        basicInfo.timezone ||
+        middleEvent.settings?.timezone ||
+        import.meta.env.VITE_EVENT_TIMEZONE ||
+        "Asia/Ho_Chi_Minh",
+    ).trim() || "Asia/Ho_Chi_Minh";
 
     const normalizeHost = (value: unknown): string => {
       if (typeof value !== "string" || !value.trim()) return "";
@@ -130,9 +161,9 @@ export function useEventPlaceholders() {
       "[ev_description]": middleEvent.description || middleEvent.shortDescription || "",
       "[ev_date]": start ? formatDate(start) : "",
       "[ev_time]": start ? formatTime(start) : "",
-      "[ev_min_ticket_price]": String(minTicketPrice),
-      "[ev_max_ticket_price]": String(maxTicketPrice),
-      "[ev_timezone]": "Asia/Ho_Chi_Minh",
+      "[ev_min_ticket_price]": minTicketPrice === null ? "" : formatPrice(minTicketPrice),
+      "[ev_max_ticket_price]": maxTicketPrice === null ? "" : formatPrice(maxTicketPrice),
+      "[ev_timezone]": timezone,
       // Resolve these against the final published page origin at runtime.
       "[ev_domain]": eventDomain,
       "[ev_order_url]": `${publicOriginValue}/order_wizard?${new URLSearchParams({

@@ -6432,7 +6432,8 @@ async function fetchEventContext() {
       }),
     ]);
 
-    const event = eventResult?.event?.event || eventResult?.event || eventResult;
+    const eventData = eventResult as any;
+    const event: any = eventData?.event?.event || eventData?.event || eventData;
     const ticketPayload = ticketsResult?.data;
     const tickets = Array.isArray(ticketPayload)
       ? ticketPayload
@@ -6444,6 +6445,11 @@ async function fetchEventContext() {
 
     eventContext.value = {
       ...event,
+      domainConfig: eventData?.domainConfig || event?.domainConfig,
+      basicInfo: eventData?.basicInfo || event?.basicInfo,
+      settings: eventData?.settings || event?.settings,
+      company:
+        eventData?.company || eventData?.event?.company || event?.company,
       tickets,
     };
   } catch (e) {
